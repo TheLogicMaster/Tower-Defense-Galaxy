@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 public class Curve extends Track{
 
+    private Point k0, k1, k2;
+
     public Curve(double speed, Point k0, Point k1, Point k2) {
         super(speed);
         this.k0 = k0;
