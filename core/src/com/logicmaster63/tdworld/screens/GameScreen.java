@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.logicmaster63.tdworld.TDWorld;
 import com.logicmaster63.tdworld.map.Curve;
 import com.logicmaster63.tdworld.map.Strait;
 import com.logicmaster63.tdworld.map.Track;
@@ -43,26 +44,36 @@ public class GameScreen extends TDScreen{
         }
         try {
             String line = "";
-            path.add(new Point(Integer.parseInt(data.readLine()), Integer.parseInt(data.readLine())));
+            int parsed[] = Tools.doubleParseInt(data.readLine());
+            path.add(new Point(parsed[0], parsed[1]));
+            line = data.readLine();
             while(!line.equals("@")) {
-                line = data.readLine();
+                //if(line.equals("@"))
+                    //break;
                 int speeed = Integer.parseInt(data.readLine());
                 if(line.equals("|")) { //Strait
                     line = data.readLine();
                     track.add(new Strait(speeed, new Point(Tools.doubleParseInt(line)[0], Tools.doubleParseInt(line)[1])));
                 } else { //Curve
-                    line = data.readLine();
-                    Point k0 = new Point(Tools.doubleParseInt(line)[0], Tools.doubleParseInt(line)[1]);
-                    line = data.readLine();
-                    Point k1 = new Point(Tools.doubleParseInt(line)[0], Tools.doubleParseInt(line)[1]);
-                    line = data.readLine();
-                    Point k2 = new Point(Tools.doubleParseInt(line)[0], Tools.doubleParseInt(line)[1]);
+                    parsed = Tools.doubleParseInt(data.readLine());
+                    Point k0 = new Point(parsed[0], parsed[1]);
+                    parsed = Tools.doubleParseInt(data.readLine());
+                    Point k1 = new Point(parsed[0], parsed[1]);
+                    parsed = Tools.doubleParseInt(data.readLine());
+                    Point k2 = new Point(parsed[0], parsed[1]);
                     track.add(new Curve(speeed, k0, k1, k2));
                 }
+                line = data.readLine();
             }
+            for(Track t: track)
+                path.addAll(t.getPoints(TDWorld.res));
+            parsed = Tools.doubleParseInt(data.readLine());
+            path.add(new Point(parsed[0], parsed[1]));
         } catch (IOException e) {
             Gdx.app.debug("File not found", e.toString());
         }
+        System.out.println(track);
+        System.out.println(path);
     }
 
     @Override
