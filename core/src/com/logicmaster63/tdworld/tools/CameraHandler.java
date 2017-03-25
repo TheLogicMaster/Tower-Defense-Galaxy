@@ -80,7 +80,6 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("Touch", "Down");
         if(pointer < 5){
             touches.get(pointer).touchX = screenX;
             touches.get(pointer).touchY = screenY;
@@ -91,7 +90,6 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("Touch", "Up");
         if(pointer < 5){
             touches.get(pointer).touchX = 0;
             touches.get(pointer).touchY = 0;

@@ -1,8 +1,9 @@
-package com.logicmaster63.tdworld;
+package com.logicmaster63.tdworld.tools;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.utils.Disposable;
 import com.logicmaster63.tdworld.TDWorld;
 import com.logicmaster63.tdworld.map.Curve;
 import com.logicmaster63.tdworld.map.Strait;
@@ -11,9 +12,13 @@ import com.logicmaster63.tdworld.tools.Tools;
 
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FileHandler {
+
+    private static ArrayList<Disposable> disposables = new ArrayList<Disposable>();
 
     public static ArrayList<Point> loadTrack(BufferedReader data) {
         ArrayList<Track> track = new ArrayList<Track>();
@@ -68,5 +73,17 @@ public class FileHandler {
             Gdx.app.log("Error", e.toString());
         }
         return reader;
+    }
+
+
+
+    public static void addDisposables(Disposable...d) {
+        disposables.addAll(Arrays.asList(d));
+    }
+
+    public static void dispose() {
+        if(disposables != null)
+            for(Disposable d: disposables)
+                d.dispose();
     }
 }

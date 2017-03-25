@@ -11,19 +11,21 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.logicmaster63.tdworld.TDWorld;
-import com.logicmaster63.tdworld.FileHandler;
+import com.logicmaster63.tdworld.enemy.basic.Basic;
+import com.logicmaster63.tdworld.projectiles.Projectile;
+import com.logicmaster63.tdworld.tools.FileHandler;
 import com.logicmaster63.tdworld.map.EnemyHandler;
 import com.logicmaster63.tdworld.tools.CameraHandler;
 import com.logicmaster63.tdworld.tools.InputHandler;
-import com.logicmaster63.tdworld.tower.Gun;
 import com.logicmaster63.tdworld.tower.Tower;
+import com.logicmaster63.tdworld.tower.basic.Gun;
 
 import java.awt.*;
 import java.io.*;
@@ -44,10 +46,11 @@ public class GameScreen extends TDScreen {
     private boolean loading;
     private Model model;
     private ModelInstance planet;
-    private ArrayList<Disposable> disposables;
     private InputMultiplexer inputMultiplexer;
     private CameraHandler cam;
-    public InputHandler inputHandler;
+    private InputHandler inputHandler;
+    private ArrayList<Projectile> tProjectiles;
+    private ArrayList<Projectile> eProjectiles;
 
     public GameScreen(Game game, int map, int theme) {
         super(game);
@@ -57,14 +60,16 @@ public class GameScreen extends TDScreen {
 
     @Override
     public void show() {
+        Bullet.init();
         inputHandler = new InputHandler();
         Texture texture = new Texture(Gdx.files.internal("Background_MainMenu.png"));
         Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1, 1, 1, 1), FloatAttribute.createShininess(8f));
         ModelBuilder builder = new ModelBuilder();
-        model = builder.createCapsule(200f, 400f, 16, material, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
-        planet = new ModelInstance(model);
+        //model = builder.createCapsule(200f, 400f, 16, material, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
         towerModels = new ArrayList<Model>();
         enemyModels = new ArrayList<Model>();
+        tProjectiles = new ArrayList<Projectile>();
+        eProjectiles = new ArrayList<Projectile>();
         path = new ArrayList<Point>();
         enemies = new EnemyHandler(new Vector3(100, 20, 100));
         towers = new ArrayList<Tower>();
@@ -77,10 +82,15 @@ public class GameScreen extends TDScreen {
         inputMultiplexer.addProcessor(inputHandler);
         inputMultiplexer.addProcessor(cam);
         Gdx.input.setInputProcessor(inputMultiplexer);
+
         assets = new AssetManager();
+        assets.load("theme/" + TDWorld.themes.get(theme) + "/planet.g3db", Model.class);
         for(int i = 0; i < TDWorld.TOWERS; i++)
             assets.load("theme/" + TDWorld.themes.get(theme) + "/tower/" + Integer.toString(i) + ".g3db", Model.class);
+        for(int i = 0; i < TDWorld.ENEMIES; i++)
+            assets.load("theme/" + TDWorld.themes.get(theme) + "/enemy/" + Integer.toString(i) + ".g3db", Model.class);
         loading = true;
+
         batch = new SpriteBatch();
         batch.getProjectionMatrix().setToOrtho2D(0, 0, 480, 320);
         background = new Texture("Background_MainMenu.png");
@@ -88,7 +98,8 @@ public class GameScreen extends TDScreen {
         BufferedReader reader = FileHandler.getReader("track/Track" + Integer.toString(map));
         if(reader != null)
             path = FileHandler.loadTrack(reader);
-        //System.out.println(track);
+
+        FileHandler.addDisposables(batch, modelBatch, background);
     }
 
     @Override
@@ -105,10 +116,11 @@ public class GameScreen extends TDScreen {
         cam.update(delta);
         modelBatch.begin(cam.getCam());
         for (Tower tower : towers)
-            tower.tick(delta);
-        enemies.tick(delta);
-        for (Tower tower : towers)
             tower.render(delta, modelBatch);
+        for(Projectile projectile: tProjectiles)
+            projectile.render(delta, modelBatch);
+        for(Projectile projectile: eProjectiles)
+            projectile.render(delta, modelBatch);
         enemies.render(delta, modelBatch);
         modelBatch.render(planet);
         modelBatch.end();
@@ -120,12 +132,7 @@ public class GameScreen extends TDScreen {
 
     @Override
     public void hide() {
-        if(disposables != null)
-            for(Disposable d: disposables)
-                d.dispose();
-        batch.dispose();
-        background.dispose();
-        modelBatch.dispose();
+        FileHandler.dispose();
     }
 
     private void doneLoading() {
@@ -133,6 +140,8 @@ public class GameScreen extends TDScreen {
         loading = false;
         for(int i = 0; i < TDWorld.TOWERS; i++)
             towerModels.add(assets.get("theme/" + TDWorld.themes.get(theme) + "/tower/" + Integer.toString(i) + ".g3db", Model.class));
+        for(int i = 0; i < TDWorld.ENEMIES; i++)
+            enemyModels.add(assets.get("theme/" + TDWorld.themes.get(theme) + "/enemy/" + Integer.toString(i) + ".g3db", Model.class));
         //Model ship = assets.get("theme/basic/tower/portalturret.g3db", Model.class);
         //ModelLoader loader = new ObjLoader();
         //ship = loader.loadModel(Gdx.files.internal("theme/basic/tower/0.obj"));
@@ -149,10 +158,20 @@ public class GameScreen extends TDScreen {
             shipInstance.transform.setToScaling(s, s, s);
         }
         */
-        //towerInstances.add(new ModelInstance(towerModels.get(0)));
-        towers.add(new Gun(new Vector3(0, 0, 0), new ModelInstance(towerModels.get(0))));
-        towers.add(new Gun(new Vector3(100, 100, 100), new ModelInstance(towerModels.get(1))));
-        towers.add(new Gun(new Vector3(200, 200, 200), new ModelInstance(towerModels.get(2))));
-        //enemies.add(new Basic(new Vector3(0, 0, 0), 20, new ModelInstance(enemyModels.get(0)), new MotionState()));
+        planet = new ModelInstance(assets.get("theme/" + TDWorld.themes.get(theme) + "/planet.g3db", Model.class));
+        Gdx.app.log("Planet Size", Float.toString(planet.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()).x));
+        towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(towerModels.get(0))));
+        towers.add(new Gun(new Vector3(100, 100, 100), 50, 50, 0, new ModelInstance(towerModels.get(1))));
+        //towers.add(new Gun(new Vector3(200, 200, 200), new ModelInstance(towerModels.get(2))));
+        ModelInstance instance = new ModelInstance(enemyModels.get(0));
+        enemies.add(new Basic(new Vector3(0, 0, 0), 20d, 10, 500,0, instance, new btBoxShape(instance.model.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()))));
+    }
+
+    public ArrayList<Projectile> getTProjectiles() {
+        return tProjectiles;
+    }
+
+    public ArrayList<Projectile> getEProjectiles() {
+        return eProjectiles;
     }
 }
