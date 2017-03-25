@@ -8,7 +8,9 @@ import java.util.ArrayList;
 public class TDWorld extends Game {
 
 	public static final int TOWERS = 2;
+	public static final int Enemies = 1;
 	public static int res = 10;
+	public static float sensitivity = 0.5f;
 	public static ArrayList<String> themes = new ArrayList<String>();
 	public static ArrayList<String> tracks = new ArrayList<String>();
 

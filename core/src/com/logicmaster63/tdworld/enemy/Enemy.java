@@ -2,25 +2,27 @@ package com.logicmaster63.tdworld.enemy;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 import com.logicmaster63.tdworld.tools.MotionState;
 
 public abstract class Enemy {
 
-    private double x, y, speeed;
-    private MotionState motionState;
-    private ModelInstance modelInstance;
+    private Vector3 position;
+    private double speeed;
+    private MotionState motion;
+    private ModelInstance instance;
 
-    public Enemy(double x, double y, double speeed, ModelInstance instance, MotionState motion) {
-        this.x = x;
-        this.y = y;
+    public Enemy(Vector3 position, double speeed, ModelInstance instance, MotionState motion) {
+        this.position = position;
         this.speeed = speeed;
-        this.motionState = motion;
-        this.modelInstance = instance;
+        this.motion = motion;
+        this.instance = instance;
+        this.instance.transform.setTranslation(position);
     }
 
     public abstract void tick(float delta);
 
     public void render(float delta, ModelBatch modelBatch) {
-
+        modelBatch.render(instance);
     }
 }
