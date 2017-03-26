@@ -1,6 +1,8 @@
 package com.logicmaster63.tdworld;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.logicmaster63.tdworld.screens.GameScreen;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ public class TDWorld extends Game {
 	public static float sensitivity = 0.5f;
 	public static ArrayList<String> themes = new ArrayList<String>();
 	public static ArrayList<String> tracks = new ArrayList<String>();
+	public static BitmapFont font;
 	static {
 		TYPES = new HashMap<String, Integer>();
 		TYPES.put("ice", 1);
@@ -24,9 +27,15 @@ public class TDWorld extends Game {
 
 	@Override
 	public void create() {
+		font = new BitmapFont(Gdx.files.internal("pixelade.fnt"),false);
 		themes.add("basic");
 		tracks.add("test");
 
 		setScreen(new GameScreen(this, 0, 0));
+	}
+
+	@Override
+	public void dispose() {
+		font.dispose();
 	}
 }

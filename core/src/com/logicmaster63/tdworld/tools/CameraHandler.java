@@ -13,7 +13,7 @@ import java.util.Map;
 public class CameraHandler extends InputAdapter implements InputProcessor{
 
     private PerspectiveCamera cam;
-    private Vector3 tmp;
+    private Vector3 tmp, origin;
     private Map<Integer, TouchInfo> touches = new HashMap<Integer, TouchInfo>();
     private IntIntMap keys = new IntIntMap();
 
@@ -50,6 +50,7 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
         cam.update();
         this.cam = cam;
         tmp = new Vector3(0, 0,0 );
+        origin = new Vector3(0, 0, 0);
     }
 
     public PerspectiveCamera getCam() {
@@ -58,13 +59,21 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
 
     public void update(float delta) {
         if (keys.containsKey(Input.Keys.Q)) {
-            tmp.set(cam.direction).nor().scl(delta * 10f);
+            tmp.set(cam.direction).nor().scl(delta * 100f);
             cam.position.add(tmp);
         }
         if (keys.containsKey(Input.Keys.E)) {
-            tmp.set(cam.direction).nor().scl(delta * -10f);
+            tmp.set(cam.direction).nor().scl(delta * -100f);
             cam.position.add(tmp);
         }
+        if (keys.containsKey(Input.Keys.W))
+            rotate(Vector3.Z, delta * 100f);
+        if (keys.containsKey(Input.Keys.S))
+            rotate(Vector3.Z, delta * -100f);
+        if (keys.containsKey(Input.Keys.A))
+            rotate(Vector3.X, delta * 100f);
+        if (keys.containsKey(Input.Keys.D))
+            rotate(Vector3.X, delta * -100f);
         cam.update();
     }
 
@@ -115,5 +124,23 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
         tmp.set(cam.direction).nor().scl(amount * -4f);
         cam.position.add(tmp);
         return false;
+    }
+
+    private void rotate(Vector3 axis, float angle) {
+        float modifier;
+        if(axis == Vector3.X) {
+            if(cam.direction.z > 180) {
+                modifier = (cam.direction.z - 180) / 180f;
+            } else {
+                modifier = 1 - (cam.direction.z) / 180f;
+            }
+        } else {
+            if(cam.direction.x > 180) {
+                modifier = (cam.direction.x - 180) / 180f;
+            } else {
+                modifier = 1 - (cam.direction.x) / 180f;
+            }
+        }
+        cam.rotateAround(origin, axis, angle * modifier);
     }
 }

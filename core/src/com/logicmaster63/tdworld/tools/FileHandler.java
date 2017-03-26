@@ -32,8 +32,6 @@ public class FileHandler {
             path.add(new Vector3(parsed[0], parsed[1], parsed[2]));
             line = data.readLine();
             while (!line.equals("@")) {
-                //if(line.equals("@"))
-                //break;
                 int speeed = Integer.parseInt(data.readLine());
                 if (line.equals("|")) { //Strait
                     line = data.readLine();
@@ -76,6 +74,32 @@ public class FileHandler {
             Gdx.app.log("Error", e.toString());
         }
         return reader;
+    }
+
+    public static ArrayList<Class<?>> loadTowers(BufferedReader data, String theme) {
+        ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+        try {
+            for(int i = 0; i < TDWorld.TOWERS; i++)
+                classes.add(Class.forName("com.logicmaster63.tdworld.tower." + theme + "." + data.readLine()));
+        } catch(IOException e) {
+            Gdx.app.log("Error", e.toString());
+        }catch (ClassNotFoundException e) {
+            Gdx.app.log("Error", e.toString());
+        }
+        return classes;
+    }
+
+    public static ArrayList<Class<?>> loadEnemies(BufferedReader data, String theme) {
+        ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+        try {
+            for(int i = 0; i < TDWorld.ENEMIES; i++)
+                classes.add(Class.forName("com.logicmaster63.tdworld.enemy." + theme + "." + data.readLine()));
+        } catch(IOException e) {
+            Gdx.app.log("Error", e.toString());
+        } catch (ClassNotFoundException e) {
+            Gdx.app.log("Error", e.toString());
+        }
+        return classes;
     }
 
     public static void loadPlanet(BufferedReader data, GameScreen screen) {
