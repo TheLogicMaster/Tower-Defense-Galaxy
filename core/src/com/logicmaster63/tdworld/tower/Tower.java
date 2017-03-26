@@ -29,6 +29,8 @@ public abstract class Tower extends Object{
         this.types = types;
     }
 
+    public abstract void tick(float delta);
+
     public void render(float delta, ModelBatch modelBatch) {
         //for(int i = 0; i < instance.nodes.size; i++)
             //Gdx.app.log(Double.toString(position.x), instance.nodes.get(i).id);

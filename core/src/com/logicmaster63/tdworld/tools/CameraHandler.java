@@ -57,11 +57,11 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
     }
 
     public void update(float delta) {
-        if (keys.containsKey(Input.Keys.W) || keys.containsKey(Input.Keys.DPAD_UP)) {
+        if (keys.containsKey(Input.Keys.Q)) {
             tmp.set(cam.direction).nor().scl(delta * 10f);
             cam.position.add(tmp);
         }
-        if (keys.containsKey(Input.Keys.S) || keys.containsKey(Input.Keys.DPAD_DOWN)) {
+        if (keys.containsKey(Input.Keys.E)) {
             tmp.set(cam.direction).nor().scl(delta * -10f);
             cam.position.add(tmp);
         }
@@ -75,7 +75,7 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
         cam.direction.rotate(cam.up, deltaX);
         tmp.set(cam.direction).crs(cam.up).nor();
         cam.direction.rotate(tmp, deltaY);
-        return true;
+        return false;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
             touches.get(pointer).touchY = screenY;
             touches.get(pointer).touched = true;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -95,25 +95,25 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
             touches.get(pointer).touchY = 0;
             touches.get(pointer).touched = false;
         }
-        return true;
+        return false;
     }
 
     @Override
     public boolean keyDown(int keycode) {
         keys.put(keycode, keycode);
-        return true;
+        return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
         keys.remove(keycode, 0);
-        return true;
+        return false;
     }
 
     @Override
     public boolean scrolled(int amount) {
         tmp.set(cam.direction).nor().scl(amount * -4f);
         cam.position.add(tmp);
-        return true;
+        return false;
     }
 }

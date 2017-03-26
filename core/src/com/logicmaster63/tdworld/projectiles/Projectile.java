@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.utils.Disposable;
 import com.logicmaster63.tdworld.tools.Object;
 
-public class Projectile implements Disposable{
+public abstract class Projectile implements Disposable{
 
     private Vector3 pos, velocity;
     private int hp, health, types;
@@ -26,6 +26,8 @@ public class Projectile implements Disposable{
     public Projectile(Vector3 pos, Vector3 velocity, int hp, int types, ModelInstance model, btCollisionShape shape, boolean isTower) {
         this(pos, velocity, hp, hp, types, model, shape, isTower);
     }
+
+    public abstract void tick(float delta);
 
     public void render(float delta, ModelBatch modelBatch) {
         pos.add(velocity.x * delta, velocity.y * delta, velocity.z * delta);

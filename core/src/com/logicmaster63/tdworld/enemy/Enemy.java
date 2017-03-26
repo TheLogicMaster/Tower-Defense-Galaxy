@@ -33,6 +33,8 @@ public abstract class Enemy extends Object {
         this(position, speeed, hp, hp, coolDown, types, instance, shape, 0);
     }
 
+    public abstract void tick(float delta);
+
     public void render(float delta, ModelBatch modelBatch) {
         modelBatch.render(instance);
     }

@@ -20,6 +20,11 @@ public class EnemyHandler {
         this(pos, new ArrayList<Enemy>());
     }
 
+    public void tick(float delta) {
+        for(Enemy enemy: enemies)
+            enemy.tick(delta);
+    }
+
     public void render(float delta, ModelBatch batch) {
         for(Enemy enemy: enemies)
             enemy.render(delta, batch);
