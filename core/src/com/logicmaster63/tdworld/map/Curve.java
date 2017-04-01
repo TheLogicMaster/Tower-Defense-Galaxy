@@ -20,9 +20,8 @@ public class Curve extends Track{
     @Override
     public ArrayList<Vector3> getPoints(int res) {
         ArrayList<Vector3> points = new ArrayList<Vector3>();
-        for(int i = 0; i <= res; i++) {
-            float t = (float)i / res;
-            points.add(Tools.calculateBezierPoint(t, k0, k1, k2));
+        for(int i = 1; i <= res; i++) {
+            points.add(new Vector3(Tools.calculateBezierPoint((float)i / res, k0, k1, k2)));
         }
         return points;
     }

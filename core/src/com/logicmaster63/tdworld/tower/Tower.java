@@ -3,30 +3,26 @@ package com.logicmaster63.tdworld.tower;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Disposable;
+import com.logicmaster63.tdworld.screens.GameScreen;
 import com.logicmaster63.tdworld.tools.Object;
+
+import java.util.ArrayList;
 
 public abstract class Tower extends Object{
 
-    private ModelInstance instance;
-
-    public Tower(Vector3 pos, int hp, int coolDown, int types, ModelInstance instance) {
-        this(pos, hp, hp, coolDown, types, instance, 0);
+    public Tower(Vector3 pos, int hp, int coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, ArrayList<Integer> ids) {
+        this(pos, hp, hp, coolDown, types, instance, shape, 0, world, ids);
     }
 
-    public Tower(Vector3 pos, int hp, int coolDown, int types, ModelInstance instance, int effects) {
-        this(pos, hp, hp, coolDown, types, instance, effects);
+    public Tower(Vector3 pos, int hp, int coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, ArrayList<Integer> ids) {
+        this(pos, hp, hp, coolDown, types, instance, shape, effects, world, ids);
     }
 
-    public Tower(Vector3 pos, int hp, int health, int coolDown, int types, ModelInstance instance, int effects) {
-        this.pos = pos;
-        this.instance = instance;
-        this.instance.transform.setTranslation(pos);
-        this.health = health;
-        this.hp = hp;
-        this.coolDown = coolDown;
-        this.effects = effects;
-        this.types = types;
+    public Tower(Vector3 pos, int hp, int health, int coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, ArrayList<Integer> ids) {
+        super(pos, hp, health, coolDown, types, effects, instance, shape, world, ids);
     }
 
     public abstract void tick(float delta);

@@ -3,6 +3,7 @@ package com.logicmaster63.tdworld.tools;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.logicmaster63.tdworld.TDWorld;
@@ -16,6 +17,7 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
     private Vector3 tmp, origin;
     private Map<Integer, TouchInfo> touches = new HashMap<Integer, TouchInfo>();
     private IntIntMap keys = new IntIntMap();
+    private float xRot, yRot, zRot;
 
     class TouchInfo {
         float touchX = 0;
@@ -58,6 +60,9 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
     }
 
     public void update(float delta) {
+        xRot = getCameraRotationX() + 180;
+        yRot = getCameraRotationY() + 180;
+        zRot = getCameraRotationZ() + 180;
         if (keys.containsKey(Input.Keys.Q)) {
             tmp.set(cam.direction).nor().scl(delta * 100f);
             cam.position.add(tmp);
@@ -66,14 +71,17 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
             tmp.set(cam.direction).nor().scl(delta * -100f);
             cam.position.add(tmp);
         }
+        int dir = 0;
         if (keys.containsKey(Input.Keys.W))
-            rotate(Vector3.Z, delta * 100f);
+            dir += 1;
         if (keys.containsKey(Input.Keys.S))
-            rotate(Vector3.Z, delta * -100f);
+            dir += 2;
         if (keys.containsKey(Input.Keys.A))
-            rotate(Vector3.X, delta * 100f);
+            dir += 4;
         if (keys.containsKey(Input.Keys.D))
-            rotate(Vector3.X, delta * -100f);
+            dir += 8;
+        if(dir > 0)
+            rotate(dir, delta * 100f);
         cam.update();
     }
 
@@ -81,9 +89,11 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
     public boolean touchDragged (int screenX, int screenY, int pointer) {
         float deltaX = -Gdx.input.getDeltaX() * TDWorld.sensitivity;
         float deltaY = -Gdx.input.getDeltaY() * TDWorld.sensitivity;
-        cam.direction.rotate(cam.up, deltaX);
-        tmp.set(cam.direction).crs(cam.up).nor();
-        cam.direction.rotate(tmp, deltaY);
+        //cam.direction.rotate(cam.up, deltaX);
+        //tmp.set(cam.direction).crs(cam.up).nor();
+        //cam.direction.rotate(tmp, deltaY);
+        cam.rotateAround(origin, Vector3.Z, deltaX);
+        cam.rotateAround(origin, Vector3.X, deltaY);
         return false;
     }
 
@@ -126,21 +136,32 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
         return false;
     }
 
-    private void rotate(Vector3 axis, float angle) {
-        float modifier;
-        if(axis == Vector3.X) {
-            if(cam.direction.z > 180) {
-                modifier = (cam.direction.z - 180) / 180f;
-            } else {
-                modifier = 1 - (cam.direction.z) / 180f;
-            }
+    private void rotate(int dir, float angle) {
+        float angleXMult = 1, angleZMult = 1;
+        if((dir & 1) == 1)
+            angleXMult *= -1;
+        if((dir & 1 << 3) == 1 << 3)
+            angleZMult *= -1;
+        if(xRot > 180) {
+            zRot += angle;
         } else {
-            if(cam.direction.x > 180) {
-                modifier = (cam.direction.x - 180) / 180f;
-            } else {
-                modifier = 1 - (cam.direction.x) / 180f;
-            }
+            zRot -= angle;
         }
-        cam.rotateAround(origin, axis, angle * modifier);
+        if((dir & 1 << 0) == 1 << 0 || (dir & 1 << 1) == 1 << 1)
+            cam.rotateAround(origin, Vector3.X, angle * angleXMult);
+        if((dir & 1 << 2) == 1 << 2 || (dir & 1 << 3) == 1 << 3)
+            cam.rotateAround(origin, Vector3.Z, angle * angleZMult);
+    }
+
+    public float getCameraRotationX() {
+        return (float)Math.atan2(cam.up.z, cam.up.y) * MathUtils.radiansToDegrees;
+    }
+
+    public float getCameraRotationY() {
+        return (float)Math.atan2(cam.up.x, cam.up.z) * MathUtils.radiansToDegrees;
+    }
+
+    public float getCameraRotationZ() {
+        return (float)Math.atan2(cam.up.x, cam.up.y) * MathUtils.radiansToDegrees;
     }
 }
