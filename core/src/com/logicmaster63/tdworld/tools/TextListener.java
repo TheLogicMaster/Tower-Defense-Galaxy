@@ -2,18 +2,17 @@ package com.logicmaster63.tdworld.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.logicmaster63.tdworld.screens.ModelEditScreen;
+import com.logicmaster63.tdworld.screens.TDScreen;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class TextListener implements Input.TextInputListener {
 
     private String parameter;
-    private ModelEditScreen screen;
+    private TDScreen screen;
     private Class clazz;
 
-    public TextListener(ModelEditScreen screen) {
+    public TextListener(TDScreen screen) {
         this.screen = screen;
     }
 

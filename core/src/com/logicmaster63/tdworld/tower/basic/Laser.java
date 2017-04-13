@@ -10,16 +10,15 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.logicmaster63.tdworld.object.Object;
 import com.logicmaster63.tdworld.tower.Tower;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 public class Laser extends Tower {
 
-    public Laser(Vector3 pos, int hp, int health, int coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public Laser(Vector3 pos, int hp, int health, int coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects) {
         super(pos, hp, coolDown, types, instance, shape, effects, world, objects);
     }
 
-    public Laser(Vector3 pos, int hp, int coolDown, int types, ModelInstance instance, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public Laser(Vector3 pos, int hp, int coolDown, int types, ModelInstance instance, btCollisionWorld world, Map<Integer, Object> objects) {
         this(pos, hp, hp, coolDown, types, instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), 0, world, objects);
     }
 

@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
@@ -31,6 +30,8 @@ import com.logicmaster63.tdworld.tower.basic.Gun;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.logicmaster63.tdworld.TDWorld.font;
 import static com.logicmaster63.tdworld.TDWorld.isDebugging;
@@ -40,30 +41,30 @@ public class GameScreen extends TDScreen {
     private SpriteBatch batch;
     private Texture background;
     private int map, planetRadius;
-    private ArrayList<Vector3> path;
+    private List<Vector3> path;
     private EnemyHandler enemies;
-    private ArrayList<Tower> towers;
+    private List<Tower> towers;
     private ModelBatch modelBatch;
     private Environment environment;
     private AssetManager assets;
-    private HashMap<String, Model> models;
+    private Map<String, Model> models;
     private boolean loading, hasPlanetModel, running;
     private ModelInstance planet;
     private InputMultiplexer inputMultiplexer;
     private CameraHandler cam;
     private InputHandler inputHandler;
-    private ArrayList<Projectile> projectiles;
+    private List<Projectile> projectiles;
     private Vector3 planetSize, spawnPos;
     private String planetName, theme;
-    private HashMap<String, Class<?>> classes;
-    private ArrayList<Spawn> spawns;
-    private ArrayList<String> towerNames, enemyNames;
+    private Map<String, Class<?>> classes;
+    private List<Spawn> spawns;
+    private List<String> towerNames, enemyNames;
     private btCollisionWorld collisionWorld;
     private btBroadphaseInterface broadphase;
     private btCollisionConfiguration collisionConfig;
     private btDispatcher dispatcher;
     private ContactHandler contactHandler;
-    private HashMap<Integer, Object> objects;
+    private Map<Integer, Object> objects;
     private DebugDrawer debugDrawer;
 
     public static String debugString = "DEFAULT";
@@ -116,7 +117,7 @@ public class GameScreen extends TDScreen {
         reader = FileHandler.getReader("theme/" + theme + "/PlanetData");
         FileHandler.loadPlanet(reader, this);
         reader = FileHandler.getReader("theme/" + theme + "/EnemyData");
-        HashMap<String, Class<?>> hashMap = FileHandler.loadEnemies(reader, theme, this);
+        Map<String, Class<?>> hashMap = FileHandler.loadEnemies(reader, theme, this);
         if(hashMap != null)
             classes.putAll(hashMap);
         reader = FileHandler.getReader("theme/" + theme + "/TowerData");
@@ -169,7 +170,7 @@ public class GameScreen extends TDScreen {
         for (Projectile projectile : projectiles)
             projectile.render(delta, modelBatch);
         enemies.render(delta, modelBatch);
-        //modelBatch.render(planet);
+        modelBatch.render(planet);
         modelBatch.end();
 
         if(isDebugging) {
@@ -232,7 +233,7 @@ public class GameScreen extends TDScreen {
         //enemies.add(new Spider(new Vector3(0, 0, 0), 20d, 10, 500, 0, instance, new btBoxShape(instance.model.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()))));
     }
 
-    public ArrayList<Projectile> getProjectiles() {
+    public List<Projectile> getProjectiles() {
         return projectiles;
     }
 
@@ -256,11 +257,11 @@ public class GameScreen extends TDScreen {
         return running;
     }
 
-    public void setTowerNames(ArrayList<String> towerNames) {
+    public void setTowerNames(List<String> towerNames) {
         this.towerNames = towerNames;
     }
 
-    public void setEnemyNames(ArrayList<String> enemyNames) {
+    public void setEnemyNames(List<String> enemyNames) {
         this.enemyNames = enemyNames;
     }
 }

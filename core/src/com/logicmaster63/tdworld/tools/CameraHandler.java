@@ -2,14 +2,10 @@ package com.logicmaster63.tdworld.tools;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.IntIntMap;
 import com.logicmaster63.tdworld.TDWorld;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class CameraHandler{
 

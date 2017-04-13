@@ -2,8 +2,8 @@ package com.logicmaster63.tdworld.map;
 
 import com.badlogic.gdx.math.Vector3;
 
-import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Strait extends Track{
 
@@ -15,8 +15,8 @@ public class Strait extends Track{
     }
 
     @Override
-    public ArrayList<Vector3> getPoints(int res) {
-        ArrayList<Vector3> points = new ArrayList<Vector3>();
+    public List<Vector3> getPoints(int res) {
+        List<Vector3> points = new ArrayList<Vector3>();
         points.add(point);
         return points;
     }

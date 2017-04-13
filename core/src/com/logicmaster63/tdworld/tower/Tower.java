@@ -10,18 +10,19 @@ import com.logicmaster63.tdworld.object.Object;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Tower extends AttackingObject{
 
-    public Tower(Vector3 pos, int hp, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public Tower(Vector3 pos, int hp, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects) {
         this(pos, hp, hp, coolDown, types, instance, shape, 0, world, objects);
     }
 
-    public Tower(Vector3 pos, int hp, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public Tower(Vector3 pos, int hp, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects) {
         this(pos, hp, hp, coolDown, types, instance, shape, effects, world, objects);
     }
 
-    public Tower(Vector3 pos, int hp, int health, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public Tower(Vector3 pos, int hp, int health, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects) {
         super(pos, hp, health, types, effects, coolDown, instance, shape, world, objects);
     }
 

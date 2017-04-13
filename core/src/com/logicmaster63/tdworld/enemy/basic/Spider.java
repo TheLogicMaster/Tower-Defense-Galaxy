@@ -9,16 +9,16 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.object.Object;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Spider extends Enemy {
 
-    public Spider(Vector3 position, double speeed, int hp, int coolDown, int types, ModelInstance instance, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public Spider(Vector3 position, double speeed, int hp, int coolDown, int types, ModelInstance instance, btCollisionWorld world, Map<Integer, Object> objects) {
         this(position, speeed, hp, hp, coolDown, types, instance, 0, world, objects);
     }
 
-    public Spider(Vector3 pos, double speeed, int hp, int health, int coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public Spider(Vector3 pos, double speeed, int hp, int health, int coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Object> objects) {
         super(pos, speeed, hp, health, coolDown, types, instance, new btBoxShape(instance.extendBoundingBox(new BoundingBox()).getDimensions(new Vector3())), effects, world, objects);
     }
 
@@ -29,7 +29,7 @@ public class Spider extends Enemy {
     }
 
     @Override
-    public void tick(float delta, ArrayList<Vector3> path) {
+    public void tick(float delta, List<Vector3> path) {
         super.tick(delta, path);
     }
 

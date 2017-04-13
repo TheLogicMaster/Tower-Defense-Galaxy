@@ -14,7 +14,7 @@ import com.logicmaster63.tdworld.enums.TargetMode;
 import com.logicmaster63.tdworld.projectiles.Projectile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Object implements Disposable{
@@ -27,12 +27,12 @@ public abstract class Object implements Disposable{
     protected btCollisionWorld world;
     protected btCollisionObject body;
     protected Object tempObject;
-    protected HashMap<Integer, Object> objects;
+    protected Map<Integer, Object> objects;
     protected Quaternion quaternion;
     protected BoundingBox boundingBox;
 
 
-    public Object(Vector3 pos, int hp, int health, int types, int effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, HashMap<Integer, Object> objects){
+    public Object(Vector3 pos, int hp, int health, int types, int effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects){
         this.instance = instance;
         this.pos = pos;
         this.hp = hp;
@@ -77,8 +77,8 @@ public abstract class Object implements Disposable{
         body.setWorldTransform(instance.transform);
     }
 
-    public Object target(Vector3 pos, double range, HashMap<Integer, Object> objectMap, TargetMode mode) {
-        ArrayList<Object> objects = new ArrayList<Object>(objectMap.values());
+    public Object target(Vector3 pos, double range, Map<Integer, Object> objectMap, TargetMode mode) {
+        List<Object> objects = new ArrayList<Object>(objectMap.values());
         tempObject = null;
         if(objects.size() < 1)
             return null;

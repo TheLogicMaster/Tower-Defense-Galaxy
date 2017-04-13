@@ -1,22 +1,21 @@
 package com.logicmaster63.tdworld;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.logicmaster63.tdworld.screens.GameScreen;
-import com.logicmaster63.tdworld.screens.ModelEditScreen;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TDWorld extends Game {
 
 	public static final int TOWERS = 2;
 	public static final int ENEMIES = 1;
-	public static final HashMap<String, Integer> TYPES;
+	public static final Map<String, Integer> TYPES;
 	public static int res = 10;
 	public static boolean isDebugging = true;
 	public static float sensitivity = 0.5f;

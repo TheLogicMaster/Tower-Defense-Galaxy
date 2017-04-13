@@ -1,40 +1,28 @@
 package com.logicmaster63.tdworld.tools;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Disposable;
 import com.logicmaster63.tdworld.TDWorld;
-import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.map.Curve;
 import com.logicmaster63.tdworld.map.Spawn;
 import com.logicmaster63.tdworld.map.Strait;
 import com.logicmaster63.tdworld.map.Track;
 import com.logicmaster63.tdworld.screens.GameScreen;
-import com.logicmaster63.tdworld.tower.Tower;
 
-import java.awt.*;
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class FileHandler {
 
-    private static ArrayList<Disposable> disposables = new ArrayList<Disposable>();
+    private static List<Disposable> disposables = new ArrayList<Disposable>();
 
-    public static ArrayList<Vector3> loadTrack(BufferedReader data, GameScreen screen) {
+    public static List<Vector3> loadTrack(BufferedReader data, GameScreen screen) {
         if (data == null)
             return null;
-        ArrayList<Track> track = new ArrayList<Track>();
-        ArrayList<Vector3> path = new ArrayList<Vector3>();
+        List<Track> track = new ArrayList<Track>();
+        List<Vector3> path = new ArrayList<Vector3>();
         try {
             String line = "";
             int parsed[] = Tools.trippleParseInt(data.readLine());
@@ -107,11 +95,11 @@ public class FileHandler {
         return classes;
     }
 
-    public static HashMap<String, Class<?>> loadEnemies(BufferedReader data, String theme, GameScreen screen) {
+    public static Map<String, Class<?>> loadEnemies(BufferedReader data, String theme, GameScreen screen) {
         if (data == null)
             return null;
-        HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
-        ArrayList<String> names = new ArrayList<String>();
+        Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
+        List<String> names = new ArrayList<String>();
         String line;
         try {
             for (int i = 0; i < TDWorld.ENEMIES; i++) {
@@ -141,10 +129,10 @@ public class FileHandler {
         screen.setPlanetSize(new Vector3(coords[0], coords[1], coords[2]));
     }
 
-    public static void loadDependencies(HashMap<String, Class<?>> classes) {
+    public static void loadDependencies(Map<String, Class<?>> classes) {
         int length = classes.size();
-        ArrayList<Dependency> dependencies = null;
-        ArrayList<Class<?>> classArray = new ArrayList<Class<?>>(classes.values());
+        List<Dependency> dependencies = null;
+        List<Class<?>> classArray = new ArrayList<Class<?>>(classes.values());
         for (int i = 0; i < length; i++) {
             try {
                 dependencies = (ArrayList<Dependency>) classArray.get(i).getMethod("getDependencies", null).invoke(null);
@@ -162,10 +150,10 @@ public class FileHandler {
         System.out.println(classes);
     }
 
-    public static ArrayList<Spawn> loadSpawns(BufferedReader data) {
+    public static List<Spawn> loadSpawns(BufferedReader data) {
         if (data == null)
             return null;
-        ArrayList<Spawn> spawns = new ArrayList<Spawn>();
+        List<Spawn> spawns = new ArrayList<Spawn>();
         try {
             int spawnNum = Integer.parseInt(data.readLine());
             for (int i = 0; i < spawnNum; i++) {

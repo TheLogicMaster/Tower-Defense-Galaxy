@@ -1,11 +1,7 @@
 package com.logicmaster63.tdworld.tools;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.IntIntMap;
 
 import java.util.HashMap;

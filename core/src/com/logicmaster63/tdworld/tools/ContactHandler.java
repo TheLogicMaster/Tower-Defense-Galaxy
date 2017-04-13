@@ -5,23 +5,21 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
-import com.badlogic.gdx.physics.bullet.softbody.btSoftBody;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.object.Object;
 import com.logicmaster63.tdworld.projectiles.Projectile;
 import com.logicmaster63.tdworld.tower.Tower;
 import com.logicmaster63.tdworld.traps.Trap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 public class ContactHandler extends ContactListener {
 
-    private HashMap<Integer, Object> objects;
+    private Map<Integer, Object> objects;
     private Vector3 tempVector;
     private ModelInstance planet;
 
-    public ContactHandler(HashMap<Integer, Object> objects, ModelInstance planet) {
+    public ContactHandler(Map<Integer, Object> objects, ModelInstance planet) {
         this.objects = objects;
         tempVector = new Vector3();
         this.planet = planet;

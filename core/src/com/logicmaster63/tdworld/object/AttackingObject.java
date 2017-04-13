@@ -5,14 +5,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AttackingObject extends Object{
 
     protected float coolDown, coolTime = 0;
 
-    public AttackingObject(Vector3 pos, int hp, int health, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, HashMap<Integer, Object> objects){
+    public AttackingObject(Vector3 pos, int hp, int health, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects){
         super(pos, hp, health, types, effects, instance, shape, world, objects);
     }
 

@@ -13,7 +13,8 @@ import com.logicmaster63.tdworld.object.Object;
 import com.logicmaster63.tdworld.tower.Tower;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Gun extends Tower {
 
@@ -21,7 +22,7 @@ public class Gun extends Tower {
     private static final float COOLDOWN = 0.3f;
     private static final double RANGE = 1000;
 
-    public Gun(Vector3 pos, int types, ModelInstance instance, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public Gun(Vector3 pos, int types, ModelInstance instance, btCollisionWorld world, Map<Integer, Object> objects) {
         super(pos, HP, COOLDOWN, types, instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects);
     }
 
@@ -42,8 +43,8 @@ public class Gun extends Tower {
         return false;
     }
 
-    public static ArrayList getDependencies() {
-        ArrayList<Dependency> dependencies = new ArrayList<Dependency>();
+    public static List getDependencies() {
+        List<Dependency> dependencies = new ArrayList<Dependency>();
         dependencies.add(new Dependency(Bullet.class, "Bullet"));
         return dependencies;
     }

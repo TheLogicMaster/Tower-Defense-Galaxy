@@ -3,8 +3,8 @@ package com.logicmaster63.tdworld.map;
 import com.badlogic.gdx.math.Vector3;
 import com.logicmaster63.tdworld.tools.Tools;
 
-import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Curve extends Track{
 
@@ -18,8 +18,8 @@ public class Curve extends Track{
     }
 
     @Override
-    public ArrayList<Vector3> getPoints(int res) {
-        ArrayList<Vector3> points = new ArrayList<Vector3>();
+    public List<Vector3> getPoints(int res) {
+        List<Vector3> points = new ArrayList<Vector3>();
         for(int i = 1; i <= res; i++) {
             points.add(new Vector3(Tools.calculateBezierPoint((float)i / res, k0, k1, k2)));
         }

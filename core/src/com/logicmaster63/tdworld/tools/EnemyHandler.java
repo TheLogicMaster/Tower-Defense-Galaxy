@@ -12,25 +12,26 @@ import com.logicmaster63.tdworld.object.Object;
 import com.logicmaster63.tdworld.screens.GameScreen;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EnemyHandler {
 
-    private ArrayList<Enemy> enemies;
+    private List<Enemy> enemies;
     private Vector3 pos;
     private boolean started = false;
     private double prevTime;
     private int enemyIndex;
-    private HashMap<String, Class<?>> enemyClasses;
-    private HashMap<String, Model> models;
-    private ArrayList<Spawn> spawns;
-    private ArrayList<Vector3> path;
+    private Map<String, Class<?>> enemyClasses;
+    private Map<String, Model> models;
+    private List<Spawn> spawns;
+    private List<Vector3> path;
     private btCollisionWorld world;
-    private HashMap<Integer, Object> objects;
+    private Map<Integer, Object> objects;
 
-    public EnemyHandler(Vector3 pos, HashMap<String, Class<?>> enemyClasses, ArrayList<Spawn> spawns, HashMap<String, Model> models, ArrayList<Enemy> enemies, ArrayList<Vector3> path, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Enemy> enemies, List<Vector3> path, btCollisionWorld world, Map<Integer, Object> objects) {
         this.enemies = enemies;
         this.pos = pos;
         this.enemyClasses = enemyClasses;
@@ -42,7 +43,7 @@ public class EnemyHandler {
         System.out.println(spawns);
     }
 
-    public EnemyHandler(Vector3 pos, HashMap<String, Class<?>> enemyClasses, ArrayList<Spawn> spawns, HashMap<String, Model> models, ArrayList<Vector3> path, btCollisionWorld world, HashMap<Integer, Object> objects) {
+    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Vector3> path, btCollisionWorld world, Map<Integer, Object> objects) {
         this(pos, enemyClasses, spawns, models, new ArrayList<Enemy>(), path, world, objects);
     }
 
@@ -57,7 +58,7 @@ public class EnemyHandler {
             ModelInstance instance = new ModelInstance(models.get(name));
             try {
                 Class<?> c = enemyClasses.get(name);
-                Constructor constructor = c.getConstructor(Vector3.class, double.class, int.class, int.class, int.class, ModelInstance.class, btCollisionWorld.class, HashMap.class);
+                Constructor constructor = c.getConstructor(Vector3.class, double.class, int.class, int.class, int.class, ModelInstance.class, btCollisionWorld.class, Map.class);
                 enemies.add((Enemy) constructor.newInstance(pos, 10d, 10, 500, 0, instance, world, objects));
             } catch (Exception e) {
                 Gdx.app.log("Error", e.toString());
@@ -78,7 +79,7 @@ public class EnemyHandler {
         return enemy;
     }
 
-    public ArrayList<Enemy> getEnemies() {
+    public List<Enemy> getEnemies() {
         return enemies;
     }
 }
