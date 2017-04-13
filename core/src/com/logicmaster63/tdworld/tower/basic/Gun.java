@@ -10,13 +10,13 @@ import com.logicmaster63.tdworld.enums.TargetMode;
 import com.logicmaster63.tdworld.projectiles.Bullet;
 import com.logicmaster63.tdworld.tools.Dependency;
 import com.logicmaster63.tdworld.object.Object;
-import com.logicmaster63.tdworld.tower.Tower;
+import com.logicmaster63.tdworld.tower.TargettingTower;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Gun extends Tower {
+public class Gun extends TargettingTower {
 
     private static final int HP = 20;
     private static final float COOLDOWN = 0.3f;
@@ -39,7 +39,7 @@ public class Gun extends Tower {
 
     @Override
     public boolean attack() {
-        Object target = target(pos, RANGE, objects, TargetMode.FIRSTEST);
+        target = target(pos, RANGE, objects, TargetMode.FIRSTEST);
         return false;
     }
 

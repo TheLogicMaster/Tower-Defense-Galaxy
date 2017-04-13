@@ -131,7 +131,8 @@ public abstract class Object implements Disposable{
 
     public void destroy() {
         world.removeCollisionObject(body);
-        objects.remove(getEntry().getKey());
+        if(getEntry() != null && getEntry().getKey() != null)
+            objects.remove(getEntry().getKey());
         dispose();
     }
 

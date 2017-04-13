@@ -30,12 +30,12 @@ public class FileHandler {
             parsed = Tools.trippleParseInt(data.readLine());
             path.add(new Vector3(parsed[0], parsed[1], parsed[2]));
             line = data.readLine();
-            while (!line.equals("@")) {
+            while (!"@".equals(line)) {
                 int speeed = Integer.parseInt(data.readLine());
-                if (line.equals("|")) { //Strait
+                if ("|".equals(line)) { //Strait
                     line = data.readLine();
                     track.add(new Strait(speeed, new Vector3(Tools.trippleParseInt(line)[0], Tools.trippleParseInt(line)[1], Tools.trippleParseInt(line)[2])));
-                } else if (line.equals(")")) { //Curve
+                } else if (")".equals(line)) { //Curve
                     parsed = Tools.trippleParseInt(data.readLine());
                     Vector3 k0 = new Vector3(parsed[0], parsed[1], parsed[2]);
                     parsed = Tools.trippleParseInt(data.readLine());
@@ -56,6 +56,7 @@ public class FileHandler {
             }
             parsed = Tools.trippleParseInt(data.readLine());
             path.add(new Vector3(parsed[0], parsed[1], parsed[2]));
+            data.close();
         } catch (IOException e) {
             Gdx.app.log("Error", e.toString());
         }
@@ -107,6 +108,7 @@ public class FileHandler {
                 classes.put(line, Class.forName("com.logicmaster63.tdworld.enemy." + theme + "." + line));
                 names.add(line);
             }
+            data.close();
         } catch (Exception e) {
             Gdx.app.log("Error", e.toString());
         }
@@ -123,6 +125,7 @@ public class FileHandler {
             screen.setHasPlanetModel(Boolean.parseBoolean(data.readLine()));
             coords = Tools.trippleParseInt(data.readLine());
             screen.setPlanetName(data.readLine());
+            data.close();
         } catch (IOException e) {
             Gdx.app.log("Error", e.toString());
         }
@@ -162,6 +165,7 @@ public class FileHandler {
                 int delay = Integer.parseInt(data.readLine());
                 for (int j = 0; j < repeatNum; j++)
                     spawns.add(new Spawn(name, delay));
+                data.close();
             }
         } catch (IOException e) {
             Gdx.app.log("Error", e.toString());

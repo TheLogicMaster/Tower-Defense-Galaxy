@@ -26,6 +26,16 @@ public class ContactHandler extends ContactListener {
     }
 
     @Override
+    public boolean equals(java.lang.Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public boolean onContactAdded (btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
         Object object0, object1;
         if(colObj1Wrap.getCollisionObject().getUserValue() == 0)

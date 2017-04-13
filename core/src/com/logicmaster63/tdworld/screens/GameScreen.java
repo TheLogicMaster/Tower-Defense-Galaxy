@@ -127,6 +127,11 @@ public class GameScreen extends TDScreen {
         FileHandler.loadDependencies(classes);
         reader = FileHandler.getReader("theme/" + theme + "/SpawnData");
         spawns = FileHandler.loadSpawns(reader);
+        try {
+            reader.close();
+        } catch (IOException e) {
+            Gdx.app.log("Error", e.toString());
+        }
 
         assets = new AssetManager();
         assets.load("theme/" + theme + "/planet.g3db", Model.class);

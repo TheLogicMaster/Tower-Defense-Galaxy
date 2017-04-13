@@ -35,7 +35,6 @@ public class Tools {
         float tt = t*t;
         float uu = u*u;
         float uuu = uu * u;
-        float ttt = tt * t;
         Vector3 p = p0.scl(uuu); //first term
         p = p.add(p1.scl(3 * uu * t)); //second term
         p = p.add(p2.scl(3 * u * tt)); //third term
