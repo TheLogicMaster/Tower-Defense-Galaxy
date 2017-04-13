@@ -71,8 +71,8 @@ public class CameraHandler{
     }
 
     public void touchDragged (int screenX, int screenY, int pointer) {
-        float deltaX = -Gdx.input.getDeltaX() * TDWorld.sensitivity;
-        float deltaY = -Gdx.input.getDeltaY() * TDWorld.sensitivity;
+        float deltaX = -Gdx.input.getDeltaX() * TDWorld.getSensitivity();
+        float deltaY = -Gdx.input.getDeltaY() * TDWorld.getSensitivity();
         //cam.direction.rotate(cam.up, deltaX);
         //tempVector.set(cam.direction).crs(cam.up).nor();
         //cam.direction.rotate(tempVector, deltaY);

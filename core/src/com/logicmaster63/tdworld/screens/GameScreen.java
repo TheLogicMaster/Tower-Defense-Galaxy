@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.logicmaster63.tdworld.TDWorld.font;
 import static com.logicmaster63.tdworld.TDWorld.isDebugging;
 
 public class GameScreen extends TDScreen {
@@ -55,7 +54,7 @@ public class GameScreen extends TDScreen {
     private InputHandler inputHandler;
     private List<Projectile> projectiles;
     private Vector3 planetSize, spawnPos;
-    private String planetName, theme;
+    private String planetName, theme, debugString = "DEFAULT";
     private Map<String, Class<?>> classes;
     private List<Spawn> spawns;
     private List<String> towerNames, enemyNames;
@@ -66,8 +65,6 @@ public class GameScreen extends TDScreen {
     private ContactHandler contactHandler;
     private Map<Integer, Object> objects;
     private DebugDrawer debugDrawer;
-
-    public static String debugString = "DEFAULT";
 
     public GameScreen(Game game, int map, String theme) {
         super(game);
@@ -186,9 +183,9 @@ public class GameScreen extends TDScreen {
 
         batch.begin();
         //batch.draw(background, 0, 0, 200, 60);
-        font.draw(batch, "Size:" + enemies.getEnemies().size(), 0, 20);
+        TDWorld.getFonts().get("pixelade").draw(batch, "Size:" + enemies.getEnemies().size(), 0, 20);
         if(TDWorld.isDebugging)
-            font.draw(batch, debugString, 0, 40);
+            TDWorld.getFonts().get("pixelade").draw(batch, debugString, 0, 40);
         batch.end();
     }
 
@@ -268,6 +265,14 @@ public class GameScreen extends TDScreen {
 
     public void setEnemyNames(List<String> enemyNames) {
         this.enemyNames = enemyNames;
+    }
+
+    public String getDebugString() {
+        return debugString;
+    }
+
+    public void setDebugString(String debugString) {
+        this.debugString = debugString;
     }
 }
 

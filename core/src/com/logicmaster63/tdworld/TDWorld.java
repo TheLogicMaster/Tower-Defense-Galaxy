@@ -13,35 +13,58 @@ import java.util.Map;
 
 public class TDWorld extends Game {
 
-	public static final int TOWERS = 2;
-	public static final int ENEMIES = 1;
-	public static final Map<String, Integer> TYPES;
-	public static int res = 10;
-	public static boolean isDebugging = true;
-	public static float sensitivity = 0.5f;
-	public static List<String> themes = new ArrayList<String>();
-	public static List<String> tracks = new ArrayList<String>();
-	public static BitmapFont font;
+	private static final Map<String, Integer> TYPES;
+	private static int res = 10;
+    private static float sensitivity = 0.5f;
+	public static final boolean isDebugging = true;
+	private static final List<String> themes = new ArrayList<String>();
+	private static Map<String, BitmapFont> fonts;
 	static {
 		TYPES = new HashMap<String, Integer>();
 		TYPES.put("ice", 1);
 		TYPES.put("fire", 2);
 		TYPES.put("sharp", 4);
+        themes.add("basic");
 	}
 
 	@Override
 	public void create() {
 		Bullet.init();
 
-		font = new BitmapFont(Gdx.files.internal("pixelade.fnt"),false);
-		themes.add("basic");
-		tracks.add("test");
+        fonts = new HashMap<String, BitmapFont>();
+        fonts.put("pixelade", new BitmapFont(Gdx.files.internal("pixelade.fnt"),false));
 
 		setScreen(new GameScreen(this, 0, themes.get(0)));
 	}
 
 	@Override
 	public void dispose() {
-		font.dispose();
+	    List<BitmapFont> fontArray= new ArrayList<BitmapFont>(fonts.values());
+	    for(BitmapFont font: fontArray)
+		    font.dispose();
 	}
+
+    public static int getRes() {
+        return res;
+    }
+
+    public static void setRes(int res) {
+        TDWorld.res = res;
+    }
+
+    public static float getSensitivity() {
+        return sensitivity;
+    }
+
+    public static void setSensitivity(float sensitivity) {
+        TDWorld.sensitivity = sensitivity;
+    }
+
+    public static Map<String, BitmapFont> getFonts() {
+        return fonts;
+    }
+
+    public static Map<String, Integer> getTYPES() {
+        return TYPES;
+    }
 }

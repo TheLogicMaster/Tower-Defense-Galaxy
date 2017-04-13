@@ -50,7 +50,7 @@ public class FileHandler {
                 line = data.readLine();
             }
             for (Track t : track) {
-                path.addAll(t.getPoints(TDWorld.res));
+                path.addAll(t.getPoints(TDWorld.getRes()));
                 //System.out.println(t.getPoints(TDWorld.res));
                 //System.out.println(path);
             }
@@ -84,7 +84,8 @@ public class FileHandler {
         ArrayList<String> names = new ArrayList<String>();
         String line;
         try {
-            for (int i = 0; i < TDWorld.TOWERS; i++) {
+            int towerNum = Integer.parseInt(data.readLine());
+            for (int i = 0; i < towerNum; i++) {
                 line = data.readLine();
                 classes.put(line, Class.forName("com.logicmaster63.tdworld.tower." + theme + "." + line));
                 names.add(line);
@@ -103,7 +104,8 @@ public class FileHandler {
         List<String> names = new ArrayList<String>();
         String line;
         try {
-            for (int i = 0; i < TDWorld.ENEMIES; i++) {
+            int enemyNum = Integer.parseInt(data.readLine());
+            for (int i = 0; i < enemyNum; i++) {
                 line = data.readLine();
                 classes.put(line, Class.forName("com.logicmaster63.tdworld.enemy." + theme + "." + line));
                 names.add(line);
