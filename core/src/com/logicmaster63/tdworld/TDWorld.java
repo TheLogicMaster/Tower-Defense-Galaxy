@@ -10,6 +10,7 @@ import com.logicmaster63.tdworld.screens.ModelEditScreen;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class TDWorld extends Game {
 
@@ -19,8 +20,8 @@ public class TDWorld extends Game {
 	public static int res = 10;
 	public static boolean isDebugging = true;
 	public static float sensitivity = 0.5f;
-	public static ArrayList<String> themes = new ArrayList<String>();
-	public static ArrayList<String> tracks = new ArrayList<String>();
+	public static List<String> themes = new ArrayList<String>();
+	public static List<String> tracks = new ArrayList<String>();
 	public static BitmapFont font;
 	static {
 		TYPES = new HashMap<String, Integer>();
