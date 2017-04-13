@@ -11,19 +11,11 @@ import com.logicmaster63.tdworld.TDWorld;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CameraHandler extends InputAdapter implements InputProcessor{
+public class CameraHandler{
 
     private PerspectiveCamera cam;
     private Vector3 tmp, origin;
-    private Map<Integer, TouchInfo> touches = new HashMap<Integer, TouchInfo>();
-    private IntIntMap keys = new IntIntMap();
     private float xRot, yRot, zRot;
-
-    class TouchInfo {
-        float touchX = 0;
-        float touchY = 0;
-        boolean touched = false;
-    }
 
     public CameraHandler(Vector3 pos, float near, float far) {
         this(new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), pos, new Vector3(0, 0, 0), near, far);
@@ -42,9 +34,6 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
     }
 
     public CameraHandler(PerspectiveCamera cam, Vector3 pos, Vector3 looking, float near, float far) {
-        for(int i = 0; i < 5; i++){
-            touches.put(i, new TouchInfo());
-        }
         cam.position.set(pos);
         cam.lookAt(looking);
         cam.near = near;
@@ -59,7 +48,7 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
         return cam;
     }
 
-    public void update(float delta) {
+    public void update(float delta, IntIntMap keys) {
         xRot = getCameraRotationX() + 180;
         yRot = getCameraRotationY() + 180;
         zRot = getCameraRotationZ() + 180;
@@ -85,55 +74,19 @@ public class CameraHandler extends InputAdapter implements InputProcessor{
         cam.update();
     }
 
-    @Override
-    public boolean touchDragged (int screenX, int screenY, int pointer) {
+    public void touchDragged (int screenX, int screenY, int pointer) {
         float deltaX = -Gdx.input.getDeltaX() * TDWorld.sensitivity;
         float deltaY = -Gdx.input.getDeltaY() * TDWorld.sensitivity;
         //cam.direction.rotate(cam.up, deltaX);
-        //tmp.set(cam.direction).crs(cam.up).nor();
-        //cam.direction.rotate(tmp, deltaY);
+        //tempVector.set(cam.direction).crs(cam.up).nor();
+        //cam.direction.rotate(tempVector, deltaY);
         cam.rotateAround(origin, Vector3.Z, deltaX);
         cam.rotateAround(origin, Vector3.X, deltaY);
-        return false;
     }
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(pointer < 5){
-            touches.get(pointer).touchX = screenX;
-            touches.get(pointer).touchY = screenY;
-            touches.get(pointer).touched = true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if(pointer < 5){
-            touches.get(pointer).touchX = 0;
-            touches.get(pointer).touchY = 0;
-            touches.get(pointer).touched = false;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        keys.put(keycode, keycode);
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        keys.remove(keycode, 0);
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
+    public void scrolled(int amount) {
         tmp.set(cam.direction).nor().scl(amount * -4f);
         cam.position.add(tmp);
-        return false;
     }
 
     private void rotate(int dir, float angle) {

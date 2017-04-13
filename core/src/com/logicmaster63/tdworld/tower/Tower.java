@@ -5,28 +5,34 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
-import com.badlogic.gdx.utils.Disposable;
-import com.logicmaster63.tdworld.screens.GameScreen;
-import com.logicmaster63.tdworld.tools.Object;
+import com.logicmaster63.tdworld.object.AttackingObject;
+import com.logicmaster63.tdworld.object.Object;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public abstract class Tower extends Object{
+public abstract class Tower extends AttackingObject{
 
-    public Tower(Vector3 pos, int hp, int coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, ArrayList<Integer> ids) {
-        this(pos, hp, hp, coolDown, types, instance, shape, 0, world, ids);
+    public Tower(Vector3 pos, int hp, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, HashMap<Integer, Object> objects) {
+        this(pos, hp, hp, coolDown, types, instance, shape, 0, world, objects);
     }
 
-    public Tower(Vector3 pos, int hp, int coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, ArrayList<Integer> ids) {
-        this(pos, hp, hp, coolDown, types, instance, shape, effects, world, ids);
+    public Tower(Vector3 pos, int hp, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, HashMap<Integer, Object> objects) {
+        this(pos, hp, hp, coolDown, types, instance, shape, effects, world, objects);
     }
 
-    public Tower(Vector3 pos, int hp, int health, int coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, ArrayList<Integer> ids) {
-        super(pos, hp, health, coolDown, types, effects, instance, shape, world, ids);
+    public Tower(Vector3 pos, int hp, int health, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, HashMap<Integer, Object> objects) {
+        super(pos, hp, health, types, effects, coolDown, instance, shape, world, objects);
     }
 
-    public abstract void tick(float delta);
+    @Override
+    public void tick(float delta) {
+        super.tick(delta);
+        if(coolTime > coolDown && attack())
+            coolTime = 0;
+    }
 
+    @Override
     public void render(float delta, ModelBatch modelBatch) {
         //for(int i = 0; i < instance.nodes.size; i++)
             //Gdx.app.log(Double.toString(position.x), instance.nodes.get(i).id);

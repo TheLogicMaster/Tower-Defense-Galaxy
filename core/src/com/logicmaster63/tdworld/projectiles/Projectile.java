@@ -4,39 +4,40 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.Disposable;
-import com.logicmaster63.tdworld.tools.Object;
+import com.logicmaster63.tdworld.object.Object;
 
-public abstract class Projectile implements Disposable{
+import java.util.ArrayList;
+import java.util.HashMap;
 
-    private Vector3 pos, velocity;
-    private int hp, health, types;
-    private ModelInstance model;
-    private btCollisionShape shape;
-    private boolean isTower;
+public abstract class Projectile extends Object implements Disposable{
 
-    public Projectile(Vector3 pos, Vector3 velocity, int hp, int health, int types, ModelInstance model, btCollisionShape shape, boolean isTower) {
-        this.pos = pos;
+    Vector3  velocity;
+    boolean isTower;
+
+    public Projectile(Vector3 pos, Vector3 velocity, int hp, int health, int types, int effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, HashMap<Integer, Object> objects) {
+        super(pos, hp, health, types, effects, model, shape, world, objects);
+        this.isTower = isTower;
         this.velocity = velocity;
-        this.hp = hp;
-        this.model = model;
-        this.shape = shape;
     }
 
-    public Projectile(Vector3 pos, Vector3 velocity, int hp, int types, ModelInstance model, btCollisionShape shape, boolean isTower) {
-        this(pos, velocity, hp, hp, types, model, shape, isTower);
+    public Projectile(Vector3 pos, Vector3 velocity, int hp, int types, int effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, HashMap<Integer, Object> objects) {
+        this(pos, velocity, hp, hp, types, effects, model, shape, isTower, world, objects);
     }
 
-    public abstract void tick(float delta);
+    public void tick(float delta) {
+        tempVector.set(velocity);
+        pos.add(tempVector.scl(delta));
+        super.tick(delta);
+    }
 
     public void render(float delta, ModelBatch modelBatch) {
         pos.add(velocity.x * delta, velocity.y * delta, velocity.z * delta);
-        modelBatch.render(model);
+        modelBatch.render(instance);
     }
 
-    public boolean collision(Object object) {
-        return true; //change to represent whether or not it breaks
-    }
+    public abstract void collision(Object object);
 
     @Override
     public void dispose() {
