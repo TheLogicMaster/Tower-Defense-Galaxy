@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.Disposable;
 import com.logicmaster63.tdworld.enemy.Enemy;
+import com.logicmaster63.tdworld.enemy.basic.Basic;
 import com.logicmaster63.tdworld.enums.TargetMode;
 import com.logicmaster63.tdworld.projectiles.Projectile;
 
@@ -75,20 +76,24 @@ public abstract class Object implements Disposable{
     public void tick(float delta) {
         instance.transform.setToTranslation(pos);
         body.setWorldTransform(instance.transform);
+        if(!animation.paused)
+            animation.update(delta);
     }
 
-    public Object target(Vector3 pos, double range, Map<Integer, Object> objectMap, TargetMode mode) {
+    public Object target(Vector3 pos, double range, Map<Integer, Object> objectMap, TargetMode mode, Class targetClass) {
         List<Object> objects = new ArrayList<Object>(objectMap.values());
         tempObject = null;
         if(objects.size() < 1)
             return null;
-        for(int i = 1; i < objects.size(); i++) {
+        for(int i = 0; i < objects.size(); i++) {
             tempVector.set(objects.get(i).pos);
+            //if(this instanceof Basic)
+                //System.out.println(i + ": " + (Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2)));
             if(tempObject == null) {
-                if(Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2))
+                if(targetClass.isInstance(objects.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2))
                     tempObject = objects.get(i);
             } else {
-                if(Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2)) {
+                if(targetClass.isInstance(objects.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2)) {
                     switch (mode) {
                         case CLOSEST: //Consider using with another test vector object: pos.sub(tempVector).len2() < pos.sub(tempObject.pos).len2()
                             if(Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(pos.x - tempObject.pos.x, 2) + Math.pow(pos.y - tempObject.pos.y, 2) + Math.pow(pos.z - tempObject.pos.z, 2))
@@ -152,5 +157,10 @@ public abstract class Object implements Disposable{
 
     public Vector3 getPos() {
         return pos;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": (" + pos.toString() + ", " + health + ", " + effects + ")";
     }
 }

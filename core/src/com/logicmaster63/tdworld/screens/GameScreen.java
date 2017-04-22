@@ -26,6 +26,7 @@ import com.logicmaster63.tdworld.tools.ContactHandler;
 import com.logicmaster63.tdworld.object.Object;
 import com.logicmaster63.tdworld.tower.Tower;
 import com.logicmaster63.tdworld.tower.basic.Gun;
+import com.logicmaster63.tdworld.tower.basic.Laser;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -131,6 +132,7 @@ public class GameScreen extends TDScreen {
         }
 
         assets = new AssetManager();
+        assets.load("theme/" + theme + "/enemy/" + "/Spider.g3dj", Model.class);
         assets.load("theme/" + theme + "/planet.g3db", Model.class);
         for (int i = 0; i < towerNames.size(); i++)
             assets.load("theme/" + theme + "/tower/" + towerNames.get(i) + ".g3db", Model.class);
@@ -202,7 +204,6 @@ public class GameScreen extends TDScreen {
             models.put(towerNames.get(i), assets.get("theme/" + theme + "/tower/" + towerNames.get(i) + ".g3db", Model.class));
         for (int i = 0; i < enemyNames.size(); i++)
             models.put(enemyNames.get(i), assets.get("theme/" + theme + "/enemy/" + enemyNames.get(i) + ".g3db", Model.class));
-
         if (hasPlanetModel) {
             planet = new ModelInstance(assets.get("theme/" + theme + "/planet.g3db", Model.class));
         } else {
@@ -222,14 +223,17 @@ public class GameScreen extends TDScreen {
         collisionObject.setCollisionShape(new btSphereShape(planetRadius));
         collisionObject.setWorldTransform(planet.transform);
         collisionWorld.addCollisionObject(collisionObject);
-        System.out.println(planet.calculateBoundingBox(new BoundingBox()).getHeight());
+        //System.out.println(planet.calculateBoundingBox(new BoundingBox()).getHeight());
         FileHandler.addDisposables(collisionObject);
-
+        for(int i = 0; i < models.get("Basic").animations.size; i++)
+            System.out.println(models.get("Basic").animations.get(i).id);
         enemies = new EnemyHandler(spawnPos, classes, spawns, models, path, collisionWorld, objects);
 
         //towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(models.get(0))));
+        if(models.containsKey("Laser"))
+            towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), 0, new ModelInstance(models.get("Laser")), collisionWorld, objects));
         if(models.containsKey("Gun"))
-            towers.add(new Gun(new Vector3(0, planetRadius + 10, 0), 0, new ModelInstance(models.get("Gun")), collisionWorld, objects));
+            towers.add(new Gun(new Vector3(0, planetRadius + 100, 0), 0, new ModelInstance(models.get("Gun")), collisionWorld, objects));
         //ModelInstance instance = new ModelInstance(models.get(0));
         //instance.materials.get(0).set(new BlendingAttribute(0.5f));
         //enemies.add(new Spider(new Vector3(0, 0, 0), 20d, 10, 500, 0, instance, new btBoxShape(instance.model.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()))));

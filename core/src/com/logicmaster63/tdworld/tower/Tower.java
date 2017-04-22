@@ -2,9 +2,11 @@ package com.logicmaster63.tdworld.tower;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.logicmaster63.tdworld.enums.TargetMode;
 import com.logicmaster63.tdworld.object.AttackingObject;
 import com.logicmaster63.tdworld.object.Object;
 
@@ -14,23 +16,38 @@ import java.util.Map;
 
 public abstract class Tower extends AttackingObject{
 
-    public Tower(Vector3 pos, int hp, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects) {
-        this(pos, hp, hp, coolDown, types, instance, shape, 0, world, objects);
+    public Tower(Vector3 pos, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation) {
+        this(pos, hp, hp, range, coolDown, types, instance, shape, 0, world, objects, attackAnimation);
     }
 
-    public Tower(Vector3 pos, int hp, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects) {
-        this(pos, hp, hp, coolDown, types, instance, shape, effects, world, objects);
+    public Tower(Vector3 pos, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation) {
+        this(pos, hp, hp, range, coolDown, types, instance, shape, effects, world, objects, attackAnimation);
     }
 
-    public Tower(Vector3 pos, int hp, int health, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects) {
-        super(pos, hp, health, types, effects, coolDown, instance, shape, world, objects);
+    public Tower(Vector3 pos, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation) {
+        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, objects, attackAnimation);
     }
 
     @Override
     public void tick(float delta) {
         super.tick(delta);
-        if(coolTime > coolDown && attack())
-            coolTime = 0;
+    }
+
+    @Override
+    public void attack(Object target) {
+        super.attack(target);
+        if(!"".equals(attackAnimation))
+            animation.animate(attackAnimation, 1, new AnimationController.AnimationListener() {
+                @Override
+                public void onEnd(AnimationController.AnimationDesc animationDesc) {
+                    animation.animate("Spider_Armature|walk_ani_vor", 0);
+                }
+
+                @Override
+                public void onLoop(AnimationController.AnimationDesc animationDesc) {
+
+                }
+            }, 0);
     }
 
     @Override
@@ -45,7 +62,12 @@ public abstract class Tower extends AttackingObject{
     }
 
     @Override
-    public void dispose() {
+    public boolean canAttack() {
+        return super.canAttack();
+    }
 
+    @Override
+    public void dispose() {
+        super.dispose();
     }
 }
