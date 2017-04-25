@@ -16,16 +16,12 @@ import java.util.Map;
 
 public abstract class Tower extends AttackingObject{
 
-    public Tower(Vector3 pos, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation) {
-        this(pos, hp, hp, range, coolDown, types, instance, shape, 0, world, objects, attackAnimation);
+    public Tower(Vector3 pos, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset) {
+        this(pos, hp, hp, range, coolDown, types, instance, shape, 0, world, objects, attackAnimation, attackOffset);
     }
 
-    public Tower(Vector3 pos, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation) {
-        this(pos, hp, hp, range, coolDown, types, instance, shape, effects, world, objects, attackAnimation);
-    }
-
-    public Tower(Vector3 pos, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation) {
-        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, objects, attackAnimation);
+    public Tower(Vector3 pos, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset) {
+        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, objects, attackAnimation, attackOffset);
     }
 
     @Override
@@ -34,7 +30,7 @@ public abstract class Tower extends AttackingObject{
     }
 
     @Override
-    public void attack(Object target) {
+    public void attack(Object...target) {
         super.attack(target);
         if(!"".equals(attackAnimation))
             animation.animate(attackAnimation, 1, new AnimationController.AnimationListener() {

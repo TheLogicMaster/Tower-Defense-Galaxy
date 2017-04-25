@@ -93,7 +93,7 @@ public class FileHandler {
         } catch (Exception e) {
             Gdx.app.log("Error", e.toString());
         }
-        screen.setTowerNames(names);
+        screen.addTowerNames(names);
         return classes;
     }
 
@@ -114,7 +114,7 @@ public class FileHandler {
         } catch (Exception e) {
             Gdx.app.log("Error", e.toString());
         }
-        screen.setEnemyNames(names);
+        screen.addEnemyNames(names);
         return classes;
     }
 

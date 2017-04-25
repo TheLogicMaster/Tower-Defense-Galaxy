@@ -1,5 +1,6 @@
 package com.logicmaster63.tdworld.object;
 
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -13,6 +14,8 @@ import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.enemy.basic.Basic;
 import com.logicmaster63.tdworld.enums.TargetMode;
 import com.logicmaster63.tdworld.projectiles.Projectile;
+import com.logicmaster63.tdworld.tools.Asset;
+import com.logicmaster63.tdworld.tower.Tower;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +144,14 @@ public abstract class Object implements Disposable{
         dispose();
     }
 
-    private Map.Entry<Integer, Object> getEntry() {
+    protected int getNextIndex() {
+        int index = 1;
+        while(objects.containsKey(index))
+            index++;
+        return index;
+    }
+
+    protected Map.Entry<Integer, Object> getEntry() {
         for(Map.Entry<Integer, Object> entry: objects.entrySet())
             if(entry.equals(this))
                 return entry;
@@ -149,6 +159,20 @@ public abstract class Object implements Disposable{
     }
 
     public abstract void render(float delta, ModelBatch modelBatch);
+
+    /*"theme/" + theme + "/tower/" + towerNames.get(i) + ".g3db"
+    public static ArrayList<Asset> getAssets(Class clazz) {
+        ArrayList<Asset> assets = new ArrayList<Asset>();
+        String type;
+        if(clazz.getClass().isAssignableFrom(Basic.class))
+            type = "enemy/";
+        else if(clazz.getClass().isAssignableFrom(Tower.class))
+            type = "tower/";
+        else
+            type = "projectile/";
+        assets.add(new Asset("theme/basic/" + type + clazz.getSimpleName() + ".g3db", Model.class));
+        return assets;
+    }*/
 
     @Override
     public void dispose() {

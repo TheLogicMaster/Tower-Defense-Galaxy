@@ -1,5 +1,6 @@
 package com.logicmaster63.tdworld.enemy.basic;
 
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
@@ -11,7 +12,9 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.object.Object;
+import com.logicmaster63.tdworld.tools.Asset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +26,7 @@ public class Basic extends Enemy{
     private static final String ATTACK_ANIMATION = "Spider_Armature|Attack";
     private static final int TYPES = 0;
     private static final double SPEED = 10;
+    private static final Vector3 ATTACK_OFFSET = Vector3.Zero;
 
     private AnimationController.AnimationListener listener;
 
@@ -31,7 +35,7 @@ public class Basic extends Enemy{
     }
 
     public Basic(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Object> objects) {
-        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btCompoundShape(), effects, world, objects, ATTACK_ANIMATION);
+        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btCompoundShape(), effects, world, objects, ATTACK_ANIMATION, ATTACK_OFFSET);
         ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 50, 30), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(15, 10, 45)));
         ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 45, -25), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(10, 10, 10)));
         System.out.println(getModelInstance().getAnimation("Spider_Armature|walk_ani_vor").id);
@@ -51,6 +55,12 @@ public class Basic extends Enemy{
         //animation.action("Spider_Armature|walk_ani_vor", 0, 1000, -1, 1, listener, 0);
         //animation.animate("Spider_Armature|Attack", 0, 1000, 1, 1, listener, 0);
         //animation.queue("Spider_Armature|walk_ani_vor", 0, 1000, -1, 1, listener, 0);
+    }
+
+    public static ArrayList<Asset> getAssets() {
+        ArrayList<Asset> assets = new ArrayList<Asset>();
+        assets.add(new Asset("theme/basic/enemy/Basic.g3db", Model.class));
+        return assets;
     }
 
     @Override

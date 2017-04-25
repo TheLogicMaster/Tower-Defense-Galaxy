@@ -17,12 +17,14 @@ public abstract class AttackingObject extends Object{
     protected float coolDown, coolTime = 0, range;
     protected TargetMode targetMode = TargetMode.FIRSTEST;
     protected String attackAnimation;
+    protected Vector3 attackOffset;
 
-    public AttackingObject(Vector3 pos, int hp, int health, int range, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation){
+    public AttackingObject(Vector3 pos, int hp, int health, int range, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset){
         super(pos, hp, health, types, effects, instance, shape, world, objects);
         this.coolDown = coolDown;
         this.range = range;
         this.attackAnimation = attackAnimation;
+        this.attackOffset = attackOffset;
     }
 
     @Override
@@ -38,7 +40,7 @@ public abstract class AttackingObject extends Object{
         }
     }
 
-    public void attack(Object target) {
+    public void attack(Object...targets) {
         //if(this instanceof Basic)
             //System.out.println(this.toString() + " ---> " + target.toString());
     }

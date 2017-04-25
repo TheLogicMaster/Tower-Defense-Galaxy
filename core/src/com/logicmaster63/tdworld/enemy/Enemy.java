@@ -18,13 +18,13 @@ public abstract class Enemy extends AttackingObject {
     private double speeed, dist = 0;
     private int moveIndex = 0;
 
-    public Enemy(Vector3 pos, double speeed, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation) {
-        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, objects, attackAnimation);
+    public Enemy(Vector3 pos, double speeed, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset) {
+        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, objects, attackAnimation, attackOffset);
         this.speeed = speeed;
     }
 
-    public Enemy(Vector3 position, double speeed, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation) {
-        this(position, speeed, hp, hp, range, coolDown, types, instance, shape, 0, world, objects, attackAnimation);
+    public Enemy(Vector3 position, double speeed, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset) {
+        this(position, speeed, hp, hp, range, coolDown, types, instance, shape, 0, world, objects, attackAnimation, attackOffset);
     }
 
     public void tick(float delta, List<Vector3> path) {
@@ -43,7 +43,7 @@ public abstract class Enemy extends AttackingObject {
     }
 
     @Override
-    public void attack(Object target) {
+    public void attack(Object...target) {
         super.attack(target);
         if(attackAnimation != null)
             animation.animate(attackAnimation, 1, new AnimationController.AnimationListener() {
