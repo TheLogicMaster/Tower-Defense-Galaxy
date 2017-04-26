@@ -267,9 +267,9 @@ public class GameScreen extends TDScreen {
 
         //towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(models.get(0))));
         if(models.containsKey("Laser"))
-            towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), new ModelInstance(models.get("Laser")), collisionWorld, objects));
+            towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), new ModelInstance(models.get("Laser")), collisionWorld, objects, false));
         if(models.containsKey("Gun"))
-            towers.add(new Gun(new Vector3(0, planetRadius + 100, 0), 0, new ModelInstance(models.get("Gun")), new ModelInstance(models.get("Bullet")),collisionWorld, objects));
+            towers.add(new Gun(new Vector3(0, planetRadius + 100, 0), 0, new ModelInstance(models.get("Gun")), new ModelInstance(models.get("Bullet")),collisionWorld, objects, false));
         //ModelInstance instance = new ModelInstance(models.get(0));
         //instance.materials.get(0).set(new BlendingAttribute(0.5f));
         //enemies.add(new Spider(new Vector3(0, 0, 0), 20d, 10, 500, 0, instance, new btBoxShape(instance.model.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()))));

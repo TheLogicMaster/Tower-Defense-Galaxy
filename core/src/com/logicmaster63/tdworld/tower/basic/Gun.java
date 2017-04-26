@@ -19,14 +19,14 @@ import java.util.Map;
 
 public class Gun extends ProjectileTower{
 
-    private static final int HP = 20;
-    private static final float COOLDOWN = 2f;
-    private static final int RANGE = 300;
-    private static final String ATTACK_ANIMATION = "";
-    private static final Vector3 ATTACK_OFFSET = Vector3.Zero;
+    public static final int HP = 20;
+    public static final float COOLDOWN = 2f;
+    public static final int RANGE = 300;
+    public static final String ATTACK_ANIMATION = "";
+    public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
 
-    public Gun(Vector3 pos, int types, ModelInstance instance, ModelInstance bulletInstance, btCollisionWorld world, Map<Integer, Object> objects) {
-        super(pos, HP, RANGE, COOLDOWN, types, instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, new Bullet(bulletInstance, true, world, objects), ATTACK_OFFSET);
+    public Gun(Vector3 pos, int types, ModelInstance instance, ModelInstance bulletInstance, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate) {
+        super(pos, HP, RANGE, COOLDOWN, types, instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, new Bullet(bulletInstance, true, world, objects), ATTACK_OFFSET, isTemplate);
         for(int i = 0; i < instance.nodes.size; i++)
             System.out.println(instance.nodes.get(i).id);
     }

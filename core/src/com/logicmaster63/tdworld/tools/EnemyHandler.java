@@ -57,8 +57,8 @@ public class EnemyHandler {
             ModelInstance instance = new ModelInstance(models.get(name));
             try {
                 Class<?> c = enemyClasses.get(name);
-                Constructor constructor = c.getConstructor(Vector3.class, ModelInstance.class, btCollisionWorld.class, Map.class);
-                enemies.add((Enemy) constructor.newInstance(pos, instance, world, objects));
+                Constructor constructor = c.getConstructor(Vector3.class, ModelInstance.class, btCollisionWorld.class, Map.class, boolean.class);
+                enemies.add((Enemy) constructor.newInstance(pos, instance, world, objects, false));
             } catch (Exception e) {
                 Gdx.app.log("Error", e.toString());
             }

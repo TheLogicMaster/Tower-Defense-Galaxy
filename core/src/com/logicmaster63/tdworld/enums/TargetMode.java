@@ -8,5 +8,6 @@ public enum TargetMode {
     FASTEST,
     SLOWEST,
     FIRSTEST,
-    LASTEST
+    LASTEST,
+    GROUP
 }

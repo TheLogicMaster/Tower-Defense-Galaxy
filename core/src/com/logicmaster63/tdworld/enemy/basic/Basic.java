@@ -20,25 +20,25 @@ import java.util.Map;
 
 public class Basic extends Enemy{
 
-    private static final int HP = 20;
-    private static final float COOLDOWN = 1f;
-    private static final int RANGE = 3000;
-    private static final String ATTACK_ANIMATION = "Spider_Armature|Attack";
-    private static final int TYPES = 0;
-    private static final double SPEED = 10;
-    private static final Vector3 ATTACK_OFFSET = Vector3.Zero;
+    public static final int HP = 20;
+    public static final float COOLDOWN = 1f;
+    public static final int RANGE = 3000;
+    public static final String ATTACK_ANIMATION = "Spider_Armature|Attack";
+    public static final int TYPES = 0;
+    public static final double SPEED = 10;
+    public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
 
     private AnimationController.AnimationListener listener;
 
-    public Basic(Vector3 position, ModelInstance instance, btCollisionWorld world, Map<Integer, Object> objects) {
-        this(position, SPEED, HP, COOLDOWN, TYPES, instance, 0, world, objects);
+    public Basic(Vector3 position, ModelInstance instance, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate) {
+        this(position, SPEED, HP, COOLDOWN, TYPES, instance, 0, world, objects, isTemplate);
     }
 
-    public Basic(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Object> objects) {
-        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btCompoundShape(), effects, world, objects, ATTACK_ANIMATION, ATTACK_OFFSET);
+    public Basic(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate) {
+        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btCompoundShape(), effects, world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate);
         ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 50, 30), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(15, 10, 45)));
         ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 45, -25), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(10, 10, 10)));
-        System.out.println(getModelInstance().getAnimation("Spider_Armature|walk_ani_vor").id);
+        //System.out.println(getModelInstance().getAnimation("Spider_Armature|walk_ani_vor").id);
         listener = new AnimationController.AnimationListener() {
             @Override
             public void onEnd(AnimationController.AnimationDesc animationDesc) {

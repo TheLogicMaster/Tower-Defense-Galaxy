@@ -34,9 +34,9 @@ public abstract class Object implements Disposable{
     protected Map<Integer, Object> objects;
     protected Quaternion quaternion;
     protected BoundingBox boundingBox;
+    protected boolean isTemplate;
 
-
-    public Object(Vector3 pos, int hp, int health, int types, int effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects){
+    public Object(Vector3 pos, int hp, int health, int types, int effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate){
         this.instance = instance;
         this.pos = pos;
         this.hp = hp;
@@ -49,22 +49,25 @@ public abstract class Object implements Disposable{
         body = new btCollisionObject();
         body.setCollisionShape(shape);
         body.setWorldTransform(instance.transform);
-        if(this instanceof Enemy || this instanceof Projectile)
-            body.setCollisionFlags(body.getCollisionFlags());
-        int index = 1;
-        while(objects.containsKey(index))
-            index++;
-        objects.put(index, this);
-        System.out.println(index);
-        body.setUserValue(index);
-        world.addCollisionObject(body);
         this.world = world;
         tempVector = new Vector3();
         this.objects = objects;
         quaternion = new Quaternion();
-        boundingBox = instance.calculateBoundingBox(new BoundingBox());
-        for(Node node: instance.nodes)
-            System.out.println();
+        if(this instanceof Enemy || this instanceof Projectile)
+            body.setCollisionFlags(body.getCollisionFlags());
+        int index = 1;
+        if(!isTemplate) {
+            System.out.println(getClass().getSimpleName());
+            while (objects.containsKey(index))
+                index++;
+            objects.put(index, this);
+            //System.out.println(index);
+            body.setUserValue(index);
+            world.addCollisionObject(body);
+            boundingBox = instance.calculateBoundingBox(new BoundingBox());
+        }
+        //for(Node node: instance.nodes)
+            //System.out.println();
     }
 
     public int damage(int amount) {
@@ -83,8 +86,9 @@ public abstract class Object implements Disposable{
             animation.update(delta);
     }
 
-    public Object target(Vector3 pos, double range, Map<Integer, Object> objectMap, TargetMode mode, Class targetClass) {
+    public ArrayList<Object> target(Vector3 pos, double range, Map<Integer, Object> objectMap, TargetMode mode, Class targetClass) {
         List<Object> objects = new ArrayList<Object>(objectMap.values());
+        ArrayList<Object> array = new ArrayList<Object>();
         tempObject = null;
         if(objects.size() < 1)
             return null;
@@ -94,7 +98,10 @@ public abstract class Object implements Disposable{
                 //System.out.println(i + ": " + (Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2)));
             if(tempObject == null) {
                 if(targetClass.isInstance(objects.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2))
-                    tempObject = objects.get(i);
+                    if(mode == TargetMode.GROUP)
+                        array.add(objects.get(i));
+                    else
+                        tempObject = objects.get(i);
             } else {
                 if(targetClass.isInstance(objects.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2)) {
                     switch (mode) {
@@ -130,11 +137,18 @@ public abstract class Object implements Disposable{
                             if(objects.get(i) instanceof Enemy && ((Enemy) objects.get(i)).getDist() < ((Enemy) tempObject).getDist())
                                 tempObject = objects.get(i);
                             break;
+                        case GROUP:
+
                     }
                 }
             }
         }
-        return tempObject;
+        if(mode == TargetMode.GROUP) {
+            return array;
+        } else {
+            array.add(tempObject);
+            return array;
+        }
     }
 
     public void destroy() {

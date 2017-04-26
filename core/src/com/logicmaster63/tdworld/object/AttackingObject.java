@@ -10,6 +10,7 @@ import com.logicmaster63.tdworld.enemy.basic.Basic;
 import com.logicmaster63.tdworld.enums.TargetMode;
 import com.logicmaster63.tdworld.tower.Tower;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public abstract class AttackingObject extends Object{
@@ -19,8 +20,8 @@ public abstract class AttackingObject extends Object{
     protected String attackAnimation;
     protected Vector3 attackOffset;
 
-    public AttackingObject(Vector3 pos, int hp, int health, int range, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset){
-        super(pos, hp, health, types, effects, instance, shape, world, objects);
+    public AttackingObject(Vector3 pos, int hp, int health, int range, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate){
+        super(pos, hp, health, types, effects, instance, shape, world, objects, isTemplate);
         this.coolDown = coolDown;
         this.range = range;
         this.attackAnimation = attackAnimation;
@@ -32,15 +33,15 @@ public abstract class AttackingObject extends Object{
         super.tick(delta);
         coolTime += delta;
         if(coolTime > coolDown && canAttack()) {
-            Object target = target(pos, range, objects, TargetMode.CLOSEST, this instanceof Enemy ? Tower.class: Enemy.class);
-            if(target != null) {
-                attack(target);
+            ArrayList<Object> targets = target(pos, range, objects, TargetMode.CLOSEST, this instanceof Enemy ? Tower.class: Enemy.class);
+            if(targets != null) {
+                attack(targets);
                 coolTime = 0;
             }
         }
     }
 
-    public void attack(Object...targets) {
+    public void attack(ArrayList<Object> targets) {
         //if(this instanceof Basic)
             //System.out.println(this.toString() + " ---> " + target.toString());
     }

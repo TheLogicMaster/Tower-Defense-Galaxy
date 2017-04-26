@@ -16,18 +16,18 @@ import java.util.Map;
 
 public class Spider extends Enemy {
 
-    private static final int HP = 20;
-    private static final float COOLDOWN = 0.3f;
-    private static final int RANGE = 1000;
-    private static final String ATTACK_ANIMATION = "";
-    private static final Vector3 ATTACK_OFFSET = Vector3.Zero;
+    public static final int HP = 20;
+    public static final float COOLDOWN = 0.3f;
+    public static final int RANGE = 1000;
+    public static final String ATTACK_ANIMATION = "";
+    public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
 
-    public Spider(Vector3 position, double speeed, int types, ModelInstance instance, btCollisionWorld world, Map<Integer, Object> objects) {
-        this(position, speeed, HP, COOLDOWN, types, instance, 0, world, objects);
+    public Spider(Vector3 position, double speeed, int types, ModelInstance instance, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate) {
+        this(position, speeed, HP, COOLDOWN, types, instance, 0, world, objects, isTemplate);
     }
 
-    public Spider(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Object> objects) {
-        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btBoxShape(instance.extendBoundingBox(new BoundingBox()).getDimensions(new Vector3())), effects, world, objects, ATTACK_ANIMATION, ATTACK_OFFSET);
+    public Spider(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate) {
+        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btBoxShape(instance.extendBoundingBox(new BoundingBox()).getDimensions(new Vector3())), effects, world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate);
     }
 
     @Override
