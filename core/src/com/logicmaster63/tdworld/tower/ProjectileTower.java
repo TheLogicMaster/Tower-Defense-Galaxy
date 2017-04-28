@@ -26,10 +26,10 @@ public class ProjectileTower extends Tower{
     }
 
     @Override
-    public void attack(ArrayList<Object> target) {
-        super.attack(target);
+    public void attack(ArrayList<Object> targets) {
+        super.attack(targets);
         try {
-            objects.put(getNextIndex(), projectile.getClass().getConstructor(projectile.getClass(), Vector3.class, Vector3.class).newInstance(projectile, tempVector.set(pos), tempVector.set(target.get(0).getPos()).sub(pos).scl(Bullet.SPEED)));
+            objects.put(getNextIndex(), projectile.getClass().getConstructor(projectile.getClass(), Vector3.class, Vector3.class).newInstance(projectile, new Vector3(pos), new Vector3(targets.get(0).getPos()).sub(pos).scl(projectile.getClass().getField("SPEED").getInt(null))));
         } catch (Exception e) {
             Gdx.app.error("ProjectileTower", e.getMessage());
         }

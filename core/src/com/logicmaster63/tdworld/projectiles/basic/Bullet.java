@@ -16,17 +16,17 @@ import java.util.Map;
 public class Bullet extends Projectile {
 
     public static final int HP = 20;
-    public static final int LIFETIME = -1;
+    public static final int LIFETIME = 10;
     public static final int TYPES = 0;
     public static final btCollisionShape SHAPE = new btSphereShape(10);
     public static final int SPEED = 10;
 
     public Bullet(Vector3 pos, Vector3 velocity, int hp, int health, ModelInstance model, boolean isTower, btCollisionWorld world, Map<Integer, Object> objects) {
-        super(pos, velocity, hp, health, TYPES, model, SHAPE, isTower, world, objects);
+        super(pos, velocity, hp, health, TYPES, model, SHAPE, isTower, world, objects, LIFETIME);
     }
 
     public Bullet(ModelInstance model, boolean isTower, btCollisionWorld world, Map<Integer, Object> objects) {
-        super(HP, TYPES, model, SHAPE, isTower, world, objects);
+        super(HP, TYPES, model, SHAPE, isTower, world, objects, LIFETIME);
     }
 
     public Bullet(Bullet bullet, Vector3 pos, Vector3 velocity) {

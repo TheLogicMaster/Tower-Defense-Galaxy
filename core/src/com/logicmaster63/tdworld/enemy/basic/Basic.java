@@ -22,7 +22,7 @@ public class Basic extends Enemy{
 
     public static final int HP = 20;
     public static final float COOLDOWN = 1f;
-    public static final int RANGE = 3000;
+    public static final int RANGE = 300;
     public static final String ATTACK_ANIMATION = "Spider_Armature|Attack";
     public static final int TYPES = 0;
     public static final double SPEED = 10;
@@ -30,14 +30,13 @@ public class Basic extends Enemy{
 
     private AnimationController.AnimationListener listener;
 
-    public Basic(Vector3 position, ModelInstance instance, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate) {
-        this(position, SPEED, HP, COOLDOWN, TYPES, instance, 0, world, objects, isTemplate);
+    public Basic(Vector3 position, ModelInstance instance, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate, List<Vector3> path) {
+        this(position, SPEED, HP, COOLDOWN, TYPES, instance, 0, world, objects, isTemplate, path);
     }
 
-    public Basic(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate) {
-        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btCompoundShape(), effects, world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate);
-        ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 50, 30), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(15, 10, 45)));
-        ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 45, -25), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(10, 10, 10)));
+    public Basic(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate, List<Vector3> path) {
+        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btCompoundShape(), effects, world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate, path);
+        ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 30, 0), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(75, 30, 90)));
         //System.out.println(getModelInstance().getAnimation("Spider_Armature|walk_ani_vor").id);
         listener = new AnimationController.AnimationListener() {
             @Override
@@ -64,8 +63,8 @@ public class Basic extends Enemy{
     }
 
     @Override
-    public void tick(float delta, List<Vector3> path) {
-        super.tick(delta, path);
+    public void tick(float delta) {
+        super.tick(delta);
     }
 
     @Override

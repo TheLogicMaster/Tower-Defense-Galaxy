@@ -57,15 +57,15 @@ public class EnemyHandler {
             ModelInstance instance = new ModelInstance(models.get(name));
             try {
                 Class<?> c = enemyClasses.get(name);
-                Constructor constructor = c.getConstructor(Vector3.class, ModelInstance.class, btCollisionWorld.class, Map.class, boolean.class);
-                enemies.add((Enemy) constructor.newInstance(pos, instance, world, objects, false));
+                Constructor constructor = c.getConstructor(Vector3.class, ModelInstance.class, btCollisionWorld.class, Map.class, boolean.class, List.class);
+                enemies.add((Enemy) constructor.newInstance(pos, instance, world, objects, false, path));
             } catch (Exception e) {
                 Gdx.app.log("Error", e.toString());
             }
             enemyIndex++;
         }
-        for (Enemy enemy : enemies)
-            enemy.tick(delta, path);
+        //for (Enemy enemy : enemies)
+         //   enemy.tick(delta, path);
     }
 
     public void render(float delta, ModelBatch batch) {

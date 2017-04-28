@@ -21,7 +21,7 @@ public class Gun extends ProjectileTower{
 
     public static final int HP = 20;
     public static final float COOLDOWN = 2f;
-    public static final int RANGE = 300;
+    public static final int RANGE = 3000;
     public static final String ATTACK_ANIMATION = "";
     public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
 

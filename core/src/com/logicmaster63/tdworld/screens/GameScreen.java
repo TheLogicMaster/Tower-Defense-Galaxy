@@ -12,8 +12,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
@@ -31,10 +33,7 @@ import com.logicmaster63.tdworld.tower.basic.Laser;
 
 import java.io.*;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.logicmaster63.tdworld.TDWorld.isDebugging;
 
@@ -68,6 +67,8 @@ public class GameScreen extends TDScreen {
     private ContactHandler contactHandler;
     private Map<Integer, Object> objects;
     private DebugDrawer debugDrawer;
+    public static Vector3 debugVector0 = new Vector3(), debugVector1 = new Vector3();
+    private ShapeRenderer shapeRenderer;
 
     public GameScreen(Game game, int map, String theme) {
         super(game);
@@ -81,6 +82,7 @@ public class GameScreen extends TDScreen {
         dispatcher = new btCollisionDispatcher(collisionConfig);
         broadphase = new btDbvtBroadphase();
         collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
+        shapeRenderer = new ShapeRenderer();
 
         objects = new HashMap<Integer, Object>();
         spawns = new ArrayList<Spawn>();
@@ -175,10 +177,16 @@ public class GameScreen extends TDScreen {
                 return;
         }
 
-        for (Tower tower : towers)
+        //for(Map.Entry<Integer, Object> entry : objects.entrySet())
+            //entry.getValue().tick(delta);
+        Object objectArray[] = objects.values().toArray(new Object[]{});
+        for(Object object: objectArray) {
+            object.tick(delta);
+        }
+        /*for (Tower tower : towers)
             tower.tick(delta);
         for (Projectile projectile : projectiles)
-            projectile.tick(delta);
+            projectile.tick(delta);*/
         enemies.tick(delta, this);
 
         collisionWorld.performDiscreteCollisionDetection();
@@ -188,11 +196,22 @@ public class GameScreen extends TDScreen {
 
         inputHandler.update(delta);
         modelBatch.begin(cam.getCam());
-        for (Tower tower : towers)
+
+        //Gdx.gl20.glLineWidth(10);
+        shapeRenderer.setProjectionMatrix(cam.getCam().combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(1, 1, 1, 1);
+        shapeRenderer.line(debugVector0, debugVector1);
+        shapeRenderer.end();
+        objectArray = objects.values().toArray(new Object[]{});
+        for(Object object: objectArray) {
+            object.render(delta, modelBatch);
+        }
+        /*for (Tower tower : towers)
             tower.render(delta, modelBatch);
         for (Projectile projectile : projectiles)
             projectile.render(delta, modelBatch);
-        enemies.render(delta, modelBatch);
+        enemies.render(delta, modelBatch);*/
         modelBatch.render(planet);
         modelBatch.end();
 
@@ -204,9 +223,10 @@ public class GameScreen extends TDScreen {
 
         batch.begin();
         //batch.draw(background, 0, 0, 200, 60);
-        TDWorld.getFonts().get("pixelade").draw(batch, "Size:" + enemies.getEnemies().size(), 0, 20);
-        if(TDWorld.isDebugging)
-            TDWorld.getFonts().get("pixelade").draw(batch, debugString, 0, 40);
+        TDWorld.getFonts().get("pixelade").draw(batch, "Size:" + objects.size(), 0, 20);
+        TDWorld.getFonts().get("pixelade").draw(batch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
+        //if(TDWorld.isDebugging)
+            //TDWorld.getFonts().get("pixelade").draw(batch, debugString, 0, 40);
         batch.end();
     }
 
@@ -258,6 +278,7 @@ public class GameScreen extends TDScreen {
         btCollisionObject collisionObject = new btCollisionObject();
         collisionObject.setCollisionShape(new btSphereShape(planetRadius));
         collisionObject.setWorldTransform(planet.transform);
+        collisionObject.setUserValue(0);
         collisionWorld.addCollisionObject(collisionObject);
         //System.out.println(planet.calculateBoundingBox(new BoundingBox()).getHeight());
         FileHandler.addDisposables(collisionObject);
@@ -266,8 +287,8 @@ public class GameScreen extends TDScreen {
         enemies = new EnemyHandler(spawnPos, classes, spawns, models, path, collisionWorld, objects);
 
         //towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(models.get(0))));
-        if(models.containsKey("Laser"))
-            towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), new ModelInstance(models.get("Laser")), collisionWorld, objects, false));
+        //if(models.containsKey("Laser"))
+            //towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), new ModelInstance(models.get("Laser")), collisionWorld, objects, false));
         if(models.containsKey("Gun"))
             towers.add(new Gun(new Vector3(0, planetRadius + 100, 0), 0, new ModelInstance(models.get("Gun")), new ModelInstance(models.get("Bullet")),collisionWorld, objects, false));
         //ModelInstance instance = new ModelInstance(models.get(0));

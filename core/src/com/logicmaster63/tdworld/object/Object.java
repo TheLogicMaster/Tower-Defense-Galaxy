@@ -57,12 +57,13 @@ public abstract class Object implements Disposable{
             body.setCollisionFlags(body.getCollisionFlags());
         int index = 1;
         if(!isTemplate) {
-            System.out.println(getClass().getSimpleName());
+            //System.out.println(getClass().getSimpleName());
             while (objects.containsKey(index))
                 index++;
             objects.put(index, this);
             //System.out.println(index);
             body.setUserValue(index);
+            //System.out.println("Index: " + index);
             world.addCollisionObject(body);
             boundingBox = instance.calculateBoundingBox(new BoundingBox());
         }
@@ -84,71 +85,6 @@ public abstract class Object implements Disposable{
         body.setWorldTransform(instance.transform);
         if(!animation.paused)
             animation.update(delta);
-    }
-
-    public ArrayList<Object> target(Vector3 pos, double range, Map<Integer, Object> objectMap, TargetMode mode, Class targetClass) {
-        List<Object> objects = new ArrayList<Object>(objectMap.values());
-        ArrayList<Object> array = new ArrayList<Object>();
-        tempObject = null;
-        if(objects.size() < 1)
-            return null;
-        for(int i = 0; i < objects.size(); i++) {
-            tempVector.set(objects.get(i).pos);
-            //if(this instanceof Basic)
-                //System.out.println(i + ": " + (Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2)));
-            if(tempObject == null) {
-                if(targetClass.isInstance(objects.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2))
-                    if(mode == TargetMode.GROUP)
-                        array.add(objects.get(i));
-                    else
-                        tempObject = objects.get(i);
-            } else {
-                if(targetClass.isInstance(objects.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2)) {
-                    switch (mode) {
-                        case CLOSEST: //Consider using with another test vector object: pos.sub(tempVector).len2() < pos.sub(tempObject.pos).len2()
-                            if(Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(pos.x - tempObject.pos.x, 2) + Math.pow(pos.y - tempObject.pos.y, 2) + Math.pow(pos.z - tempObject.pos.z, 2))
-                                tempObject = objects.get(i);
-                            break;
-                        case FURTHEST:
-                            if(Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) > Math.pow(pos.x - tempObject.pos.x, 2) + Math.pow(pos.y - tempObject.pos.y, 2) + Math.pow(pos.z - tempObject.pos.z, 2))
-                                tempObject = objects.get(i);
-                            break;
-                        case FASTEST:
-                            if (objects.get(i) instanceof Enemy && ((Enemy) objects.get(i)).getSpeeed() > ((Enemy) tempObject).getSpeeed())
-                                tempObject = objects.get(i);
-                            break;
-                        case SLOWEST:
-                            if (objects.get(i) instanceof Enemy && ((Enemy) objects.get(i)).getSpeeed() < ((Enemy) tempObject).getSpeeed())
-                                tempObject = objects.get(i);
-                            break;
-                        case STRONGEST:
-                            if (objects.get(i).health > tempObject.health)
-                                tempObject = objects.get(i);
-                            break;
-                        case WEAKEST:
-                            if (objects.get(i).health < tempObject.health)
-                                tempObject = objects.get(i);
-                            break;
-                        case FIRSTEST:
-                            if(objects.get(i) instanceof Enemy && ((Enemy) objects.get(i)).getDist() > ((Enemy) tempObject).getDist())
-                                tempObject = objects.get(i);
-                            break;
-                        case LASTEST:
-                            if(objects.get(i) instanceof Enemy && ((Enemy) objects.get(i)).getDist() < ((Enemy) tempObject).getDist())
-                                tempObject = objects.get(i);
-                            break;
-                        case GROUP:
-
-                    }
-                }
-            }
-        }
-        if(mode == TargetMode.GROUP) {
-            return array;
-        } else {
-            array.add(tempObject);
-            return array;
-        }
     }
 
     public void destroy() {

@@ -1,6 +1,8 @@
 package com.logicmaster63.tdworld.tools;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.collision.*;
 
 public class Tools {
 
