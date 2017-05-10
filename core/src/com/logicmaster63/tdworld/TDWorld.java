@@ -3,9 +3,13 @@ package com.logicmaster63.tdworld;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.logicmaster63.tdworld.screens.GameScreen;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +23,7 @@ public class TDWorld extends Game {
 	public static final boolean isDebugging = true;
 	private static final List<String> themes = new ArrayList<String>();
 	private static Map<String, BitmapFont> fonts;
+	private static GameScreen gameScreen;
 	static {
 		TYPES = new HashMap<String, Integer>();
 		TYPES.put("ice", 1);
@@ -31,15 +36,24 @@ public class TDWorld extends Game {
 	public void create() {
 		Bullet.init();
 
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/moonhouse.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 24;
         fonts = new HashMap<String, BitmapFont>();
-        fonts.put("pixelade", new BitmapFont(Gdx.files.internal("pixelade.fnt"),false));
+        //fonts.put("pixelade", new BitmapFont(Gdx.files.internal("font/pixelade.fnt"),false));
+        //fonts.put("moonhouse", new BitmapFont(Gdx.files.internal("font/moonhouse.fnt"),false));
+        fonts.put("moonhouse", generator.generateFont(parameter));
+        //generator = new FreeTypeFontGenerator(Gdx.files.internal("font/pixelade.ttf"));
+        //fonts.put("pixelade", generator.generateFont(parameter));
+        generator.dispose();
 
-		setScreen(new GameScreen(this, 0, themes.get(0)));
+        gameScreen = new GameScreen(this, 0, themes.get(0));
+		setScreen(gameScreen);
 	}
 
 	@Override
 	public void dispose() {
-	    List<BitmapFont> fontArray= new ArrayList<BitmapFont>(fonts.values());
+	    List<BitmapFont> fontArray = new ArrayList<BitmapFont>(fonts.values());
 	    for(BitmapFont font: fontArray)
 		    font.dispose();
 	}

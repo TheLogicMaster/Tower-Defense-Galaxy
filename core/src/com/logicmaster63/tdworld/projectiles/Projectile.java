@@ -2,6 +2,7 @@ package com.logicmaster63.tdworld.projectiles;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
@@ -42,7 +43,8 @@ public abstract class Projectile extends Object{
         age += delta;
     }
 
-    public void render(float delta, ModelBatch modelBatch) {
+    @Override
+    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
         //pos.add(velocity.x * delta, velocity.y * delta, velocity.z * delta);
         modelBatch.render(instance);
     }

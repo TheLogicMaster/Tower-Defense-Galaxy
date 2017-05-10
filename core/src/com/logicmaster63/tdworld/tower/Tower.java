@@ -3,6 +3,7 @@ package com.logicmaster63.tdworld.tower;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
@@ -47,7 +48,7 @@ public abstract class Tower extends AttackingObject{
     }
 
     @Override
-    public void render(float delta, ModelBatch modelBatch) {
+    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
         //for(int i = 0; i < instance.nodes.size; i++)
             //Gdx.app.log(Double.toString(position.x), instance.nodes.get(i).id);
         //instance.nodes.get(0).rotation.set(Vector3.Y, (instance.nodes.get(0).rotation.getAngle() + 1) % 360);

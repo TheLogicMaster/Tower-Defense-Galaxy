@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.logicmaster63.tdworld.enemy.Enemy;
@@ -68,9 +69,9 @@ public class EnemyHandler {
          //   enemy.tick(delta, path);
     }
 
-    public void render(float delta, ModelBatch batch) {
+    public void render(float delta, ModelBatch batch, ShapeRenderer shapeRenderer) {
         for (Enemy enemy : enemies)
-            enemy.render(delta, batch);
+            enemy.render(delta, batch, shapeRenderer);
     }
 
     public Enemy add(Enemy enemy) {

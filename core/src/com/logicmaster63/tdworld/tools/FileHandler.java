@@ -64,36 +64,23 @@ public class FileHandler {
     }
 
     public static BufferedReader getReader(String path) {
-        BufferedReader reader = null;
-        if (Gdx.app.getType().equals(Application.ApplicationType.Android)) {
-            reader = new BufferedReader(new InputStreamReader(Gdx.files.internal(path).read()));
-        } else {
-            try {
-                reader = new BufferedReader(new FileReader(path));
-            } catch (FileNotFoundException e) {
-                Gdx.app.log("Error", e.toString());
-            }
-        }
-        return reader;
+        return new BufferedReader(new InputStreamReader(Gdx.files.internal(path).read()));
     }
 
     public static HashMap<String, Class<?>> loadTowers(BufferedReader data, String theme, GameScreen screen) {
         if (data == null)
             return null;
         HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
-        ArrayList<String> names = new ArrayList<String>();
         String line;
         try {
             int towerNum = Integer.parseInt(data.readLine());
             for (int i = 0; i < towerNum; i++) {
                 line = data.readLine();
                 classes.put(line, Class.forName("com.logicmaster63.tdworld.tower." + theme + "." + line));
-                names.add(line);
             }
         } catch (Exception e) {
             Gdx.app.log("Error", e.toString());
         }
-        screen.addTowerNames(names);
         return classes;
     }
 
@@ -101,20 +88,17 @@ public class FileHandler {
         if (data == null)
             return null;
         Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
-        List<String> names = new ArrayList<String>();
         String line;
         try {
             int enemyNum = Integer.parseInt(data.readLine());
             for (int i = 0; i < enemyNum; i++) {
                 line = data.readLine();
                 classes.put(line, Class.forName("com.logicmaster63.tdworld.enemy." + theme + "." + line));
-                names.add(line);
             }
             data.close();
         } catch (Exception e) {
             Gdx.app.log("Error", e.toString());
         }
-        screen.addEnemyNames(names);
         return classes;
     }
 
@@ -136,7 +120,7 @@ public class FileHandler {
 
     public static void loadDependencies(Map<String, Class<?>> classes) {
         int length = classes.size();
-        List<Dependency> dependencies = null;
+        List<Dependency> dependencies;
         List<Class<?>> classArray = new ArrayList<Class<?>>(classes.values());
         for (int i = 0; i < length; i++) {
             try {

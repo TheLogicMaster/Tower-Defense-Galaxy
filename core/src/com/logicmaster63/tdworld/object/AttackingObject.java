@@ -54,8 +54,8 @@ public abstract class AttackingObject extends Object{
     protected btCollisionObject rayTest(Ray ray, float range) {
         rayFrom.set(ray.origin);
         rayTo.set(ray.direction).scl(range).add(rayFrom);
-        GameScreen.debugVector0 = rayFrom;
-        GameScreen.debugVector1 = rayTo;
+        GameScreen.debugVector0.set(rayFrom);
+        GameScreen.debugVector1.set(rayTo);
         callback.setCollisionObject(null);
         callback.setClosestHitFraction(1f);
         callback.setRayToWorld(rayTo);

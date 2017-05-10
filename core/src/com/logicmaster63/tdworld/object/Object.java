@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -108,21 +109,7 @@ public abstract class Object implements Disposable{
         return null;
     }
 
-    public abstract void render(float delta, ModelBatch modelBatch);
-
-    /*"theme/" + theme + "/tower/" + towerNames.get(i) + ".g3db"
-    public static ArrayList<Asset> getAssets(Class clazz) {
-        ArrayList<Asset> assets = new ArrayList<Asset>();
-        String type;
-        if(clazz.getClass().isAssignableFrom(Basic.class))
-            type = "enemy/";
-        else if(clazz.getClass().isAssignableFrom(Tower.class))
-            type = "tower/";
-        else
-            type = "projectile/";
-        assets.add(new Asset("theme/basic/" + type + clazz.getSimpleName() + ".g3db", Model.class));
-        return assets;
-    }*/
+    public abstract void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer);
 
     @Override
     public void dispose() {

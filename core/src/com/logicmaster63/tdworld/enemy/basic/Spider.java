@@ -2,6 +2,7 @@ package com.logicmaster63.tdworld.enemy.basic;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
@@ -36,7 +37,7 @@ public class Spider extends Enemy {
     }
 
     @Override
-    public void render(float delta, ModelBatch modelBatch) {
-        super.render(delta, modelBatch);
+    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
+        super.render(delta, modelBatch, shapeRenderer);
     }
 }
