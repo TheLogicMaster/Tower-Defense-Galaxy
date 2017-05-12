@@ -39,7 +39,6 @@ import static com.logicmaster63.tdworld.TDWorld.isDebugging;
 
 public class GameScreen extends TDScreen{
 
-    private SpriteBatch batch;
     private Texture background;
     private int map, planetRadius;
     private List<Vector3> path;
@@ -56,7 +55,7 @@ public class GameScreen extends TDScreen{
     private InputHandler inputHandler;
     private List<Projectile> projectiles;
     private Vector3 planetSize, spawnPos;
-    private String planetName, theme, debugString = "DEFAULT";
+    private String planetName, theme;
     private Map<String, Class<?>> classes;
     private List<Spawn> spawns;
     private btCollisionWorld collisionWorld;
@@ -121,8 +120,8 @@ public class GameScreen extends TDScreen{
 
         classes.putAll(FileHandler.loadClasses("com.logicmaster63.tdworld.tower.basic"));
         classes.putAll(FileHandler.loadClasses("com.logicmaster63.tdworld.enemy.basic"));
-
         FileHandler.loadDependencies(classes);
+
         reader = FileHandler.getReader("theme/" + theme + "/SpawnData");
         spawns = FileHandler.loadSpawns(reader);
         try {
@@ -197,9 +196,9 @@ public class GameScreen extends TDScreen{
         //batch.draw(background, 0, 0, 200, 60);
         TDWorld.getFonts().get("moonhouse").draw(batch, "Size:" + objects.size(), 0, 20);
         TDWorld.getFonts().get("moonhouse").draw(batch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
-        //if(TDWorld.isDebugging)
-            //TDWorld.getFonts().get("pixelade").draw(batch, debugString, 0, 40);
         batch.end();
+
+        super.render(delta);
     }
 
     @Override
@@ -285,14 +284,6 @@ public class GameScreen extends TDScreen{
 
     public boolean isRunning() {
         return running;
-    }
-
-    public String getDebugString() {
-        return debugString;
-    }
-
-    public void setDebugString(String debugString) {
-        this.debugString = debugString;
     }
 }
 
