@@ -1,5 +1,6 @@
 package com.logicmaster63.tdworld.enemy.basic;
 
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -11,7 +12,9 @@ import com.logicmaster63.tdworld.TDWorld;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.enums.TargetMode;
 import com.logicmaster63.tdworld.object.Object;
+import com.logicmaster63.tdworld.tools.Asset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,5 +42,11 @@ public class Spider extends Enemy {
     @Override
     public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
         super.render(delta, modelBatch, shapeRenderer);
+    }
+
+    public static ArrayList<Asset> getAssets() {
+        ArrayList<Asset> assets = new ArrayList<Asset>();
+        assets.add(new Asset("theme/basic/enemy/Basic.g3db", Model.class));
+        return assets;
     }
 }

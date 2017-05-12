@@ -46,10 +46,7 @@ public class Laser extends Tower {
     public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
         super.render(delta, modelBatch, shapeRenderer);
         if(laserTime > 0) {
-            //System.out.println(laserTime);
             laserTime -= delta;
-            //GameScreen.debugVector1.set(laserTo);
-            //GameScreen.debugVector0.set(body.getWorldTransform().getTranslation(tempVector));
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(1, 0, 0, 1);
             shapeRenderer.line(pos, laserTo);

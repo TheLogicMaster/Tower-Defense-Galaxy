@@ -15,13 +15,12 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.viewport.*;
+import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdworld.TDWorld;
-import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.map.Spawn;
 import com.logicmaster63.tdworld.projectiles.Projectile;
 import com.logicmaster63.tdworld.tools.*;
@@ -33,8 +32,6 @@ import com.logicmaster63.tdworld.tower.basic.Gun;
 import com.logicmaster63.tdworld.tower.basic.Laser;
 
 import java.io.*;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -69,7 +66,6 @@ public class GameScreen extends TDScreen{
     private ContactHandler contactHandler;
     private Map<Integer, Object> objects;
     private DebugDrawer debugDrawer;
-    public static Vector3 debugVector0 = new Vector3(), debugVector1 = new Vector3();
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
 
@@ -117,27 +113,20 @@ public class GameScreen extends TDScreen{
         batch.getProjectionMatrix().setToOrtho2D(0, 0, 480, 320);
         background = new Texture("Background_MainMenu.png");
 
-        BufferedReader reader = FileHandler.getReader("track\\Track" + Integer.toString(map));
+        BufferedReader reader = FileHandler.getReader("track/Track" + Integer.toString(map));
         path = FileHandler.loadTrack(reader, this);
 
         reader = FileHandler.getReader("theme/" + theme + "/PlanetData");
         FileHandler.loadPlanet(reader, this);
 
-        reader = FileHandler.getReader("theme/" + theme + "/EnemyData");
-        Map<String, Class<?>> hashMap = FileHandler.loadEnemies(reader, theme, this);
-        if(hashMap != null)
-            classes.putAll(hashMap);
-        reader = FileHandler.getReader("theme/" + theme + "/TowerData");
-        hashMap = FileHandler.loadTowers(reader, theme, this);
-        if(hashMap != null)
-            classes.putAll(hashMap);
+        classes.putAll(FileHandler.loadClasses("com.logicmaster63.tdworld.tower.basic"));
+        classes.putAll(FileHandler.loadClasses("com.logicmaster63.tdworld.enemy.basic"));
 
         FileHandler.loadDependencies(classes);
         reader = FileHandler.getReader("theme/" + theme + "/SpawnData");
         spawns = FileHandler.loadSpawns(reader);
         try {
-            if(reader != null)
-                reader.close();
+            reader.close();
         } catch (IOException e) {
             Gdx.app.log("Error", e.toString());
         }
@@ -145,10 +134,9 @@ public class GameScreen extends TDScreen{
         assets = new AssetManager();
         assets.load("theme/" + theme + "/planet.g3db", Model.class);
 
-        for(Class clazz: new ArrayList<Class>(classes.values())) {
+        for(Class<?> clazz: new ArrayList<Class>(classes.values())) {
             try {
-                //clazz.getMethod("getAssets", null);
-                Method method = clazz.getMethod("getAssets", null);
+                Method method = clazz.getMethod("getAssets");
                 ArrayList<Asset> assetsList = null;
                 if(method != null)
                     assetsList = (ArrayList<Asset>) method.invoke(null);
@@ -226,7 +214,7 @@ public class GameScreen extends TDScreen{
         for(Class clazz: new ArrayList<Class>(classes.values())) {
             try {
                 //clazz.getMethod("getAssets", null);
-                Method method = clazz.getMethod("getAssets", null);
+                Method method = clazz.getMethod("getAssets");
                 ArrayList<Asset> assetsList = null;
                 if(method != null)
                     assetsList = (ArrayList<Asset>) method.invoke(null);
@@ -260,8 +248,9 @@ public class GameScreen extends TDScreen{
         collisionWorld.addCollisionObject(collisionObject);
         //System.out.println(planet.calculateBoundingBox(new BoundingBox()).getHeight());
         FileHandler.addDisposables(collisionObject);
-        for(int i = 0; i < models.get("Basic").animations.size; i++)
-            System.out.println(models.get("Basic").animations.get(i).id);
+        if(models.containsKey("Basic"))
+            for(int i = 0; i < models.get("Basic").animations.size; i++)
+                System.out.println(models.get("Basic").animations.get(i).id);
         enemies = new EnemyHandler(spawnPos, classes, spawns, models, path, collisionWorld, objects);
 
         //towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(models.get(0))));

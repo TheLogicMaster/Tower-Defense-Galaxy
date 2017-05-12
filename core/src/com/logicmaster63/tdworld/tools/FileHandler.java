@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdworld.TDWorld;
 import com.logicmaster63.tdworld.map.Curve;
 import com.logicmaster63.tdworld.map.Spawn;
@@ -67,37 +68,16 @@ public class FileHandler {
         return new BufferedReader(new InputStreamReader(Gdx.files.internal(path).read()));
     }
 
-    public static HashMap<String, Class<?>> loadTowers(BufferedReader data, String theme, GameScreen screen) {
-        if (data == null)
-            return null;
+    public static HashMap<String, Class<?>> loadClasses(String pakage) {
         HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
-        String line;
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            int towerNum = Integer.parseInt(data.readLine());
-            for (int i = 0; i < towerNum; i++) {
-                line = data.readLine();
-                classes.put(line, Class.forName("com.logicmaster63.tdworld.tower." + theme + "." + line));
+            for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses()) {
+                if(info.getPackageName().startsWith(pakage))
+                    classes.put(info.getSimpleName(), Class.forName(pakage + "." + info.getSimpleName()));
             }
         } catch (Exception e) {
-            Gdx.app.log("Error", e.toString());
-        }
-        return classes;
-    }
-
-    public static Map<String, Class<?>> loadEnemies(BufferedReader data, String theme, GameScreen screen) {
-        if (data == null)
-            return null;
-        Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
-        String line;
-        try {
-            int enemyNum = Integer.parseInt(data.readLine());
-            for (int i = 0; i < enemyNum; i++) {
-                line = data.readLine();
-                classes.put(line, Class.forName("com.logicmaster63.tdworld.enemy." + theme + "." + line));
-            }
-            data.close();
-        } catch (Exception e) {
-            Gdx.app.log("Error", e.toString());
+            Gdx.app.error("Loading Classes", e.toString());
         }
         return classes;
     }
@@ -120,15 +100,17 @@ public class FileHandler {
 
     public static void loadDependencies(Map<String, Class<?>> classes) {
         int length = classes.size();
-        List<Dependency> dependencies;
+        List<Dependency> dependencies = null;
         List<Class<?>> classArray = new ArrayList<Class<?>>(classes.values());
         for (int i = 0; i < length; i++) {
             try {
-                dependencies = (ArrayList<Dependency>) classArray.get(i).getMethod("getDependencies", null).invoke(null);
+                dependencies = (ArrayList<Dependency>) classArray.get(i).getMethod("getDependencies").invoke(null);
                 if (dependencies != null)
                     for (Dependency dependency : dependencies) {
+                    if(!classes.containsKey(dependency.getName())) {
                         classes.put(dependency.getName(), dependency.getClazz());
                         Gdx.app.log("Dependency Loaded", dependency.getName() + ".class");
+                    }
                     }
             } catch (NoSuchMethodException e) {
 
