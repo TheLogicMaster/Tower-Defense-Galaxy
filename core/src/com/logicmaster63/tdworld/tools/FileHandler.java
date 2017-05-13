@@ -70,14 +70,24 @@ public class FileHandler {
 
     public static HashMap<String, Class<?>> loadClasses(String pakage) {
         HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        try {
-            for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses()) {
-                if(info.getPackageName().startsWith(pakage))
-                    classes.put(info.getSimpleName(), Class.forName(pakage + "." + info.getSimpleName()));
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            Gdx.app.error("Classpath", TDWorld.classGetter.getClasses(pakage).toString());
+            for(Class clazz: TDWorld.classGetter.getClasses(pakage))
+                classes.put(clazz.getSimpleName(), clazz);
+            //getClasspathClasses(TDWorld.context, "com.logicmaster63.tdworld");
+        } else {
+            //Gdx.app.error("Classpath", new ArrayList<Class>(Arrays.asList(getAllClasses("com.logicmaster63.tdworld"))).toString());
+            final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            try {
+                for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses()) {
+                    if (info.getPackageName().startsWith(pakage))
+                        classes.put(info.getSimpleName(), Class.forName(pakage + "." + info.getSimpleName()));
+                }
+
+
+            } catch (Exception e) {
+                Gdx.app.error("Loading Classes", e.toString());
             }
-        } catch (Exception e) {
-            Gdx.app.error("Loading Classes", e.toString());
         }
         return classes;
     }

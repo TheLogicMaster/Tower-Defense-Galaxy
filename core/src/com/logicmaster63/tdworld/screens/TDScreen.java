@@ -12,7 +12,7 @@ public abstract class TDScreen implements Screen {
 
     Game game;
     protected List<Window> windows;
-    protected SpriteBatch batch;
+    protected SpriteBatch spriteBatch;
 
     public TDScreen (Game game) {
         this.game = game;
@@ -51,8 +51,10 @@ public abstract class TDScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        spriteBatch.begin();
         if(windows.size() > 0)
             for(Window window: windows)
-                window.render();
+                window.render(spriteBatch);
+        spriteBatch.end();
     }
 }

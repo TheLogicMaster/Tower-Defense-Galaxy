@@ -1,5 +1,6 @@
 package com.logicmaster63.tdworld.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -19,7 +20,6 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.viewport.*;
-import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdworld.TDWorld;
 import com.logicmaster63.tdworld.map.Spawn;
 import com.logicmaster63.tdworld.projectiles.Projectile;
@@ -30,10 +30,13 @@ import com.logicmaster63.tdworld.object.Object;
 import com.logicmaster63.tdworld.tower.Tower;
 import com.logicmaster63.tdworld.tower.basic.Gun;
 import com.logicmaster63.tdworld.tower.basic.Laser;
+import com.logicmaster63.tdworld.ui.PopupWindow;
 
+import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.List;
 
 import static com.logicmaster63.tdworld.TDWorld.isDebugging;
 
@@ -76,6 +79,8 @@ public class GameScreen extends TDScreen{
 
     @Override
     public void show() {
+        windows.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 100, 100, 100));
+
         collisionConfig = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfig);
         broadphase = new btDbvtBroadphase();
@@ -108,8 +113,8 @@ public class GameScreen extends TDScreen{
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-        batch = new SpriteBatch();
-        batch.getProjectionMatrix().setToOrtho2D(0, 0, 480, 320);
+        spriteBatch = new SpriteBatch();
+        spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, 1080, 720);
         background = new Texture("Background_MainMenu.png");
 
         BufferedReader reader = FileHandler.getReader("track/Track" + Integer.toString(map));
@@ -154,7 +159,7 @@ public class GameScreen extends TDScreen{
             assets.load("theme/" + theme + "/" + planetName + ".png", Texture.class);
         if(planetName == null)
             planetName = "planet";
-        FileHandler.addDisposables(batch, modelBatch, background, broadphase, collisionConfig, dispatcher, collisionWorld, debugDrawer);
+        FileHandler.addDisposables(spriteBatch, modelBatch, background, broadphase, collisionConfig, dispatcher, collisionWorld, debugDrawer);
     }
 
     @Override
@@ -177,10 +182,14 @@ public class GameScreen extends TDScreen{
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        spriteBatch.begin();
+        //spriteBatch.draw(background, 0, 0, 200, 60);
+        spriteBatch.end();
+
         inputHandler.update(delta);
         modelBatch.begin(cam.getCam());
         shapeRenderer.setProjectionMatrix(cam.getCam().combined);
-        objectArray = objects.values().toArray(new Object[]{});
+        objects.values().toArray(objectArray);
         for(Object object: objectArray)
             object.render(delta, modelBatch, shapeRenderer);
         modelBatch.render(planet);
@@ -192,11 +201,11 @@ public class GameScreen extends TDScreen{
             debugDrawer.end();
         }
 
-        batch.begin();
-        //batch.draw(background, 0, 0, 200, 60);
-        TDWorld.getFonts().get("moonhouse").draw(batch, "Size:" + objects.size(), 0, 20);
-        TDWorld.getFonts().get("moonhouse").draw(batch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
-        batch.end();
+        spriteBatch.begin();
+        //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + objects.size(), 0, 20);
+        //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
+        TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + classes.size(), 0, 40);
+        spriteBatch.end();
 
         super.render(delta);
     }
