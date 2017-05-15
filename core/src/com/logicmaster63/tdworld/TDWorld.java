@@ -20,7 +20,7 @@ public class TDWorld extends Game {
 	private static final Map<String, Integer> TYPES;
 	private static int res = 10;
     private static float sensitivity = 0.5f;
-	public static final boolean isDebugging = true;
+	public static final boolean isDebugging = false;
 	private static final List<String> themes = new ArrayList<String>();
 	private static Map<String, BitmapFont> fonts;
 	private static GameScreen gameScreen;
