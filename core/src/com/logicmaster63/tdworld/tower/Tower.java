@@ -7,21 +7,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
-import com.logicmaster63.tdworld.enums.TargetMode;
-import com.logicmaster63.tdworld.object.AttackingObject;
-import com.logicmaster63.tdworld.object.Object;
+import com.logicmaster63.tdworld.object.AttackingEntity;
+import com.logicmaster63.tdworld.object.Entity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Tower extends AttackingObject{
+public abstract class Tower extends AttackingEntity {
 
-    public Tower(Vector3 pos, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate) {
+    public Tower(Vector3 pos, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Entity> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate) {
         this(pos, hp, hp, range, coolDown, types, instance, shape, 0, world, objects, attackAnimation, attackOffset, isTemplate);
     }
 
-    public Tower(Vector3 pos, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate) {
+    public Tower(Vector3 pos, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Entity> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate) {
         super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, objects, attackAnimation, attackOffset, isTemplate);
     }
 
@@ -31,7 +29,7 @@ public abstract class Tower extends AttackingObject{
     }
 
     @Override
-    public void attack(ArrayList<Object> target) {
+    public void attack(ArrayList<Entity> target) {
         super.attack(target);
         if(!"".equals(attackAnimation))
             animation.animate(attackAnimation, 1, new AnimationController.AnimationListener() {

@@ -1,21 +1,18 @@
 package com.logicmaster63.tdworld.object;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.enums.TargetMode;
-import com.logicmaster63.tdworld.screens.GameScreen;
-import com.logicmaster63.tdworld.tools.Tools;
 import com.logicmaster63.tdworld.tower.Tower;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AttackingObject extends Object{
+public abstract class AttackingEntity extends Entity {
 
     protected float coolDown, coolTime = 0, range;
     protected TargetMode targetMode = TargetMode.FIRSTEST;
@@ -24,7 +21,7 @@ public abstract class AttackingObject extends Object{
     private Vector3 rayFrom = new Vector3(), rayTo = new Vector3();
     private ClosestRayResultCallback callback;
 
-    public AttackingObject(Vector3 pos, int hp, int health, int range, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate){
+    public AttackingEntity(Vector3 pos, int hp, int health, int range, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Entity> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate){
         super(pos, hp, health, types, effects, instance, shape, world, objects, isTemplate);
         this.coolDown = coolDown;
         this.range = range;
@@ -38,7 +35,7 @@ public abstract class AttackingObject extends Object{
         super.tick(delta);
         coolTime += delta;
         if(coolTime > coolDown && canAttack()) {
-            ArrayList<Object> targets = target(pos, range, objects, TargetMode.CLOSEST, this instanceof Enemy ? Tower.class: Enemy.class);
+            ArrayList<Entity> targets = target(pos, range, objects, TargetMode.CLOSEST, this instanceof Enemy ? Tower.class: Enemy.class);
             if(targets != null) {
                 attack(targets);
                 coolTime = 0;
@@ -46,7 +43,7 @@ public abstract class AttackingObject extends Object{
         }
     }
 
-    public void attack(ArrayList<Object> targets) {
+    public void attack(ArrayList<Entity> targets) {
         //if(this instanceof Basic)
             //System.out.println(this.toString() + " ---> " + target.toString());
     }
@@ -67,7 +64,7 @@ public abstract class AttackingObject extends Object{
         return null;
     }
 
-    protected boolean canPathTo(Object target) {
+    protected boolean canPathTo(Entity target) {
         btCollisionObject object = rayTest(new Ray(pos, new Vector3(target.body.getWorldTransform().getTranslation(tempVector)).sub(pos)), range);
         //if(this instanceof Tower)
             //System.out.println(object != null && (object.getUserValue() == target.body.getUserValue()));
@@ -82,59 +79,59 @@ public abstract class AttackingObject extends Object{
         return true;
     }
 
-    public ArrayList<Object> target(Vector3 pos, double range, Map<Integer, Object> objectMap, TargetMode mode, Class targetClass) {
-        List<Object> objects = new ArrayList<Object>(objectMap.values());
-        ArrayList<Object> array = new ArrayList<Object>();
-        tempObject = null;
-        if(objects.size() < 1)
+    public ArrayList<Entity> target(Vector3 pos, double range, Map<Integer, Entity> objectMap, TargetMode mode, Class targetClass) {
+        List<Entity> entities = new ArrayList<Entity>(objectMap.values());
+        ArrayList<Entity> array = new ArrayList<Entity>();
+        tempEntity = null;
+        if(entities.size() < 1)
             return null;
-        for(int i = 0; i < objects.size(); i++) {
-            tempVector.set(objects.get(i).pos);
+        for(int i = 0; i < entities.size(); i++) {
+            tempVector.set(entities.get(i).pos);
             //if(this instanceof Basic)
             //System.out.println(i + ": " + (Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2)));
-            if(tempObject == null) {
-                if(targetClass.isInstance(objects.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2) && canPathTo(objects.get(i)))
+            if(tempEntity == null) {
+                if(targetClass.isInstance(entities.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2) && canPathTo(entities.get(i)))
                     if(mode == TargetMode.GROUP)
-                        array.add(objects.get(i));
+                        array.add(entities.get(i));
                     else
-                        tempObject = objects.get(i);
+                        tempEntity = entities.get(i);
             } else {
-                if(targetClass.isInstance(objects.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2) && canPathTo(objects.get(i))) {
+                if(targetClass.isInstance(entities.get(i)) && Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(range, 2) && canPathTo(entities.get(i))) {
                     switch (mode) {
                         case CLOSEST: //Consider using with another test vector object: pos.sub(tempVector).len2() < pos.sub(tempObject.pos).len2()
-                            if(Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(pos.x - tempObject.pos.x, 2) + Math.pow(pos.y - tempObject.pos.y, 2) + Math.pow(pos.z - tempObject.pos.z, 2))
-                                tempObject = objects.get(i);
+                            if(Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) < Math.pow(pos.x - tempEntity.pos.x, 2) + Math.pow(pos.y - tempEntity.pos.y, 2) + Math.pow(pos.z - tempEntity.pos.z, 2))
+                                tempEntity = entities.get(i);
                             break;
                         case FURTHEST:
-                            if(Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) > Math.pow(pos.x - tempObject.pos.x, 2) + Math.pow(pos.y - tempObject.pos.y, 2) + Math.pow(pos.z - tempObject.pos.z, 2))
-                                tempObject = objects.get(i);
+                            if(Math.pow(pos.x - tempVector.x, 2) + Math.pow(pos.y - tempVector.y, 2) + Math.pow(pos.z - tempVector.z, 2) > Math.pow(pos.x - tempEntity.pos.x, 2) + Math.pow(pos.y - tempEntity.pos.y, 2) + Math.pow(pos.z - tempEntity.pos.z, 2))
+                                tempEntity = entities.get(i);
                             break;
                         case FASTEST:
-                            if (objects.get(i) instanceof Enemy && ((Enemy) objects.get(i)).getSpeeed() > ((Enemy) tempObject).getSpeeed())
-                                tempObject = objects.get(i);
+                            if (entities.get(i) instanceof Enemy && ((Enemy) entities.get(i)).getSpeeed() > ((Enemy) tempEntity).getSpeeed())
+                                tempEntity = entities.get(i);
                             break;
                         case SLOWEST:
-                            if (objects.get(i) instanceof Enemy && ((Enemy) objects.get(i)).getSpeeed() < ((Enemy) tempObject).getSpeeed())
-                                tempObject = objects.get(i);
+                            if (entities.get(i) instanceof Enemy && ((Enemy) entities.get(i)).getSpeeed() < ((Enemy) tempEntity).getSpeeed())
+                                tempEntity = entities.get(i);
                             break;
                         case STRONGEST:
-                            if (objects.get(i).health > tempObject.health)
-                                tempObject = objects.get(i);
+                            if (entities.get(i).health > tempEntity.health)
+                                tempEntity = entities.get(i);
                             break;
                         case WEAKEST:
-                            if (objects.get(i).health < tempObject.health)
-                                tempObject = objects.get(i);
+                            if (entities.get(i).health < tempEntity.health)
+                                tempEntity = entities.get(i);
                             break;
                         case FIRSTEST:
-                            if(objects.get(i) instanceof Enemy && ((Enemy) objects.get(i)).getDist() > ((Enemy) tempObject).getDist())
-                                tempObject = objects.get(i);
+                            if(entities.get(i) instanceof Enemy && ((Enemy) entities.get(i)).getDist() > ((Enemy) tempEntity).getDist())
+                                tempEntity = entities.get(i);
                             break;
                         case LASTEST:
-                            if(objects.get(i) instanceof Enemy && ((Enemy) objects.get(i)).getDist() < ((Enemy) tempObject).getDist())
-                                tempObject = objects.get(i);
+                            if(entities.get(i) instanceof Enemy && ((Enemy) entities.get(i)).getDist() < ((Enemy) tempEntity).getDist())
+                                tempEntity = entities.get(i);
                             break;
                         case GROUP:
-                            array.add(objects.get(i));
+                            array.add(entities.get(i));
                             break;
                     }
                 }
@@ -143,9 +140,9 @@ public abstract class AttackingObject extends Object{
         if(mode == TargetMode.GROUP) {
             return array;
         } else {
-            if(tempObject == null)
+            if(tempEntity == null)
                 return null;
-            array.add(tempObject);
+            array.add(tempEntity);
             return array;
         }
     }

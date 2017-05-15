@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.logicmaster63.tdworld.projectiles.basic.Bullet;
 import com.logicmaster63.tdworld.tools.Asset;
 import com.logicmaster63.tdworld.tools.Dependency;
-import com.logicmaster63.tdworld.object.Object;
+import com.logicmaster63.tdworld.object.Entity;
 import com.logicmaster63.tdworld.tower.ProjectileTower;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class Gun extends ProjectileTower{
     public static final String ATTACK_ANIMATION = "";
     public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
 
-    public Gun(Vector3 pos, int types, ModelInstance instance, ModelInstance bulletInstance, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate) {
+    public Gun(Vector3 pos, int types, ModelInstance instance, ModelInstance bulletInstance, btCollisionWorld world, Map<Integer, Entity> objects, boolean isTemplate) {
         super(pos, HP, RANGE, COOLDOWN, types, instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, new Bullet(bulletInstance, true, world, objects), ATTACK_OFFSET, isTemplate);
         for(int i = 0; i < instance.nodes.size; i++)
             System.out.println(instance.nodes.get(i).id);

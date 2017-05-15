@@ -1,9 +1,7 @@
 package com.logicmaster63.tdworld.object;
 
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Quaternion;
@@ -12,17 +10,11 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.Disposable;
 import com.logicmaster63.tdworld.enemy.Enemy;
-import com.logicmaster63.tdworld.enemy.basic.Basic;
-import com.logicmaster63.tdworld.enums.TargetMode;
 import com.logicmaster63.tdworld.projectiles.Projectile;
-import com.logicmaster63.tdworld.tools.Asset;
-import com.logicmaster63.tdworld.tower.Tower;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-public abstract class Object implements Disposable{
+public abstract class Entity implements Disposable{
 
     protected Vector3 pos, tempVector;
     protected int hp, health, effects, types;
@@ -31,13 +23,13 @@ public abstract class Object implements Disposable{
     protected btCollisionShape shape;
     protected btCollisionWorld world;
     protected btCollisionObject body;
-    protected Object tempObject;
-    protected Map<Integer, Object> objects;
+    protected Entity tempEntity;
+    protected Map<Integer, Entity> objects;
     protected Quaternion quaternion;
     protected BoundingBox boundingBox;
     protected boolean isTemplate;
 
-    public Object(Vector3 pos, int hp, int health, int types, int effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Object> objects, boolean isTemplate){
+    public Entity(Vector3 pos, int hp, int health, int types, int effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Entity> objects, boolean isTemplate){
         this.instance = instance;
         this.pos = pos;
         this.hp = hp;
@@ -102,8 +94,8 @@ public abstract class Object implements Disposable{
         return index;
     }
 
-    protected Map.Entry<Integer, Object> getEntry() {
-        for(Map.Entry<Integer, Object> entry: objects.entrySet())
+    protected Map.Entry<Integer, Entity> getEntry() {
+        for(Map.Entry<Integer, Entity> entry: objects.entrySet())
             if(entry.equals(this))
                 return entry;
         return null;

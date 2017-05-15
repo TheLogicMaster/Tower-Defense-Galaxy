@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.map.Spawn;
-import com.logicmaster63.tdworld.object.Object;
+import com.logicmaster63.tdworld.object.Entity;
 import com.logicmaster63.tdworld.screens.GameScreen;
 
 import java.lang.reflect.Constructor;
@@ -29,9 +29,9 @@ public class EnemyHandler {
     private List<Spawn> spawns;
     private List<Vector3> path;
     private btCollisionWorld world;
-    private Map<Integer, Object> objects;
+    private Map<Integer, Entity> objects;
 
-    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Enemy> enemies, List<Vector3> path, btCollisionWorld world, Map<Integer, Object> objects) {
+    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Enemy> enemies, List<Vector3> path, btCollisionWorld world, Map<Integer, Entity> objects) {
         this.enemies = enemies;
         this.pos = pos;
         this.enemyClasses = enemyClasses;
@@ -43,7 +43,7 @@ public class EnemyHandler {
         System.out.println(spawns);
     }
 
-    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Vector3> path, btCollisionWorld world, Map<Integer, Object> objects) {
+    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Vector3> path, btCollisionWorld world, Map<Integer, Entity> objects) {
         this(pos, enemyClasses, spawns, models, new ArrayList<Enemy>(), path, world, objects);
     }
 

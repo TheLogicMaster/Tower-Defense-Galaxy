@@ -1,6 +1,5 @@
 package com.logicmaster63.tdworld.screens;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -26,13 +25,12 @@ import com.logicmaster63.tdworld.projectiles.Projectile;
 import com.logicmaster63.tdworld.tools.*;
 import com.logicmaster63.tdworld.tools.EnemyHandler;
 import com.logicmaster63.tdworld.tools.ContactHandler;
-import com.logicmaster63.tdworld.object.Object;
+import com.logicmaster63.tdworld.object.Entity;
 import com.logicmaster63.tdworld.tower.Tower;
 import com.logicmaster63.tdworld.tower.basic.Gun;
 import com.logicmaster63.tdworld.tower.basic.Laser;
 import com.logicmaster63.tdworld.ui.PopupWindow;
 
-import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -66,7 +64,7 @@ public class GameScreen extends TDScreen{
     private btCollisionConfiguration collisionConfig;
     private btDispatcher dispatcher;
     private ContactHandler contactHandler;
-    private Map<Integer, Object> objects;
+    private Map<Integer, Entity> objects;
     private DebugDrawer debugDrawer;
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
@@ -88,7 +86,7 @@ public class GameScreen extends TDScreen{
         shapeRenderer = new ShapeRenderer();
         FileHandler.addDisposables(shapeRenderer);
 
-        objects = new HashMap<Integer, Object>();
+        objects = new HashMap<Integer, Entity>();
         spawns = new ArrayList<Spawn>();
         cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000);
         //viewport = new StretchViewport(100, 100, cam.getCam());
@@ -171,9 +169,9 @@ public class GameScreen extends TDScreen{
                 return;
         }
 
-        Object objectArray[] = objects.values().toArray(new Object[]{});
-        for(Object object: objectArray) {
-            object.tick(delta);
+        Entity entityArray[] = objects.values().toArray(new Entity[]{});
+        for(Entity entity : entityArray) {
+            entity.tick(delta);
         }
         enemies.tick(delta, this);
 
@@ -189,9 +187,9 @@ public class GameScreen extends TDScreen{
         inputHandler.update(delta);
         modelBatch.begin(cam.getCam());
         shapeRenderer.setProjectionMatrix(cam.getCam().combined);
-        objects.values().toArray(objectArray);
-        for(Object object: objectArray)
-            object.render(delta, modelBatch, shapeRenderer);
+        objects.values().toArray(entityArray);
+        for(Entity entity : entityArray)
+            entity.render(delta, modelBatch, shapeRenderer);
         modelBatch.render(planet);
         modelBatch.end();
 
