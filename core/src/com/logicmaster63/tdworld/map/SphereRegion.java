@@ -1,15 +1,27 @@
 package com.logicmaster63.tdworld.map;
 
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 
 public class SphereRegion extends Region {
 
     private float radius;
 
-
     public SphereRegion(Vector3 pos, float radius) {
         super(pos);
         this.radius = radius;
+    }
+
+    @Override
+    public btCollisionObject createCollisionObject() {
+        btCollisionObject collisionObject = new btCollisionObject();
+        collisionObject.setCollisionShape(new btSphereShape(radius));
+        collisionObject.setWorldTransform(new Matrix4().setTranslation(pos));
+        return collisionObject;
     }
 
     @Override

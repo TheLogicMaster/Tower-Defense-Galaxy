@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
-import com.logicmaster63.tdworld.object.AttackingEntity;
-import com.logicmaster63.tdworld.object.Entity;
+import com.logicmaster63.tdworld.entity.AttackingEntity;
+import com.logicmaster63.tdworld.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;

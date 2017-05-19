@@ -18,9 +18,10 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useAccelerometer = false;
-		config.useCompass = false;
+		config.useAccelerometer = true;
 		config.useWakelock = true;
+		config.useImmersiveMode = false;
+		config.useGyroscope = true;
 		initialize(new TDWorld(new ClassGetter() {
 			@Override
 			public Set<Class<?>> getClasses(String packageName) {

@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
 import com.logicmaster63.tdworld.enemy.Enemy;
-import com.logicmaster63.tdworld.object.Entity;
+import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.projectiles.Projectile;
 import com.logicmaster63.tdworld.tower.Tower;
 import com.logicmaster63.tdworld.traps.Trap;

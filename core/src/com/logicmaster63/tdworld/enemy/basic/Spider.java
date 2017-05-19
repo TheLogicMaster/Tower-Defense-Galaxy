@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.logicmaster63.tdworld.enemy.Enemy;
-import com.logicmaster63.tdworld.object.Entity;
+import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.tools.Asset;
 
 import java.util.ArrayList;

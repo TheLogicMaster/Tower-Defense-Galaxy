@@ -1,5 +1,59 @@
 package com.logicmaster63.tdworld.server;
 
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
+import com.logicmaster63.tdworld.enums.ClientType;
+import com.logicmaster63.tdworld.tools.*;
+import com.logicmaster63.tdworld.tools.Network;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 public class TDServer {
 
+    Server server;
+
+    public TDServer() throws IOException {
+        server = new Server() {
+            @Override
+            protected Connection newConnection() {
+                return new TDConnection();
+            }
+        };
+        com.logicmaster63.tdworld.tools.Network.register(server);
+        server.addListener(new Listener() {
+
+            @Override
+            public void received(Connection c, Object o) {
+                TDConnection connection = ((TDConnection) c);
+
+                if(o instanceof Network.Request) {
+                    if("ShareHosts".equals(((Network.Request) o).request)) {
+                        ArrayList<String> ids = new ArrayList<String>();
+                        for(int i = 0; i < server.getConnections().length; i++)
+                            if(((TDConnection) server.getConnections()[i]).type == ClientType.SHARE_HOST)
+                                ids.add(((TDConnection) server.getConnections()[i]).id);
+                        Network.ChangeValue changeValue = new Network.ChangeValue("ShareHosts", ids);
+                        server.sendToTCP(c.getID(), changeValue);
+                    }
+                }
+            }
+        });
+        server.bind(Network.PORT);
+        server.start();
+    }
+
+    public static void main (String[] args) throws IOException {
+        Log.set(Log.LEVEL_DEBUG);
+        new TDServer();
+    }
+
+    public class TDConnection extends Connection {
+        public String id;
+        public ClientType type;
+    }
 }

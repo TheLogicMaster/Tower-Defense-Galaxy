@@ -1,4 +1,4 @@
-package com.logicmaster63.tdworld.object;
+package com.logicmaster63.tdworld.entity;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;

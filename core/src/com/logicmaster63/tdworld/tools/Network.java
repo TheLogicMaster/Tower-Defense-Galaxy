@@ -3,28 +3,53 @@ package com.logicmaster63.tdworld.tools;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.logicmaster63.tdworld.enums.ClientType;
-import com.logicmaster63.tdworld.object.Entity;
-
-import java.util.ArrayList;
 
 public class Network {
 
-    public static final int PORT = 66666;
+    public static final int PORT = 2832;
 
     public static void register(EndPoint endPoint) {
         Kryo kryo = endPoint.getKryo();
-        kryo.register(RegisterClient.class);
-        kryo.register(UpdateObjects.class);
+        //kryo.register(UpdateObjects.class);
+        kryo.register(Register.class);
+        kryo.register(Request.class);
+        kryo.register(ChangeValue.class);
     }
 
-    public class RegisterClient {
-        public String id;
-        public String name;
-        public ClientType type;
-    }
+    /*public class UpdateObjects {
 
-    public class UpdateObjects {
         public ArrayList<Entity> entities;
+        public Save save;
 
+        public UpdateObjects(ArrayList<Entity> entities, Save save) {
+            this.entities = entities;
+            this.save = save;
+        }
+    }*/
+
+    public static class Request {
+        public String request;
+    }
+
+    public static class ChangeValue {
+
+        public String value;
+        public Object object;
+
+        public ChangeValue(String value, Object object) {
+            this.value = value;
+            this.object = object;
+        }
+    }
+
+    public static class Register {
+
+        public ClientType type;
+        public String id;
+
+        public Register(String id, ClientType type) {
+            this.id = id;
+            this.type = type;
+        }
     }
 }

@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
-import com.logicmaster63.tdworld.object.Entity;
+import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.projectiles.basic.Bullet;
 import com.logicmaster63.tdworld.tools.Asset;
 import com.logicmaster63.tdworld.tools.Dependency;

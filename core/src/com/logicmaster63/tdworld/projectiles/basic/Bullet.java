@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
-import com.logicmaster63.tdworld.object.Entity;
+import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.projectiles.Projectile;
 import com.logicmaster63.tdworld.tools.Asset;
 

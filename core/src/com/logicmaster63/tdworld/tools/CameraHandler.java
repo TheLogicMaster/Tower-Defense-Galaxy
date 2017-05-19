@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.brummid.vrcamera.VRCamera;
 import com.logicmaster63.tdworld.TDWorld;
 
 public class CameraHandler{
@@ -12,6 +13,7 @@ public class CameraHandler{
     private PerspectiveCamera cam;
     private Vector3 tmp, origin;
     private float xRot, yRot, zRot;
+    private VRCamera vrCamera;
 
     public CameraHandler(Vector3 pos, float near, float far) {
         this(new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), pos, new Vector3(0, 0, 0), near, far);
@@ -19,14 +21,6 @@ public class CameraHandler{
 
     public CameraHandler(Vector3 pos, int width, int height, float near, float far) {
         this(new PerspectiveCamera(67, width, height), pos, new Vector3(0, 0, 0), near, far);
-    }
-
-    public CameraHandler(Vector3 pos, int fov, int width, int height, float near, float far) {
-        this(new PerspectiveCamera(fov, width, height), pos, new Vector3(0, 0, 0), near, far);
-    }
-
-    public CameraHandler(Vector3 pos, Vector3 looking, int fov, int width, int height, float near, float far) {
-        this(new PerspectiveCamera(fov, width, height), pos, looking, near, far);
     }
 
     public CameraHandler(PerspectiveCamera cam, Vector3 pos, Vector3 looking, float near, float far) {
@@ -38,6 +32,7 @@ public class CameraHandler{
         this.cam = cam;
         tmp = new Vector3(0, 0,0 );
         origin = new Vector3(0, 0, 0);
+
     }
 
     public PerspectiveCamera getCam() {
@@ -71,8 +66,8 @@ public class CameraHandler{
     }
 
     public void touchDragged (int screenX, int screenY, int pointer) {
-        float deltaX = -Gdx.input.getDeltaX() * TDWorld.getSensitivity();
-        float deltaY = -Gdx.input.getDeltaY() * TDWorld.getSensitivity();
+        float deltaX = -Gdx.input.getDeltaX() * TDWorld.sensitivity;
+        float deltaY = -Gdx.input.getDeltaY() * TDWorld.sensitivity;
         //cam.direction.rotate(cam.up, deltaX);
         //tempVector.set(cam.direction).crs(cam.up).nor();
         //cam.direction.rotate(tempVector, deltaY);

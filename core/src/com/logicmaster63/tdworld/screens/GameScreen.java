@@ -25,7 +25,7 @@ import com.logicmaster63.tdworld.projectiles.Projectile;
 import com.logicmaster63.tdworld.tools.*;
 import com.logicmaster63.tdworld.tools.EnemyHandler;
 import com.logicmaster63.tdworld.tools.ContactHandler;
-import com.logicmaster63.tdworld.object.Entity;
+import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.tower.Tower;
 import com.logicmaster63.tdworld.tower.basic.Gun;
 import com.logicmaster63.tdworld.tower.basic.Laser;
@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 
-import static com.logicmaster63.tdworld.TDWorld.isDebugging;
+import static com.logicmaster63.tdworld.TDWorld.debug;
 
 public class GameScreen extends TDScreen{
 
@@ -64,7 +64,7 @@ public class GameScreen extends TDScreen{
     private btCollisionConfiguration collisionConfig;
     private btDispatcher dispatcher;
     private ContactHandler contactHandler;
-    private Map<Integer, Entity> objects;
+    private Map<Integer, Entity> entities;
     private DebugDrawer debugDrawer;
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
@@ -86,7 +86,7 @@ public class GameScreen extends TDScreen{
         shapeRenderer = new ShapeRenderer();
         FileHandler.addDisposables(shapeRenderer);
 
-        objects = new HashMap<Integer, Entity>();
+        entities = new HashMap<Integer, Entity>();
         spawns = new ArrayList<Spawn>();
         cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000);
         //viewport = new StretchViewport(100, 100, cam.getCam());
@@ -101,7 +101,7 @@ public class GameScreen extends TDScreen{
         debugDrawer = new DebugDrawer();
         collisionWorld.setDebugDrawer(debugDrawer);
         debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
-        contactHandler = new ContactHandler(objects, planet);
+        contactHandler = new ContactHandler(entities, planet);
 
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(inputHandler);
@@ -169,7 +169,7 @@ public class GameScreen extends TDScreen{
                 return;
         }
 
-        Entity entityArray[] = objects.values().toArray(new Entity[]{});
+        Entity entityArray[] = entities.values().toArray(new Entity[]{});
         for(Entity entity : entityArray) {
             entity.tick(delta);
         }
@@ -187,20 +187,20 @@ public class GameScreen extends TDScreen{
         inputHandler.update(delta);
         modelBatch.begin(cam.getCam());
         shapeRenderer.setProjectionMatrix(cam.getCam().combined);
-        objects.values().toArray(entityArray);
+        entities.values().toArray(entityArray);
         for(Entity entity : entityArray)
             entity.render(delta, modelBatch, shapeRenderer);
         modelBatch.render(planet);
         modelBatch.end();
 
-        if(isDebugging) {
+        if(debug) {
             debugDrawer.begin(cam.getCam());
             collisionWorld.debugDrawWorld();
             debugDrawer.end();
         }
 
         spriteBatch.begin();
-        //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + objects.size(), 0, 20);
+        //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + entities.size(), 0, 20);
         //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
         TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + classes.size(), 0, 40);
         spriteBatch.end();
@@ -257,13 +257,13 @@ public class GameScreen extends TDScreen{
         if(models.containsKey("Basic"))
             for(int i = 0; i < models.get("Basic").animations.size; i++)
                 System.out.println(models.get("Basic").animations.get(i).id);
-        enemies = new EnemyHandler(spawnPos, classes, spawns, models, path, collisionWorld, objects);
+        enemies = new EnemyHandler(spawnPos, classes, spawns, models, path, collisionWorld, entities);
 
         //towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(models.get(0))));
         if(models.containsKey("Laser"))
-            towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), new ModelInstance(models.get("Laser")), collisionWorld, objects, false));
+            towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), new ModelInstance(models.get("Laser")), collisionWorld, entities, false));
         if(models.containsKey("Gun"))
-            towers.add(new Gun(new Vector3(100, planetRadius + 100, 0), 0, new ModelInstance(models.get("Gun")), new ModelInstance(models.get("Bullet")),collisionWorld, objects, false));
+            towers.add(new Gun(new Vector3(100, planetRadius + 100, 0), 0, new ModelInstance(models.get("Gun")), new ModelInstance(models.get("Bullet")),collisionWorld, entities, false));
         //ModelInstance instance = new ModelInstance(models.get(0));
         //instance.materials.get(0).set(new BlendingAttribute(0.5f));
         //enemies.add(new Spider(new Vector3(0, 0, 0), 20d, 10, 500, 0, instance, new btBoxShape(instance.model.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()))));

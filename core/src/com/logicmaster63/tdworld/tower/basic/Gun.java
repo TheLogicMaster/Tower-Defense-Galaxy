@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.logicmaster63.tdworld.projectiles.basic.Bullet;
 import com.logicmaster63.tdworld.tools.Asset;
 import com.logicmaster63.tdworld.tools.Dependency;
-import com.logicmaster63.tdworld.object.Entity;
+import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.tower.ProjectileTower;
 
 import java.util.ArrayList;
