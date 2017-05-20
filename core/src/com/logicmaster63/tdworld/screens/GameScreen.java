@@ -5,20 +5,26 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Affine2;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.viewport.*;
+import com.brummid.vrcamera.RendererForVR;
 import com.logicmaster63.tdworld.TDWorld;
 import com.logicmaster63.tdworld.map.Spawn;
 import com.logicmaster63.tdworld.projectiles.Projectile;
@@ -36,9 +42,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 
-import static com.logicmaster63.tdworld.TDWorld.debug;
-
-public class GameScreen extends TDScreen{
+public class GameScreen extends TDScreen implements RendererForVR{
 
     private Texture background;
     private int map, planetRadius;
@@ -88,7 +92,7 @@ public class GameScreen extends TDScreen{
 
         entities = new HashMap<Integer, Entity>();
         spawns = new ArrayList<Spawn>();
-        cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000);
+        cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
         //viewport = new StretchViewport(100, 100, cam.getCam());
         //viewport.apply();
         inputHandler = new InputHandler(cam);
@@ -98,6 +102,7 @@ public class GameScreen extends TDScreen{
         path = new ArrayList<Vector3>();
         towers = new ArrayList<Tower>();
         modelBatch = new ModelBatch();
+
         debugDrawer = new DebugDrawer();
         collisionWorld.setDebugDrawer(debugDrawer);
         debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
@@ -161,6 +166,21 @@ public class GameScreen extends TDScreen{
     }
 
     @Override
+    public void renderForVR(PerspectiveCamera perspectiveCamera) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+        Entity entityArray[] = entities.values().toArray(new Entity[]{});
+        modelBatch.begin(perspectiveCamera);
+        shapeRenderer.setProjectionMatrix(perspectiveCamera.combined);
+        entities.values().toArray(entityArray);
+        for(Entity entity : entityArray)
+            entity.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
+        modelBatch.render(planet);
+        modelBatch.end();
+    }
+
+    @Override
     public void render(float delta) {
         if (loading) {
             if (assets.update())
@@ -177,7 +197,7 @@ public class GameScreen extends TDScreen{
 
         collisionWorld.performDiscreteCollisionDetection();
 
-        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         spriteBatch.begin();
@@ -185,15 +205,16 @@ public class GameScreen extends TDScreen{
         spriteBatch.end();
 
         inputHandler.update(delta);
-        modelBatch.begin(cam.getCam());
+        cam.render(spriteBatch);
+        /*modelBatch.begin(cam.getCam());
         shapeRenderer.setProjectionMatrix(cam.getCam().combined);
         entities.values().toArray(entityArray);
         for(Entity entity : entityArray)
             entity.render(delta, modelBatch, shapeRenderer);
         modelBatch.render(planet);
-        modelBatch.end();
+        modelBatch.end();*/
 
-        if(debug) {
+        if(TDWorld.isDebug()) {
             debugDrawer.begin(cam.getCam());
             collisionWorld.debugDrawWorld();
             debugDrawer.end();

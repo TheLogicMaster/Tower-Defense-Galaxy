@@ -2,9 +2,12 @@ package com.logicmaster63.tdworld.tools;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCamera;
 import com.logicmaster63.tdworld.TDWorld;
 
@@ -14,29 +17,41 @@ public class CameraHandler{
     private Vector3 tmp, origin;
     private float xRot, yRot, zRot;
     private VRCamera vrCamera;
+    private RendererForVR rendererForVR;
 
-    public CameraHandler(Vector3 pos, float near, float far) {
-        this(new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), pos, new Vector3(0, 0, 0), near, far);
+    public CameraHandler(Vector3 pos, float near, float far, RendererForVR rendererForVR) {
+        this(new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), new VRCamera(67, near, far, 0.5f, (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight(), rendererForVR), pos, new Vector3(0, 0, 0), near, far, rendererForVR);
     }
 
-    public CameraHandler(Vector3 pos, int width, int height, float near, float far) {
-        this(new PerspectiveCamera(67, width, height), pos, new Vector3(0, 0, 0), near, far);
+    public CameraHandler(Vector3 pos, int width, int height, float near, float far, RendererForVR rendererForVR) {
+        this(new PerspectiveCamera(67, width, height), new VRCamera(67, near, far, 0.5f, (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight(), rendererForVR), pos, new Vector3(0, 0, 0), near, far, rendererForVR);
     }
 
-    public CameraHandler(PerspectiveCamera cam, Vector3 pos, Vector3 looking, float near, float far) {
+    public CameraHandler(PerspectiveCamera cam, VRCamera vrCamera, Vector3 pos, Vector3 looking, float near, float far, RendererForVR rendererForVR) {
         cam.position.set(pos);
         cam.lookAt(looking);
         cam.near = near;
         cam.far = far;
-        cam.update();
+        //cam.update();
+        this.rendererForVR = rendererForVR;
         this.cam = cam;
+        this.vrCamera = vrCamera;
+        vrCamera.setToTranslation(pos);
+        vrCamera.lookAt(looking);
         tmp = new Vector3(0, 0,0 );
         origin = new Vector3(0, 0, 0);
-
     }
 
     public PerspectiveCamera getCam() {
         return cam;
+    }
+
+    public void render(Batch batch) {
+        if(TDWorld.isVr())
+            vrCamera.render(batch);
+        else {
+            rendererForVR.renderForVR(cam);
+        }
     }
 
     public void update(float delta, IntIntMap keys) {
@@ -63,16 +78,31 @@ public class CameraHandler{
         if(dir > 0)
             rotate(dir, delta * 100f);
         cam.update();
+        vrCamera.update();
     }
 
     public void touchDragged (int screenX, int screenY, int pointer) {
-        float deltaX = -Gdx.input.getDeltaX() * TDWorld.sensitivity;
-        float deltaY = -Gdx.input.getDeltaY() * TDWorld.sensitivity;
+        float deltaX = -Gdx.input.getDeltaX() * TDWorld.getSensitivity();
+        float deltaY = -Gdx.input.getDeltaY() * TDWorld.getSensitivity();
         //cam.direction.rotate(cam.up, deltaX);
         //tempVector.set(cam.direction).crs(cam.up).nor();
         //cam.direction.rotate(tempVector, deltaY);
         cam.rotateAround(origin, Vector3.Z, deltaX);
         cam.rotateAround(origin, Vector3.X, deltaY);
+
+        tmp.set(origin);
+        tmp.sub(vrCamera.getPosition());
+        vrCamera.translate(tmp);
+        vrCamera.rotate(0, 0, deltaX);
+        tmp.rotate(Vector3.Z, deltaX);
+        vrCamera.translate(-tmp.x, -tmp.y, -tmp.z);
+
+        tmp.set(origin);
+        tmp.sub(vrCamera.getPosition());
+        vrCamera.translate(tmp);
+        vrCamera.rotate(deltaY, 0, 0);
+        tmp.rotate(Vector3.X, deltaY);
+        vrCamera.translate(-tmp.x, -tmp.y, -tmp.z);
     }
 
     public void scrolled(int amount) {
@@ -91,10 +121,24 @@ public class CameraHandler{
         } else {
             zRot -= angle;
         }
-        if((dir & 1 << 0) == 1 << 0 || (dir & 1 << 1) == 1 << 1)
+        if((dir & 1 << 0) == 1 << 0 || (dir & 1 << 1) == 1 << 1) {
             cam.rotateAround(origin, Vector3.X, angle * angleXMult);
-        if((dir & 1 << 2) == 1 << 2 || (dir & 1 << 3) == 1 << 3)
+            tmp.set(origin);
+            tmp.sub(vrCamera.getPosition());
+            vrCamera.translate(tmp);
+            vrCamera.rotate(angle * angleXMult, 0, 0);
+            tmp.rotate(Vector3.X, angle * angleXMult);
+            vrCamera.translate(-tmp.x, -tmp.y, -tmp.z);
+        }
+        if((dir & 1 << 2) == 1 << 2 || (dir & 1 << 3) == 1 << 3) {
             cam.rotateAround(origin, Vector3.Z, angle * angleZMult);
+            tmp.set(origin);
+            tmp.sub(vrCamera.getPosition());
+            vrCamera.translate(tmp);
+            vrCamera.rotate(0, 0, angle * angleZMult);
+            tmp.rotate(Vector3.Z, angle * angleZMult);
+            vrCamera.translate(-tmp.x, -tmp.y, -tmp.z);
+        }
     }
 
     public float getCameraRotationX() {

@@ -20,12 +20,13 @@ public class TDWorld extends Game {
 	private static Map<String, BitmapFont> fonts;
 	private static GameScreen gameScreen;
     public static ClassGetter classGetter;
-    public static String ip = "";
+    private static String ip = "";
 
     private Preferences prefs;
-    public static int res = 10;
-    public static float sensitivity = 0.5f;
-    public static boolean debug = true;
+    private static int res = 10;
+    private static float sensitivity = 0.5f;
+    private static boolean debug = true;
+    private static boolean vr = false;
 
 	static {
 		TYPES = new HashMap<String, Integer>();
@@ -81,6 +82,7 @@ public class TDWorld extends Game {
 
     private void loadPrefs() {
         debug = (Boolean) getPref("debug", debug);
+        vr = (Boolean) getPref("vr", vr);
         sensitivity = (Float) getPref("sensitivity", sensitivity);
         res = (Integer) getPref("res", res);
     }
@@ -120,5 +122,25 @@ public class TDWorld extends Game {
 
     public static Map<String, Integer> getTYPES() {
         return TYPES;
+    }
+
+    public static String getIp() {
+        return ip;
+    }
+
+    public static int getRes() {
+        return res;
+    }
+
+    public static float getSensitivity() {
+        return sensitivity;
+    }
+
+    public static boolean isDebug() {
+        return debug;
+    }
+
+    public static boolean isVr() {
+        return vr;
     }
 }

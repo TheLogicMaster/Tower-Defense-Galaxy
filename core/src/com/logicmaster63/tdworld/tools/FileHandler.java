@@ -54,7 +54,7 @@ public class FileHandler {
                 line = data.readLine();
             }
             for (Track t : track) {
-                path.addAll(t.getPoints(TDWorld.res));
+                path.addAll(t.getPoints(TDWorld.getRes()));
                 //System.out.println(t.getPoints(TDWorld.res));
                 //System.out.println(path);
             }
