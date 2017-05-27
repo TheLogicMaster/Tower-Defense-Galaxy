@@ -25,6 +25,7 @@ import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.viewport.*;
 import com.brummid.vrcamera.RendererForVR;
+import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.logicmaster63.tdworld.TDWorld;
 import com.logicmaster63.tdworld.map.Spawn;
 import com.logicmaster63.tdworld.projectiles.Projectile;
@@ -72,6 +73,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private DebugDrawer debugDrawer;
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
+    private VRCameraInputAdapter vrCameraInputAdapter;
 
     public GameScreen(Game game, int map, String theme) {
         super(game);
@@ -93,6 +95,9 @@ public class GameScreen extends TDScreen implements RendererForVR{
         entities = new HashMap<Integer, Entity>();
         spawns = new ArrayList<Spawn>();
         cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
+
+        vrCameraInputAdapter = new VRCameraInputAdapter(cam.getVRCam());
+        vrCameraInputAdapter.setLogging(true);
         //viewport = new StretchViewport(100, 100, cam.getCam());
         //viewport.apply();
         inputHandler = new InputHandler(cam);
@@ -205,6 +210,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spriteBatch.end();
 
         inputHandler.update(delta);
+        if(Gdx.graphics.getDeltaTime() > 0)vrCameraInputAdapter.update(Gdx.graphics.getDeltaTime());
         cam.render(spriteBatch);
         /*modelBatch.begin(cam.getCam());
         shapeRenderer.setProjectionMatrix(cam.getCam().combined);

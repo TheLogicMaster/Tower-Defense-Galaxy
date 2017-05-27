@@ -66,6 +66,7 @@ project(":android") {
 
     dependencies {
         compile project(":core")
+        compile fileTree(dir: 'libs', include: '*.jar')
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"

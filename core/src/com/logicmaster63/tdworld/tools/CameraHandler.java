@@ -46,6 +46,10 @@ public class CameraHandler{
         return cam;
     }
 
+    public VRCamera getVRCam() {
+        return vrCamera;
+    }
+
     public void render(Batch batch) {
         if(TDWorld.isVr())
             vrCamera.render(batch);
