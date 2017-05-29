@@ -2,28 +2,21 @@ package com.logicmaster63.tdworld.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Affine2;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
-import com.badlogic.gdx.utils.viewport.*;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.logicmaster63.tdworld.TDWorld;
@@ -36,7 +29,9 @@ import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.tower.Tower;
 import com.logicmaster63.tdworld.tower.basic.Gun;
 import com.logicmaster63.tdworld.tower.basic.Laser;
-import com.logicmaster63.tdworld.ui.PopupWindow;
+import com.logicmaster63.tdworld.ui.*;
+import com.logicmaster63.tdworld.ui.Closeable;
+import com.logicmaster63.tdworld.ui.window.PopupWindow;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -56,9 +51,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private Map<String, Model> models;
     private boolean loading, hasPlanetModel, running;
     private ModelInstance planet;
-    private InputMultiplexer inputMultiplexer;
     private CameraHandler cam;
-    private InputHandler inputHandler;
     private List<Projectile> projectiles;
     private Vector3 planetSize, spawnPos;
     private String planetName, theme;
@@ -72,7 +65,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private Map<Integer, Entity> entities;
     private DebugDrawer debugDrawer;
     private ShapeRenderer shapeRenderer;
-    private Viewport viewport;
+    //private Viewport viewport;
     private VRCameraInputAdapter vrCameraInputAdapter;
 
     public GameScreen(Game game, int map, String theme) {
@@ -83,7 +76,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
     @Override
     public void show() {
-        windows.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 100, 100, 100));
+        super.show();
 
         collisionConfig = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfig);
@@ -96,11 +89,12 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spawns = new ArrayList<Spawn>();
         cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
 
+        elements.add(cam);
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 100, 100, 100, elements));
         vrCameraInputAdapter = new VRCameraInputAdapter(cam.getVRCam());
-        vrCameraInputAdapter.setLogging(true);
+        //vrCameraInputAdapter.setLogging(true);
         //viewport = new StretchViewport(100, 100, cam.getCam());
         //viewport.apply();
-        inputHandler = new InputHandler(cam);
         classes = new HashMap<String, Class<?>>();
         models = new HashMap<String, Model>();
         projectiles = new ArrayList<Projectile>();
@@ -112,10 +106,6 @@ public class GameScreen extends TDScreen implements RendererForVR{
         collisionWorld.setDebugDrawer(debugDrawer);
         debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
         contactHandler = new ContactHandler(entities, planet);
-
-        inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(inputHandler);
-        Gdx.input.setInputProcessor(inputMultiplexer);
 
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -209,16 +199,9 @@ public class GameScreen extends TDScreen implements RendererForVR{
         //spriteBatch.draw(background, 0, 0, 200, 60);
         spriteBatch.end();
 
-        inputHandler.update(delta);
+        updateUI(delta);
         if(Gdx.graphics.getDeltaTime() > 0)vrCameraInputAdapter.update(Gdx.graphics.getDeltaTime());
         cam.render(spriteBatch);
-        /*modelBatch.begin(cam.getCam());
-        shapeRenderer.setProjectionMatrix(cam.getCam().combined);
-        entities.values().toArray(entityArray);
-        for(Entity entity : entityArray)
-            entity.render(delta, modelBatch, shapeRenderer);
-        modelBatch.render(planet);
-        modelBatch.end();*/
 
         if(TDWorld.isDebug()) {
             debugDrawer.begin(cam.getCam());
@@ -229,7 +212,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spriteBatch.begin();
         //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + entities.size(), 0, 20);
         //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
-        TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + classes.size(), 0, 40);
+        TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + TDWorld.isMe(), 0, 40);
         spriteBatch.end();
 
         super.render(delta);

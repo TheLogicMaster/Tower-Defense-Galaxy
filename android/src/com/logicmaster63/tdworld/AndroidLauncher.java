@@ -1,6 +1,5 @@
 package com.logicmaster63.tdworld;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.badlogic.gdx.Gdx;
@@ -25,8 +24,8 @@ public class AndroidLauncher extends AndroidApplication {
 		initialize(new TDWorld(new ClassGetter() {
 			@Override
 			public Set<Class<?>> getClasses(String packageName) {
+				Set<Class<?>> classes = new HashSet<Class<?>>();
 				try {
-					Set<Class<?>> classes = new HashSet<Class<?>>();
 					DexFile dex = new DexFile(getContext().getApplicationInfo().sourceDir);
 					ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 					Enumeration<String> entries = dex.entries();
@@ -35,11 +34,10 @@ public class AndroidLauncher extends AndroidApplication {
 						if (entry.toLowerCase().startsWith(packageName.toLowerCase()))
 							classes.add(classLoader.loadClass(entry));
 					}
-					return classes;
 				} catch (Exception e) {
 					Gdx.app.error("Errorororor", e.toString());
 				}
-				return null;
+				return classes;
 			}
 		}), config);
 	}

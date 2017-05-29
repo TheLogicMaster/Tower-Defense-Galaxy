@@ -1,13 +1,11 @@
 package com.logicmaster63.tdworld.tools;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdworld.TDWorld;
 import com.logicmaster63.tdworld.map.Curve;
 import com.logicmaster63.tdworld.map.Spawn;
@@ -28,7 +26,7 @@ public class FileHandler {
         List<Track> track = new ArrayList<Track>();
         List<Vector3> path = new ArrayList<Vector3>();
         try {
-            String line = "";
+            String line;
             int parsed[] = Tools.trippleParseInt(data.readLine());
             screen.setSpawnPos(new Vector3(parsed[0], parsed[1], parsed[2]));
             parsed = Tools.trippleParseInt(data.readLine());
@@ -73,30 +71,12 @@ public class FileHandler {
 
     public static HashMap<String, Class<?>> loadClasses(String pakage) {
         HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
-        if(Gdx.app.getType() == Application.ApplicationType.Android) {
-            Gdx.app.error("Classpath", TDWorld.classGetter.getClasses(pakage).toString());
-            for(Class clazz: TDWorld.classGetter.getClasses(pakage))
-                classes.put(clazz.getSimpleName(), clazz);
-            //getClasspathClasses(TDWorld.context, "com.logicmaster63.tdworld");
-        } else {
-            //Gdx.app.error("Classpath", new ArrayList<Class>(Arrays.asList(getAllClasses("com.logicmaster63.tdworld"))).toString());
-            final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            try {
-                for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses()) {
-                    if (info.getPackageName().startsWith(pakage))
-                        classes.put(info.getSimpleName(), Class.forName(pakage + "." + info.getSimpleName()));
-                }
-
-
-            } catch (Exception e) {
-                Gdx.app.error("Loading Classes", e.toString());
-            }
-        }
+        for(Class clazz: TDWorld.getClassGetter().getClasses(pakage))
+            classes.put(clazz.getSimpleName(), clazz);
         return classes;
     }
 
     public static void loadPlanet(BufferedReader data, GameScreen screen) {
-        //if(data == null)
         int coords[] = {0, 0, 0};
         if (data == null)
             return;
@@ -111,9 +91,10 @@ public class FileHandler {
         screen.setPlanetSize(new Vector3(coords[0], coords[1], coords[2]));
     }
 
+    @SuppressWarnings("unchecked")
     public static void loadDependencies(Map<String, Class<?>> classes) {
         int length = classes.size();
-        List<Dependency> dependencies = null;
+        List<Dependency> dependencies;
         List<Class<?>> classArray = new ArrayList<Class<?>>(classes.values());
         for (int i = 0; i < length; i++) {
             try {
@@ -125,7 +106,7 @@ public class FileHandler {
                         Gdx.app.log("Dependency Loaded", dependency.getName() + ".class");
                     }
                     }
-            } catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException ignored) {
 
             } catch (Exception e) {
                 Gdx.app.log("Error", "FileHandler:150: " + e.toString());

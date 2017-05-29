@@ -1,4 +1,4 @@
-package com.logicmaster63.tdworld.tools;
+package com.logicmaster63.tdworld.ui;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -11,7 +11,7 @@ import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCamera;
 import com.logicmaster63.tdworld.TDWorld;
 
-public class CameraHandler{
+public class CameraHandler implements KeyboardHandler, MouseHandler, Element, Updatable {
 
     private PerspectiveCamera cam;
     private Vector3 tmp, origin;
@@ -58,8 +58,9 @@ public class CameraHandler{
         }
     }
 
-    public void update(float delta, IntIntMap keys) {
-        xRot = getCameraRotationX() + 180;
+    @Override
+    public void update(float delta) {
+        /*xRot = getCameraRotationX() + 180;
         yRot = getCameraRotationY() + 180;
         zRot = getCameraRotationZ() + 180;
         if (keys.containsKey(Input.Keys.Q)) {
@@ -80,12 +81,13 @@ public class CameraHandler{
         if (keys.containsKey(Input.Keys.D))
             dir += 8;
         if(dir > 0)
-            rotate(dir, delta * 100f);
+            rotate(dir, delta * 100f);*/
         cam.update();
         vrCamera.update();
     }
 
-    public void touchDragged (int screenX, int screenY, int pointer) {
+    @Override
+    public boolean touchDragged (int screenX, int screenY, int pointer) {
         float deltaX = -Gdx.input.getDeltaX() * TDWorld.getSensitivity();
         float deltaY = -Gdx.input.getDeltaY() * TDWorld.getSensitivity();
         //cam.direction.rotate(cam.up, deltaX);
@@ -107,11 +109,14 @@ public class CameraHandler{
         vrCamera.rotate(deltaY, 0, 0);
         tmp.rotate(Vector3.X, deltaY);
         vrCamera.translate(-tmp.x, -tmp.y, -tmp.z);
+        return true;
     }
 
-    public void scrolled(int amount) {
+    @Override
+    public boolean scrolled(int amount) {
         tmp.set(cam.direction).nor().scl(amount * -4f);
         cam.position.add(tmp);
+        return true;
     }
 
     private void rotate(int dir, float angle) {
@@ -143,6 +148,41 @@ public class CameraHandler{
             tmp.rotate(Vector3.Z, angle * angleZMult);
             vrCamera.translate(-tmp.x, -tmp.y, -tmp.z);
         }
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean onWindow(float x, float y) {
+        return true;
     }
 
     public float getCameraRotationX() {

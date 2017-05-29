@@ -1,10 +1,21 @@
 package com.logicmaster63.tdworld.tools;
 
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.bullet.collision.*;
+import com.google.common.util.concurrent.UncheckedExecutionException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Tools {
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> getImplements(List list, Class<T> type) {
+        List<T> newList = new ArrayList<T>();
+        for(Object o: list)
+            if(type.isInstance(o))
+                newList.add((T) o);
+        return newList;
+    }
 
     public static int[] doubleParseInt(String string) {
         char c = 'a';

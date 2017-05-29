@@ -2,6 +2,9 @@ package com.logicmaster63.tdworld;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.net.HttpRequestBuilder;
+import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.logicmaster63.tdworld.screens.GameScreen;
 import com.logicmaster63.tdworld.tools.ClassGetter;
@@ -16,13 +19,13 @@ import java.util.*;
 public class TDWorld extends Game {
 
 	private static final Map<String, Integer> TYPES;
-	private static final List<String> themes = new ArrayList<String>();
+	private static List<String> themes = new ArrayList<String>();
 	private static Map<String, BitmapFont> fonts;
-	private static GameScreen gameScreen;
-    public static ClassGetter classGetter;
     private static String ip = "";
+    private static ClassGetter classGetter;
+    private static boolean isMe = false;
 
-    private Preferences prefs;
+    private static Preferences prefs;
     private static int res = 10;
     private static float sensitivity = 0.5f;
     private static boolean debug = true;
@@ -33,14 +36,11 @@ public class TDWorld extends Game {
 		TYPES.put("ice", 1);
 		TYPES.put("fire", 2);
 		TYPES.put("sharp", 4);
-        themes.add("basic");
 	}
 
 	public TDWorld(ClassGetter getter) {
         classGetter = getter;
     }
-
-    public TDWorld() {}
 
     @Override
     public void setScreen(Screen screen) {
@@ -51,6 +51,8 @@ public class TDWorld extends Game {
     @Override
 	public void create() {
 		Bullet.init();
+
+        themes.add("basic");
 
         prefs = Gdx.app.getPreferences("My Preferences");
         //prefs.clear();
@@ -66,18 +68,29 @@ public class TDWorld extends Game {
         if(debug)
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-        gameScreen = new GameScreen(this, 0, themes.get(0));
-		setScreen(gameScreen);
+		setScreen(new GameScreen(this, 0, themes.get(0)));
 	}
 
-    public static void updateNetwork() {
-	    try {
-            URL whatismyip = new URL("http://checkip.amazonaws.com");
-            BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-            ip = in.readLine();
-        } catch (IOException e) {
-            Gdx.app.error("UpdateNetwork", e.toString());
-        }
+    public void updateNetwork() {
+            Gdx.net.sendHttpRequest(new HttpRequestBuilder().newRequest().method(Net.HttpMethods.GET).url("http://checkip.amazonaws.com").build(), new Net.HttpResponseListener() {
+                @Override
+                public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                    try {
+                        ip = new BufferedReader(new InputStreamReader(httpResponse.getResultAsStream())).readLine();
+                        isMe = "99.36.127.68".equals(ip);
+                    } catch (IOException e) {
+                        Gdx.app.error("HTTP", e.toString());
+                    }
+                }
+                @Override
+                public void failed(Throwable t) {
+
+                }
+                @Override
+                public void cancelled() {
+
+                }
+            });
     }
 
     private void loadPrefs() {
@@ -116,16 +129,16 @@ public class TDWorld extends Game {
 		    font.dispose();
 	}
 
+	public static void addTheme() {
+
+    }
+
     public static Map<String, BitmapFont> getFonts() {
         return fonts;
     }
 
     public static Map<String, Integer> getTYPES() {
         return TYPES;
-    }
-
-    public static String getIp() {
-        return ip;
     }
 
     public static int getRes() {
@@ -142,5 +155,21 @@ public class TDWorld extends Game {
 
     public static boolean isVr() {
         return vr;
+    }
+
+    public static String getIp() {
+        return ip;
+    }
+
+    public static ClassGetter getClassGetter() {
+        return classGetter;
+    }
+
+    public static List<String> getThemes() {
+        return themes;
+    }
+
+    public static boolean isMe() {
+        return isMe;
     }
 }
