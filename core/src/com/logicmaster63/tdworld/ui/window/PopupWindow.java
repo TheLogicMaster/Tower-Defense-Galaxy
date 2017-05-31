@@ -1,5 +1,8 @@
 package com.logicmaster63.tdworld.ui.window;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.logicmaster63.tdworld.TDWorld;
@@ -27,8 +30,10 @@ public class PopupWindow extends InteractableWindow {
     }
 
     @Override
-    public void render(SpriteBatch spriteBatch) {
-        super.render(spriteBatch);
+    public void render(SpriteBatch spriteBatch, Camera camera) {
+        camera.unproject(tmp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+        //System.out.println((x < tmp.x && tmp.x < x + width && y < tmp.y && tmp.y < y + height));
+        super.render(spriteBatch, camera);
         TDWorld.getFonts().get("ui32").draw(spriteBatch, "This is a window", x + 10, y + height - 10);
     }
 

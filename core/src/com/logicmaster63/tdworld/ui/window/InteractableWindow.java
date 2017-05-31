@@ -1,6 +1,7 @@
 package com.logicmaster63.tdworld.ui.window;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.logicmaster63.tdworld.ui.Closeable;
@@ -20,37 +21,37 @@ public abstract class InteractableWindow extends Window implements MouseHandler 
     }
 
     @Override
-    public void render(SpriteBatch spriteBatch) {
-        super.render(spriteBatch);
+    public void render(SpriteBatch spriteBatch, Camera camera) {
+        super.render(spriteBatch, camera);
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean scrolled(int amount) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean onWindow(float x, float y) {
-        return this.x < x && x < this.x + width && Gdx.graphics.getHeight() - this.y < y && y < Gdx.graphics.getHeight() - this.y + height;
+        return this.x < x && x < this.x + width && this.y < y && y < this.y + height;
     }
 }

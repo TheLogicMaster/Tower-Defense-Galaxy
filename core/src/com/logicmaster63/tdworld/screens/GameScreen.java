@@ -17,6 +17,8 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.logicmaster63.tdworld.TDWorld;
@@ -65,8 +67,11 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private Map<Integer, Entity> entities;
     private DebugDrawer debugDrawer;
     private ShapeRenderer shapeRenderer;
-    //private Viewport viewport;
     private VRCameraInputAdapter vrCameraInputAdapter;
+
+    public Camera getCamera() {
+        return cam.getCam();
+    }
 
     public GameScreen(Game game, int map, String theme) {
         super(game);
@@ -91,10 +96,13 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
         elements.add(cam);
         elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 100, 100, 100, elements));
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 300, 100, 100, elements));
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 200, 100, 100, 100, elements));
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 200, 300, 100, 100, elements));
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 300, 100, 100, 100, elements));
+
         vrCameraInputAdapter = new VRCameraInputAdapter(cam.getVRCam());
-        //vrCameraInputAdapter.setLogging(true);
-        //viewport = new StretchViewport(100, 100, cam.getCam());
-        //viewport.apply();
+        //vrCameraInputAdapter.setLogging(try();
         classes = new HashMap<String, Class<?>>();
         models = new HashMap<String, Model>();
         projectiles = new ArrayList<Projectile>();
@@ -192,7 +200,6 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
         collisionWorld.performDiscreteCollisionDetection();
 
-        //Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         spriteBatch.begin();
@@ -212,7 +219,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spriteBatch.begin();
         //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + entities.size(), 0, 20);
         //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
-        TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + TDWorld.isMe(), 0, 40);
+        TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "(" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")", 0, 40);
         spriteBatch.end();
 
         super.render(delta);
