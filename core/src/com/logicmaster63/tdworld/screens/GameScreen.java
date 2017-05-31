@@ -17,8 +17,6 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.logicmaster63.tdworld.TDWorld;
@@ -32,7 +30,6 @@ import com.logicmaster63.tdworld.tower.Tower;
 import com.logicmaster63.tdworld.tower.basic.Gun;
 import com.logicmaster63.tdworld.tower.basic.Laser;
 import com.logicmaster63.tdworld.ui.*;
-import com.logicmaster63.tdworld.ui.Closeable;
 import com.logicmaster63.tdworld.ui.window.PopupWindow;
 
 import java.io.*;
@@ -95,11 +92,11 @@ public class GameScreen extends TDScreen implements RendererForVR{
         cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
 
         elements.add(cam);
-        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 100, 100, 100, elements));
-        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 300, 100, 100, elements));
-        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 200, 100, 100, 100, elements));
-        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 200, 300, 100, 100, elements));
-        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 300, 100, 100, 100, elements));
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 500, 100, 100, 60, elements));
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 400, 200, 90, 70, elements));
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 300, 300, 80, 80, elements));
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 200, 400, 70, 90, elements));
+        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 500, 60, 100, elements));
 
         vrCameraInputAdapter = new VRCameraInputAdapter(cam.getVRCam());
         //vrCameraInputAdapter.setLogging(try();

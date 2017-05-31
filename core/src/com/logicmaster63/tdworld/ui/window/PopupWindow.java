@@ -1,13 +1,12 @@
 package com.logicmaster63.tdworld.ui.window;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.logicmaster63.tdworld.TDWorld;
-import com.logicmaster63.tdworld.ui.Closeable;
+import com.logicmaster63.tdworld.ui.CloseListener;
 import com.logicmaster63.tdworld.ui.Element;
+import com.logicmaster63.tdworld.ui.Touch;
 import com.logicmaster63.tdworld.ui.TouchInfo;
 
 import java.util.HashMap;
@@ -17,12 +16,14 @@ import java.util.Map;
 public class PopupWindow extends InteractableWindow {
 
     private Map<Integer, TouchInfo> touches = new HashMap<Integer, TouchInfo>();
+    private Touch lastTouch;
 
-    public PopupWindow(Texture texture, float x, float y, float width, float height, List<Element> elements, Closeable closeable) {
-        super(texture, x, y, width, height, elements, closeable);
+    public PopupWindow(Texture texture, float x, float y, float width, float height, List<Element> elements, CloseListener closeListener) {
+        super(texture, x, y, width, height, elements, closeListener);
         for(int i = 0; i < 5; i++){
             touches.put(i, new TouchInfo());
         }
+        lastTouch = new Touch();
     }
 
     public PopupWindow(Texture texture, float x, float y, float width, float height, List<Element> elements) {
@@ -31,10 +32,9 @@ public class PopupWindow extends InteractableWindow {
 
     @Override
     public void render(SpriteBatch spriteBatch, Camera camera) {
-        camera.unproject(tmp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-        //System.out.println((x < tmp.x && tmp.x < x + width && y < tmp.y && tmp.y < y + height));
+        camera.unproject(tmp.set(x + 10, y + 20, 0));
         super.render(spriteBatch, camera);
-        TDWorld.getFonts().get("ui32").draw(spriteBatch, "This is a window", x + 10, y + height - 10);
+        TDWorld.getFonts().get("ui32").draw(spriteBatch, "This is a window", tmp.x, tmp.y);
     }
 
     @Override
@@ -44,18 +44,19 @@ public class PopupWindow extends InteractableWindow {
             touches.get(pointer).touchY = screenY;
             touches.get(pointer).touched = true;
         }
+        lastTouch.set(screenX, screenY, pointer);
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if(touches(touches) == 1 && lastTouch.id == pointer)
+            close();
         if(pointer < 5){
             touches.get(pointer).touchX = 0;
             touches.get(pointer).touchY = 0;
             touches.get(pointer).touched = false;
         }
-        //if(touches(touches) == 1)
-            close();
         return true;
     }
 
