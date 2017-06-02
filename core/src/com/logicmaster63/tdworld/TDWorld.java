@@ -6,8 +6,9 @@ import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.logicmaster63.tdworld.screens.GameScreen;
 import com.logicmaster63.tdworld.tools.ClassGetter;
-import com.logicmaster63.tdworld.tools.CreateDebug;
+import com.logicmaster63.tdworld.tools.Debug;
 import com.logicmaster63.tdworld.tools.FileHandler;
+import com.logicmaster63.tdworld.tools.ValueReturner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class TDWorld extends Game {
 	private static Map<String, BitmapFont> fonts;
     private static String ip = "";
     private static ClassGetter classGetter;
-    private static CreateDebug createDebug;
+    private static Debug debugger;
     private static boolean isMe = false;
 
     private static Preferences prefs;
@@ -38,9 +39,9 @@ public class TDWorld extends Game {
 		TYPES.put("sharp", 4);
 	}
 
-	public TDWorld(ClassGetter getter, CreateDebug debug) {
+	public TDWorld(ClassGetter getter, Debug debugger) {
         classGetter = getter;
-        createDebug = debug;
+        TDWorld.debugger = debugger;
     }
 
     public TDWorld(ClassGetter getter) {
@@ -142,8 +143,26 @@ public class TDWorld extends Game {
     }
 
     public static void createDebugWindow(Object ... values) {
-	    if(createDebug != null)
-	        createDebug.create();
+	    if(debugger != null)
+            debugger.create();
+    }
+
+    public static void addDebugTextButton(String name, ValueReturner valueReturner) {
+        if(debugger != null)
+            debugger.addTextButton(name, valueReturner);
+    }
+
+    public static void addDebugButton(String name, Runnable runnable) {
+        if(debugger != null)
+            debugger.addButton(name, runnable);
+    }
+
+    public static void removeDebugTextButton(String name) {
+        debugger.removeTextButton(name);
+    }
+
+    public static void removeDebugButton(String name) {
+        debugger.removeButton(name);
     }
 
     public static Map<String, BitmapFont> getFonts() {

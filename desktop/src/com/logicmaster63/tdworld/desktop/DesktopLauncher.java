@@ -6,13 +6,13 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdworld.TDWorld;
 import com.logicmaster63.tdworld.tools.ClassGetter;
-import com.logicmaster63.tdworld.tools.CreateDebug;
+import com.logicmaster63.tdworld.tools.Debug;
+import com.logicmaster63.tdworld.tools.ValueReturner;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.List;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -35,19 +35,77 @@ public class DesktopLauncher {
 				}
 				return classes;
 			}
-		}, new CreateDebug() {
-			JDialog d;
-			java.util.List values;
+		}, new Debug() {
+			JFrame frame = new JFrame();
+			JDialog dialog = new JDialog(frame, "Dialog Example", true);
+			Map<String, Object> values;
+			Map<String, JButton> jButtons;
+			Map<String, TextButton> textButtons;
 
 			@Override
-			public void update(List values) {
+			public void addButton(String name, final Runnable run) {
+				if(jButtons == null)
+					return;
+				JButton button = new JButton(name);
+				button.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						run.run();
+					}
+				});
+				dialog.add(button);
+				jButtons.put(name, button);
+			}
+
+			@Override
+			public <T> void addTextButton(final String name, final ValueReturner<T> valueReturner) {
+				if(jButtons == null)
+					return;
+				final TextField textField = new TextField();
+				JButton button = new JButton(name);
+				button.setHorizontalTextPosition(SwingConstants.LEFT);
+				button.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							valueReturner.value((T)(textButtons.get(name).field.getText()));
+						} catch (ClassCastException ex) {
+							Gdx.app.error("TextButton", "Can't cast value");
+						}
+					}
+				});
+				dialog.add(textField);
+				dialog.add(button);
+				textButtons.put(name, new TextButton(button, textField));
+			}
+
+			@Override
+			public void removeTextButton(String name) {
+				dialog.remove(textButtons.get(name).button);
+				dialog.remove(textButtons.get(name).field);
+				textButtons.remove(name);
+			}
+
+			@Override
+			public void removeButton(String name) {
+				dialog.remove(jButtons.get(name));
+				jButtons.remove(name);
+			}
+
+			@Override
+			public void update(Map<String, Object> upValues) {
+				if(values == null)
+					return;
 
 			}
 
 			boolean running = true;
 			@Override
 			public void create() {
-				values = new ArrayList();
+				values = new HashMap<String, Object>();
+				jButtons = new HashMap<String, JButton>();
+				textButtons = new HashMap<String, TextButton>();
+
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -55,33 +113,21 @@ public class DesktopLauncher {
 							@Override
 							public void run() {
 								while(true) {
-									System.out.println(d);
 									try {
 										Thread.sleep(500);
 									} catch (InterruptedException e) {
 										Gdx.app.error("Run", e.toString());
 									}
-									if(!d.isVisible())
+									if(!dialog.isVisible())
 										break;
 								}
 							}
 						}).start();
-						JFrame frame = new JFrame();
-						d = new JDialog(frame, "Dialog Example", true);
-						d.setLayout( new FlowLayout() );
-						JButton b = new JButton ("OK");
-						b.addActionListener (new ActionListener()
-						{
-							public void actionPerformed(ActionEvent e )
-							{
-								//d.setVisible(false);
-							}
-						});
-						d.add( new JLabel ("Click button to continue."));
-						d.add(b);
-						d.setSize(300,300);
-						d.setVisible(true);
-						d.addWindowListener(new WindowAdapter()
+						dialog.setLayout( new FlowLayout() );
+						//dialog.add( new JLabel ("Click button to continue."));
+						dialog.setSize(300,300);
+						dialog.setVisible(true);
+						dialog.addWindowListener(new WindowAdapter()
 						{
 							@Override
 							public void windowClosing(WindowEvent e)
@@ -94,5 +140,16 @@ public class DesktopLauncher {
 				});
 			}
 		}), config);
+	}
+}
+
+class TextButton {
+
+	public JButton button;
+	public TextField field;
+
+	public TextButton(JButton button, TextField field) {
+		this.button = button;
+		this.field = field;
 	}
 }
