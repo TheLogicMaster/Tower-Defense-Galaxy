@@ -3,17 +3,15 @@ package com.logicmaster63.tdworld;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
-import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.logicmaster63.tdworld.screens.GameScreen;
 import com.logicmaster63.tdworld.tools.ClassGetter;
+import com.logicmaster63.tdworld.tools.CreateDebug;
 import com.logicmaster63.tdworld.tools.FileHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.*;
 
 public class TDWorld extends Game {
@@ -23,12 +21,14 @@ public class TDWorld extends Game {
 	private static Map<String, BitmapFont> fonts;
     private static String ip = "";
     private static ClassGetter classGetter;
+    private static CreateDebug createDebug;
     private static boolean isMe = false;
 
     private static Preferences prefs;
     private static int res = 10;
     private static float sensitivity = 0.5f;
     private static boolean debug = true;
+    private static boolean debugWindow = true;
     private static boolean vr = false;
 
 	static {
@@ -38,7 +38,12 @@ public class TDWorld extends Game {
 		TYPES.put("sharp", 4);
 	}
 
-	public TDWorld(ClassGetter getter) {
+	public TDWorld(ClassGetter getter, CreateDebug debug) {
+        classGetter = getter;
+        createDebug = debug;
+    }
+
+    public TDWorld(ClassGetter getter) {
         classGetter = getter;
     }
 
@@ -55,11 +60,8 @@ public class TDWorld extends Game {
         themes.add("basic");
 
         prefs = Gdx.app.getPreferences("My Preferences");
-        //prefs.clear();
-        //prefs.flush();
-        //changePref("res", 30);
-        //changePref("sensitivity", 0.6f);
-        //changePref("debug", false);
+        //clearPrefs();
+        //changePref("debug", true);
         loadPrefs();
 
         fonts = new HashMap<String, BitmapFont>();
@@ -95,12 +97,13 @@ public class TDWorld extends Game {
 
     private void loadPrefs() {
         debug = (Boolean) getPref("debug", debug);
+        debugWindow = (Boolean) getPref("debugWindow", debugWindow);
         vr = (Boolean) getPref("vr", vr);
         sensitivity = (Float) getPref("sensitivity", sensitivity);
         res = (Integer) getPref("res", res);
     }
 
-    public Object getPref(String name, Object defaultValue) {
+    public static Object getPref(String name, Object defaultValue) {
         if (prefs.get().containsKey(name))
             try {
                 return defaultValue.getClass().getConstructor(String.class).newInstance(prefs.get().get(name));
@@ -110,16 +113,21 @@ public class TDWorld extends Game {
         return defaultValue;
     }
 
-    public void changePref(String name, Object object) {
+    public static void changePref(String name, Object object) {
 	    Map map = prefs.get();
 	    map.put(name, object);
 	    prefs.put(map);
 	    prefs.flush();
         try {
-            this.getClass().getField(name).set(this, object);
+            TDWorld.class.getDeclaredField(name).set(null, object);
         } catch (Exception e) {
             Gdx.app.error("changePref", e.toString());
         }
+    }
+
+    public static void clearPrefs() {
+	    prefs.clear();
+	    prefs.flush();
     }
 
 	@Override
@@ -131,6 +139,11 @@ public class TDWorld extends Game {
 
 	public static void addTheme() {
 
+    }
+
+    public static void createDebugWindow(Object ... values) {
+	    if(createDebug != null)
+	        createDebug.create();
     }
 
     public static Map<String, BitmapFont> getFonts() {
@@ -171,5 +184,9 @@ public class TDWorld extends Game {
 
     public static boolean isMe() {
         return isMe;
+    }
+
+    public static boolean isDebugWindow() {
+        return debugWindow;
     }
 }
