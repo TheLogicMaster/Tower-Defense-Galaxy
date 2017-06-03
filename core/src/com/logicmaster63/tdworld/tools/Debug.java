@@ -1,5 +1,7 @@
 package com.logicmaster63.tdworld.tools;
 
+import com.google.common.collect.BiMap;
+
 import java.util.Map;
 
 public interface Debug {

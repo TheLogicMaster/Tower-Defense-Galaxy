@@ -1,4 +1,4 @@
-package com.logicmaster63.tdworld.map;
+package com.logicmaster63.tdworld.map.world;
 
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
@@ -7,12 +7,12 @@ import java.util.List;
 
 public class World {
 
-    private List<Region> regions;
+    private List<com.logicmaster63.tdworld.map.region.Region> regions;
     private List<btCollisionObject> objects;
 
-    public World(List<Region> regions, btCollisionWorld world) {
+    public World(List<com.logicmaster63.tdworld.map.region.Region> regions, btCollisionWorld world) {
         this.regions = regions;
-        for(Region region: regions)
+        for(com.logicmaster63.tdworld.map.region.Region region: regions)
             region.createCollisionObject();
     }
 }

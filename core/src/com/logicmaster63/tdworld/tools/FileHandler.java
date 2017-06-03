@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.logicmaster63.tdworld.TDWorld;
-import com.logicmaster63.tdworld.map.Curve;
+import com.logicmaster63.tdworld.map.track.Curve;
 import com.logicmaster63.tdworld.map.Spawn;
-import com.logicmaster63.tdworld.map.Strait;
-import com.logicmaster63.tdworld.map.Track;
+import com.logicmaster63.tdworld.map.track.Strait;
+import com.logicmaster63.tdworld.map.track.Track;
 import com.logicmaster63.tdworld.screens.GameScreen;
 
 import java.io.*;

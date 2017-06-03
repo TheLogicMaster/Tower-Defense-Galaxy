@@ -94,21 +94,6 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spawns = new ArrayList<Spawn>();
         cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
 
-        if(TDWorld.isDebug() && TDWorld.isDebugWindow())
-            TDWorld.createDebugWindow(Gdx.graphics.getDeltaTime());
-
-        TDWorld.addDebugButton("Name", new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Run");
-            }
-        });
-        TDWorld.addDebugTextButton("Text", new ValueReturner<String>() {
-            @Override
-            public void value(String value) {
-                System.out.println(value);
-            }
-        });
         elements.add(cam);
         elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 100, 100, 100, elements));
 

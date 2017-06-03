@@ -1,4 +1,4 @@
-package com.logicmaster63.tdworld.map;
+package com.logicmaster63.tdworld.map.track;
 
 import com.badlogic.gdx.math.Vector3;
 import com.logicmaster63.tdworld.tools.Tools;

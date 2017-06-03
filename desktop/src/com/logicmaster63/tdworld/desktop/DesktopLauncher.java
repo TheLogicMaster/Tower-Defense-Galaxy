@@ -3,11 +3,16 @@ package com.logicmaster63.tdworld.desktop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.utils.Array;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdworld.TDWorld;
+import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.tools.ClassGetter;
 import com.logicmaster63.tdworld.tools.Debug;
 import com.logicmaster63.tdworld.tools.ValueReturner;
+import org.lwjgl.Sys;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,12 +46,15 @@ public class DesktopLauncher {
 			Map<String, Object> values;
 			Map<String, JButton> jButtons;
 			Map<String, TextButton> textButtons;
+			ArrayList<JLabel> labels;
 
 			@Override
 			public void addButton(String name, final Runnable run) {
 				if(jButtons == null)
 					return;
 				JButton button = new JButton(name);
+				button.setHorizontalAlignment(SwingConstants.RIGHT);
+				button.setVerticalAlignment(SwingConstants.TOP);
 				button.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -63,7 +71,8 @@ public class DesktopLauncher {
 					return;
 				final TextField textField = new TextField();
 				JButton button = new JButton(name);
-				button.setHorizontalTextPosition(SwingConstants.LEFT);
+				button.setHorizontalTextPosition(SwingConstants.RIGHT);
+				button.setVerticalAlignment(SwingConstants.TOP);
 				button.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -96,7 +105,22 @@ public class DesktopLauncher {
 			public void update(Map<String, Object> upValues) {
 				if(values == null)
 					return;
-
+				int initSize = labels.size();
+				if(labels.size() > upValues.size())
+					for(int i = 0; i < initSize - upValues.size(); i++) {
+						dialog.remove(labels.get(labels.size()));
+						labels.remove(labels.get(labels.size()));
+					}
+				if(labels.size() < upValues.size())
+					for(int i = 0; i < upValues.size() - initSize; i++) {
+						JLabel label = new JLabel("");
+						label.setHorizontalAlignment(SwingConstants.LEFT);
+						label.setVerticalAlignment(SwingConstants.BOTTOM);
+						labels.add(label);
+						dialog.add(label);
+					}
+				for(int i = 0; i < upValues.entrySet().size(); i++)
+					labels.get(i).setText(upValues.keySet().toArray()[i] + ": " + upValues.entrySet().toArray()[i].toString());
 			}
 
 			boolean running = true;
@@ -105,6 +129,7 @@ public class DesktopLauncher {
 				values = new HashMap<String, Object>();
 				jButtons = new HashMap<String, JButton>();
 				textButtons = new HashMap<String, TextButton>();
+				labels = new ArrayList<JLabel>();
 
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -125,7 +150,7 @@ public class DesktopLauncher {
 						}).start();
 						dialog.setLayout( new FlowLayout() );
 						//dialog.add( new JLabel ("Click button to continue."));
-						dialog.setSize(300,300);
+						dialog.setSize(500,800);
 						dialog.setVisible(true);
 						dialog.addWindowListener(new WindowAdapter()
 						{

@@ -29,7 +29,7 @@ public class TDWorld extends Game {
     private static int res = 10;
     private static float sensitivity = 0.5f;
     private static boolean debug = true;
-    private static boolean debugWindow = true;
+    private static boolean debugWindow = false;
     private static boolean vr = false;
 
 	static {
@@ -68,8 +68,10 @@ public class TDWorld extends Game {
         fonts = new HashMap<String, BitmapFont>();
 		FileHandler.loadFonts(fonts);
 
-        if(debug)
+        if(debug) {
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
+
+        }
 
 		setScreen(new GameScreen(this, 0, themes.get(0)));
 	}
@@ -163,6 +165,10 @@ public class TDWorld extends Game {
 
     public static void removeDebugButton(String name) {
         debugger.removeButton(name);
+    }
+
+    public static void updateDebug(Map<String, Object> values) {
+	    debugger.update(values);
     }
 
     public static Map<String, BitmapFont> getFonts() {
