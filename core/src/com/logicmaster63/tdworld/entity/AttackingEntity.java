@@ -4,11 +4,13 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.*;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.enums.TargetMode;
 import com.logicmaster63.tdworld.tower.Tower;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +23,8 @@ public abstract class AttackingEntity extends Entity {
     private Vector3 rayFrom = new Vector3(), rayTo = new Vector3();
     private ClosestRayResultCallback callback;
 
-    public AttackingEntity(Vector3 pos, int hp, int health, int range, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Entity> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate){
-        super(pos, hp, health, types, effects, instance, shape, world, objects, isTemplate);
+    public AttackingEntity(Vector3 pos, int hp, int health, int range, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, boolean isTemplate){
+        super(pos, hp, health, types, effects, instance, shape, world, entities, isTemplate);
         this.coolDown = coolDown;
         this.range = range;
         this.attackAnimation = attackAnimation;
@@ -35,7 +37,7 @@ public abstract class AttackingEntity extends Entity {
         super.tick(delta);
         coolTime += delta;
         if(coolTime > coolDown && canAttack()) {
-            ArrayList<Entity> targets = target(pos, range, objects, TargetMode.CLOSEST, this instanceof Enemy ? Tower.class: Enemy.class);
+            ArrayList<Entity> targets = target(pos, range, entities, TargetMode.CLOSEST, this instanceof Enemy ? Tower.class: Enemy.class);
             if(targets != null) {
                 attack(targets);
                 coolTime = 0;
@@ -79,8 +81,8 @@ public abstract class AttackingEntity extends Entity {
         return true;
     }
 
-    public ArrayList<Entity> target(Vector3 pos, double range, Map<Integer, Entity> objectMap, TargetMode mode, Class targetClass) {
-        List<Entity> entities = new ArrayList<Entity>(objectMap.values());
+    public ArrayList<Entity> target(Vector3 pos, double range, IntMap<Entity> entityMap, TargetMode mode, Class targetClass) {
+        List<Entity> entities = new ArrayList<Entity>(Arrays.asList(entityMap.values().toArray().toArray()));
         ArrayList<Entity> array = new ArrayList<Entity>();
         tempEntity = null;
         if(entities.size() < 1)

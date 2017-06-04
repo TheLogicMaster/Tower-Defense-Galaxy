@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.projectiles.basic.Bullet;
 import com.logicmaster63.tdworld.tools.Asset;
@@ -29,7 +30,7 @@ public class Laser extends Tower {
     private float laserTime = 0;
     private Vector3 laserTo;
 
-    public Laser(Vector3 pos, ModelInstance instance, btCollisionWorld world, Map<Integer, Entity> objects, boolean isTemplate) {
+    public Laser(Vector3 pos, ModelInstance instance, btCollisionWorld world, IntMap<Entity> objects, boolean isTemplate) {
         super(pos, HP, RANGE, COOLDOWN, TYPES, instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate);
         for(int i = 0; i < instance.nodes.size; i++)
             System.out.println(instance.nodes.get(i).id);

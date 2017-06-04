@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.projectiles.Projectile;
 import com.logicmaster63.tdworld.tools.Asset;
@@ -21,12 +22,12 @@ public class Bullet extends Projectile {
     public static final btCollisionShape SHAPE = new btSphereShape(10);
     public static final int SPEED = 10;
 
-    public Bullet(Vector3 pos, Vector3 velocity, int hp, int health, ModelInstance model, boolean isTower, btCollisionWorld world, Map<Integer, Entity> objects) {
-        super(pos, velocity, hp, health, TYPES, model, SHAPE, isTower, world, objects, LIFETIME);
+    public Bullet(Vector3 pos, Vector3 velocity, int hp, int health, ModelInstance model, boolean isTower, btCollisionWorld world, IntMap<Entity> entities) {
+        super(pos, velocity, hp, health, TYPES, model, SHAPE, isTower, world, entities, LIFETIME);
     }
 
-    public Bullet(ModelInstance model, boolean isTower, btCollisionWorld world, Map<Integer, Entity> objects) {
-        super(HP, TYPES, model, SHAPE, isTower, world, objects, LIFETIME);
+    public Bullet(ModelInstance model, boolean isTower, btCollisionWorld world, IntMap<Entity> entities) {
+        super(HP, TYPES, model, SHAPE, isTower, world, entities, LIFETIME);
     }
 
     public Bullet(Bullet bullet, Vector3 pos, Vector3 velocity) {

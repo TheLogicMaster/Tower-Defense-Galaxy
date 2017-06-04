@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.entity.AttackingEntity;
 import com.logicmaster63.tdworld.entity.Entity;
 
@@ -20,14 +21,14 @@ public abstract class Enemy extends AttackingEntity {
     private double speeed, dist = 0;
     private int moveIndex = 0;
 
-    public Enemy(Vector3 pos, double speeed, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Entity> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate, List<Vector3> path) {
-        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, objects, attackAnimation, attackOffset, isTemplate);
+    public Enemy(Vector3 pos, double speeed, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, boolean isTemplate, List<Vector3> path) {
+        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, entities, attackAnimation, attackOffset, isTemplate);
         this.path = path;
         this.speeed = speeed;
     }
 
-    public Enemy(Vector3 position, double speeed, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Entity> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate, List<Vector3> path) {
-        this(position, speeed, hp, hp, range, coolDown, types, instance, shape, 0, world, objects, attackAnimation, attackOffset, isTemplate, path);
+    public Enemy(Vector3 position, double speeed, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, boolean isTemplate, List<Vector3> path) {
+        this(position, speeed, hp, hp, range, coolDown, types, instance, shape, 0, world, entities, attackAnimation, attackOffset, isTemplate, path);
     }
 
     @Override

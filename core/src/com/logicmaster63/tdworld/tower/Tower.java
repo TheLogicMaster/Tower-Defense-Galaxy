@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.entity.AttackingEntity;
 import com.logicmaster63.tdworld.entity.Entity;
 
@@ -15,12 +16,12 @@ import java.util.Map;
 
 public abstract class Tower extends AttackingEntity {
 
-    public Tower(Vector3 pos, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Entity> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate) {
+    public Tower(Vector3 pos, int hp, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate) {
         this(pos, hp, hp, range, coolDown, types, instance, shape, 0, world, objects, attackAnimation, attackOffset, isTemplate);
     }
 
-    public Tower(Vector3 pos, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, Map<Integer, Entity> objects, String attackAnimation, Vector3 attackOffset, boolean isTemplate) {
-        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, objects, attackAnimation, attackOffset, isTemplate);
+    public Tower(Vector3 pos, int hp, int health, int range, float coolDown, int types, ModelInstance instance, btCollisionShape shape, int effects, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, boolean isTemplate) {
+        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, entities, attackAnimation, attackOffset, isTemplate);
     }
 
     @Override

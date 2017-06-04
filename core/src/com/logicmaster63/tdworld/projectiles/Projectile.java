@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.entity.Entity;
 
 import java.util.Map;
@@ -17,22 +18,22 @@ public abstract class Projectile extends Entity {
     protected float age;
     protected float lifetime;
 
-    public Projectile(Vector3 pos, Vector3 velocity, int hp, int health, int types, int effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, Map<Integer, Entity> objects, boolean isTemplate, float lifetime) {
-        super(pos, hp, health, types, effects, model, shape, world, objects, isTemplate);
+    public Projectile(Vector3 pos, Vector3 velocity, int hp, int health, int types, int effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate, float lifetime) {
+        super(pos, hp, health, types, effects, model, shape, world, entities, isTemplate);
         this.isTower = isTower;
         this.velocity = velocity;
     }
 
-    public Projectile(Vector3 pos, Vector3 velocity, int hp, int types, int effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, Map<Integer, Entity> objects, float lifetime) {
-        this(pos, velocity, hp, hp, types, effects, model, shape, isTower, world, objects, false, lifetime);
+    public Projectile(Vector3 pos, Vector3 velocity, int hp, int types, int effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<Entity> entities, float lifetime) {
+        this(pos, velocity, hp, hp, types, effects, model, shape, isTower, world, entities, false, lifetime);
     }
 
-    public Projectile(int hp, int types, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, Map<Integer, Entity> objects, float lifetime) {
-        this(Vector3.Zero, Vector3.Zero, hp, hp, types, 0, model, shape, isTower, world, objects, true, lifetime);
+    public Projectile(int hp, int types, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<Entity> entities, float lifetime) {
+        this(Vector3.Zero, Vector3.Zero, hp, hp, types, 0, model, shape, isTower, world, entities, true, lifetime);
     }
 
     public Projectile(Projectile projectile, Vector3 pos, Vector3 velocity) {
-        this(pos, velocity, projectile.hp, projectile.health, projectile.types, projectile.effects, new ModelInstance(projectile.instance), projectile.shape, projectile.isTower, projectile.world, projectile.objects, false, projectile.lifetime);
+        this(pos, velocity, projectile.hp, projectile.health, projectile.types, projectile.effects, new ModelInstance(projectile.instance), projectile.shape, projectile.isTower, projectile.world, projectile.entities, false, projectile.lifetime);
     }
 
     public void tick(float delta) {

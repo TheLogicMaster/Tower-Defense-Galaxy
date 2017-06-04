@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.tools.Asset;
@@ -24,12 +25,12 @@ public class Spider extends Enemy {
     public static final String ATTACK_ANIMATION = "";
     public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
 
-    public Spider(Vector3 position, double speeed, int types, ModelInstance instance, btCollisionWorld world, Map<Integer, Entity> objects, boolean isTemplate, List<Vector3> path) {
-        this(position, speeed, HP, COOLDOWN, types, instance, 0, world, objects, isTemplate, path);
+    public Spider(Vector3 position, double speeed, int types, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate, List<Vector3> path) {
+        this(position, speeed, HP, COOLDOWN, types, instance, 0, world, entities, isTemplate, path);
     }
 
-    public Spider(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Entity> objects, boolean isTemplate, List<Vector3> path) {
-        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btBoxShape(instance.extendBoundingBox(new BoundingBox()).getDimensions(new Vector3())), effects, world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate, path);
+    public Spider(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate, List<Vector3> path) {
+        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btBoxShape(instance.extendBoundingBox(new BoundingBox()).getDimensions(new Vector3())), effects, world, entities, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate, path);
     }
 
     @Override

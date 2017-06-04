@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.map.Spawn;
 import com.logicmaster63.tdworld.entity.Entity;
@@ -29,9 +30,9 @@ public class EnemyHandler {
     private List<Spawn> spawns;
     private List<Vector3> path;
     private btCollisionWorld world;
-    private Map<Integer, Entity> objects;
+    private IntMap<Entity> entity;
 
-    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Enemy> enemies, List<Vector3> path, btCollisionWorld world, Map<Integer, Entity> objects) {
+    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Enemy> enemies, List<Vector3> path, btCollisionWorld world, IntMap<Entity> entities) {
         this.enemies = enemies;
         this.pos = pos;
         this.enemyClasses = enemyClasses;
@@ -39,12 +40,12 @@ public class EnemyHandler {
         this.spawns = spawns;
         this.path = path;
         this.world = world;
-        this.objects = objects;
+        this.entity = entities;
         System.out.println(spawns);
     }
 
-    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Vector3> path, btCollisionWorld world, Map<Integer, Entity> objects) {
-        this(pos, enemyClasses, spawns, models, new ArrayList<Enemy>(), path, world, objects);
+    public EnemyHandler(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Vector3> path, btCollisionWorld world, IntMap<Entity> entities) {
+        this(pos, enemyClasses, spawns, models, new ArrayList<Enemy>(), path, world, entities);
     }
 
     public void tick(float delta, GameScreen screen) {
@@ -60,8 +61,8 @@ public class EnemyHandler {
                 instance = new ModelInstance(models.get(name));
                 try {
                     Class<?> c = enemyClasses.get(name);
-                    Constructor constructor = c.getConstructor(Vector3.class, ModelInstance.class, btCollisionWorld.class, Map.class, boolean.class, List.class);
-                    enemies.add((Enemy) constructor.newInstance(pos, instance, world, objects, false, path));
+                    Constructor constructor = c.getConstructor(Vector3.class, ModelInstance.class, btCollisionWorld.class, IntMap.class, boolean.class, List.class);
+                    enemies.add((Enemy) constructor.newInstance(pos, instance, world, entity, false, path));
                 } catch (Exception e) {
                     Gdx.app.log("Error", e.toString());
                 }

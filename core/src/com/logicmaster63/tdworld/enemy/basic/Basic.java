@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.tools.Asset;
@@ -31,12 +32,12 @@ public class Basic extends Enemy{
 
     private AnimationController.AnimationListener listener;
 
-    public Basic(Vector3 position, ModelInstance instance, btCollisionWorld world, Map<Integer, Entity> objects, boolean isTemplate, List<Vector3> path) {
-        this(position, SPEED, HP, COOLDOWN, TYPES, instance, 0, world, objects, isTemplate, path);
+    public Basic(Vector3 position, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate, List<Vector3> path) {
+        this(position, SPEED, HP, COOLDOWN, TYPES, instance, 0, world, entities, isTemplate, path);
     }
 
-    public Basic(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, Map<Integer, Entity> objects, boolean isTemplate, List<Vector3> path) {
-        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btCompoundShape(), effects, world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate, path);
+    public Basic(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate, List<Vector3> path) {
+        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btCompoundShape(), effects, world, entities, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate, path);
         ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 30, 0), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(75, 30, 90)));
         //System.out.println(getModelInstance().getAnimation("Spider_Armature|walk_ani_vor").id);
         listener = new AnimationController.AnimationListener() {

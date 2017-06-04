@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.projectiles.Projectile;
 
@@ -24,12 +25,12 @@ public abstract class Entity implements Disposable{
     protected btCollisionWorld world;
     protected btCollisionObject body;
     protected Entity tempEntity;
-    protected Map<Integer, Entity> objects;
+    protected IntMap<Entity> entities;
     protected Quaternion quaternion;
     protected BoundingBox boundingBox;
     protected boolean isTemplate;
 
-    public Entity(Vector3 pos, int hp, int health, int types, int effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, Map<Integer, Entity> objects, boolean isTemplate){
+    public Entity(Vector3 pos, int hp, int health, int types, int effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate){
         this.instance = instance;
         this.pos = pos;
         this.hp = hp;
@@ -44,19 +45,16 @@ public abstract class Entity implements Disposable{
         body.setWorldTransform(instance.transform);
         this.world = world;
         tempVector = new Vector3();
-        this.objects = objects;
+        this.entities = entities;
         quaternion = new Quaternion();
         if(this instanceof Enemy || this instanceof Projectile)
             body.setCollisionFlags(body.getCollisionFlags());
         int index = 1;
         if(!isTemplate) {
-            //System.out.println(getClass().getSimpleName());
-            while (objects.containsKey(index))
+            while (entities.containsKey(index))
                 index++;
-            objects.put(index, this);
-            //System.out.println(index);
+            entities.put(index, this);
             body.setUserValue(index);
-            //System.out.println("Index: " + index);
             world.addCollisionObject(body);
             boundingBox = instance.calculateBoundingBox(new BoundingBox());
         }
@@ -82,20 +80,20 @@ public abstract class Entity implements Disposable{
 
     public void destroy() {
         world.removeCollisionObject(body);
-        if(getEntry() != null && getEntry().getKey() != null)
-            objects.remove(getEntry().getKey());
+        if(getEntry() != null)
+            entities.remove(getEntry().key);
         dispose();
     }
 
     protected int getNextIndex() {
         int index = 1;
-        while(objects.containsKey(index))
+        while(entities.containsKey(index))
             index++;
         return index;
     }
 
-    protected Map.Entry<Integer, Entity> getEntry() {
-        for(Map.Entry<Integer, Entity> entry: objects.entrySet())
+    protected IntMap.Entry<Entity> getEntry() {
+        for(IntMap.Entry<Entity> entry: entities.entries())
             if(entry.equals(this))
                 return entry;
         return null;

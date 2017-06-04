@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.IntMap;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.logicmaster63.tdworld.TDWorld;
@@ -64,7 +65,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private btCollisionConfiguration collisionConfig;
     private btDispatcher dispatcher;
     private ContactHandler contactHandler;
-    private Map<Integer, Entity> entities;
+    private IntMap<Entity> entities;
     private DebugDrawer debugDrawer;
     private ShapeRenderer shapeRenderer;
     private VRCameraInputAdapter vrCameraInputAdapter;
@@ -90,7 +91,8 @@ public class GameScreen extends TDScreen implements RendererForVR{
         shapeRenderer = new ShapeRenderer();
         FileHandler.addDisposables(shapeRenderer);
 
-        entities = new HashMap<Integer, Entity>();
+        entities = new IntMap<Entity>();
+
         spawns = new ArrayList<Spawn>();
         cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
 
@@ -169,12 +171,10 @@ public class GameScreen extends TDScreen implements RendererForVR{
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        Entity entityArray[] = entities.values().toArray(new Entity[]{});
         modelBatch.begin(perspectiveCamera);
         shapeRenderer.setProjectionMatrix(perspectiveCamera.combined);
-        entities.values().toArray(entityArray);
-        for(Entity entity : entityArray)
-            entity.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
+        for(IntMap.Entry<Entity> entry: entities.entries())
+            entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
         modelBatch.render(planet);
         modelBatch.end();
     }
@@ -187,11 +187,8 @@ public class GameScreen extends TDScreen implements RendererForVR{
             else
                 return;
         }
-
-        Entity entityArray[] = entities.values().toArray(new Entity[]{});
-        for(Entity entity : entityArray) {
-            entity.tick(delta);
-        }
+        for(IntMap.Entry<Entity> entry: entities.entries())
+            entry.value.tick(delta);
         enemies.tick(delta, this);
 
         collisionWorld.performDiscreteCollisionDetection();

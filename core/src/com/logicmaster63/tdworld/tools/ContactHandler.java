@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
+import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdworld.enemy.Enemy;
 import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.projectiles.Projectile;
@@ -15,11 +16,11 @@ import java.util.Map;
 
 public class ContactHandler extends ContactListener {
 
-    private Map<Integer, Entity> objects;
+    private IntMap<Entity> objects;
     private Vector3 tempVector;
     private ModelInstance planet;
 
-    public ContactHandler(Map<Integer, Entity> objects, ModelInstance planet) {
+    public ContactHandler(IntMap<Entity> objects, ModelInstance planet) {
         this.objects = objects;
         tempVector = new Vector3();
         this.planet = planet;
