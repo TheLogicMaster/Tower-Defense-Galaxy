@@ -70,10 +70,6 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private ShapeRenderer shapeRenderer;
     private VRCameraInputAdapter vrCameraInputAdapter;
 
-    public Camera getCamera() {
-        return cam.getCam();
-    }
-
     public GameScreen(Game game, int map, String theme) {
         super(game);
         this.map = map;
@@ -200,7 +196,8 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spriteBatch.end();
 
         updateUI(delta);
-        if(Gdx.graphics.getDeltaTime() > 0)vrCameraInputAdapter.update(Gdx.graphics.getDeltaTime());
+        if(Gdx.graphics.getDeltaTime() > 0)
+            vrCameraInputAdapter.update(Gdx.graphics.getDeltaTime());
         cam.render(spriteBatch);
 
         if(TDWorld.isDebug()) {
@@ -277,6 +274,10 @@ public class GameScreen extends TDScreen implements RendererForVR{
         //ModelInstance instance = new ModelInstance(models.get(0));
         //instance.materials.get(0).set(new BlendingAttribute(0.5f));
         //enemies.add(new Spider(new Vector3(0, 0, 0), 20d, 10, 500, 0, instance, new btBoxShape(instance.model.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()))));
+    }
+
+    public Camera getCamera() {
+        return cam.getCam();
     }
 
     public List<Projectile> getProjectiles() {

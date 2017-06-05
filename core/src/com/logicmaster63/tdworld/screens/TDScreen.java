@@ -26,6 +26,8 @@ public abstract class TDScreen implements Screen, InputProcessor {
     private OrthographicCamera orthographicCamera;
     private Viewport viewport;
     private Vector3 tmp;
+    protected Map<Integer, TouchInfo> touches;
+    protected Touch lastTouch;
 
     public TDScreen (Game game) {
         this.game = game;
@@ -38,6 +40,11 @@ public abstract class TDScreen implements Screen, InputProcessor {
         viewport.apply();
         //Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         tmp = new Vector3();
+        touches = new HashMap<Integer, TouchInfo>();
+        for(int i = 0; i < 5; i++){
+            touches.put(i, new TouchInfo());
+        }
+        lastTouch = new Touch();
     }
 
     @Override
@@ -111,6 +118,12 @@ public abstract class TDScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if(pointer < 5){
+            touches.get(pointer).touchX = screenX;
+            touches.get(pointer).touchY = screenY;
+            touches.get(pointer).touched = true;
+        }
+        lastTouch.set(screenX, screenY, pointer, button);
         for(MouseHandler mouseHandler: Lists.reverse(Tools.getImplements(elements, MouseHandler.class)))
             if(mouseHandler.onWindow(screenX, screenY))
                 if(mouseHandler.touchDown(screenX, screenY, pointer, button))
@@ -120,10 +133,18 @@ public abstract class TDScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if(pointer < 5){
+            touches.get(pointer).touchX = 0;
+            touches.get(pointer).touchY = 0;
+            touches.get(pointer).touched = false;
+        }
         for(MouseHandler mouseHandler: Lists.reverse(Tools.getImplements(elements, MouseHandler.class)))
-            if(mouseHandler.onWindow(screenX, screenY))
+            if(mouseHandler.onWindow(screenX, screenY)) {
                 if(mouseHandler.touchUp(screenX, screenY, pointer, button))
                     break;
+                if(button == lastTouch.button && mouseHandler.onWindow(lastTouch.x, lastTouch.y) && mouseHandler.click(screenX, screenY, pointer, button))
+                    break;
+            }
         return false;
     }
 

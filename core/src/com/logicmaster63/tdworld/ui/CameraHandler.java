@@ -185,6 +185,11 @@ public class CameraHandler implements KeyboardHandler, MouseHandler, Element, Up
         return true;
     }
 
+    @Override
+    public boolean click(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
     public float getCameraRotationX() {
         return (float)Math.atan2(cam.up.z, cam.up.y) * MathUtils.radiansToDegrees;
     }
