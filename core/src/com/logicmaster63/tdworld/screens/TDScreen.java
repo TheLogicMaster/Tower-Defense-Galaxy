@@ -3,63 +3,53 @@ package com.logicmaster63.tdworld.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.IntIntMap;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.google.common.collect.Lists;
 import com.logicmaster63.tdworld.TDWorld;
-import com.logicmaster63.tdworld.tools.Tools;
 import com.logicmaster63.tdworld.ui.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public abstract class TDScreen implements Screen, InputProcessor {
+public abstract class TDScreen implements Screen {
 
     Game game;
-    protected List<Element> elements;
     protected SpriteBatch spriteBatch;
-    private IntIntMap keys;
     private OrthographicCamera orthographicCamera;
     private Viewport viewport;
     private Vector3 tmp;
-    protected Map<Integer, TouchInfo> touches;
-    protected Touch lastTouch;
+    private Stage stage;
+    private InputMultiplexer multiplexer;
 
     public TDScreen (Game game) {
         this.game = game;
-        keys = new IntIntMap();
-        elements = new ArrayList<Element>();
-        orthographicCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        spriteBatch = new SpriteBatch();
-        orthographicCamera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
-        viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), orthographicCamera);
-        viewport.apply();
-        //Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        tmp = new Vector3();
-        touches = new HashMap<Integer, TouchInfo>();
-        for(int i = 0; i < 5; i++){
-            touches.put(i, new TouchInfo());
-        }
-        lastTouch = new Touch();
     }
 
     @Override
     public void resize (int width, int height) {
-        /*if(Tools.getImplements(elements, com.logicmaster63.tdworld.ui.window.Window.class).size() > 0)
-            for(com.logicmaster63.tdworld.ui.window.Window window: Tools.getImplements(elements, com.logicmaster63.tdworld.ui.window.Window.class))
-                window.resize(width, height);*/
         viewport.update(width, height);
         System.out.println("Resize");
     }
 
+    public void addInputProcessor(InputProcessor processor) {
+        multiplexer.addProcessor(processor);
+    }
+
     @Override
     public void show () {
-        Gdx.input.setInputProcessor(this);
-        System.out.println("Show");
+        orthographicCamera = new OrthographicCamera(2560, 1600);
+        spriteBatch = new SpriteBatch();
+        orthographicCamera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
+        viewport = new FitViewport(2560, 1600, orthographicCamera);
+        viewport.apply();
+        stage = new Stage(viewport);
+        tmp = new Vector3();
+        multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
+        stage.addActor(new MessageWindow("This is a message to test the wonderful abilities of the scene2d label. I am just typing some random text here to test this paragraph so completely disregard the exact contents because it is entirely irrelevant.", 2560, 1600));
+        if(TDWorld.isDebug())
+            stage.setDebugAll(true);
     }
 
     @Override
@@ -82,96 +72,14 @@ public abstract class TDScreen implements Screen, InputProcessor {
         System.out.println("Dispose");
     }
 
-    public void updateUI(float delta) {
-        for(Updatable updatable: Tools.getImplements(elements, Updatable.class))
-            updatable.update(delta);
-    }
-
     @Override
     public void render(float delta) {
+        stage.act(Gdx.graphics.getDeltaTime());
         orthographicCamera.update();
         spriteBatch.setProjectionMatrix(orthographicCamera.combined);
         spriteBatch.begin();
-        if(Tools.getImplements(elements, com.logicmaster63.tdworld.ui.window.Window.class).size() > 0)
-            for(com.logicmaster63.tdworld.ui.window.Window window: Tools.getImplements(elements, com.logicmaster63.tdworld.ui.window.Window.class))
-                window.render(spriteBatch, orthographicCamera);
-        TDWorld.getFonts().get("ui32").draw(spriteBatch, orthographicCamera.unproject(tmp.set(Gdx.input.getX(), Gdx.input.getY(), 0)).toString(), 100, 100);
+        //TDWorld.getFonts().get("ui32").draw(spriteBatch, orthographicCamera.unproject(tmp.set(Gdx.input.getX(), Gdx.input.getY(), 0)).toString(), 100, 100);
         spriteBatch.end();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        keys.put(keycode, keycode);
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        keys.remove(keycode, 0);
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(pointer < 5){
-            touches.get(pointer).touchX = screenX;
-            touches.get(pointer).touchY = screenY;
-            touches.get(pointer).touched = true;
-        }
-        lastTouch.set(screenX, screenY, pointer, button);
-        for(MouseHandler mouseHandler: Lists.reverse(Tools.getImplements(elements, MouseHandler.class)))
-            if(mouseHandler.onWindow(screenX, screenY))
-                if(mouseHandler.touchDown(screenX, screenY, pointer, button))
-                    break;
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if(pointer < 5){
-            touches.get(pointer).touchX = 0;
-            touches.get(pointer).touchY = 0;
-            touches.get(pointer).touched = false;
-        }
-        for(MouseHandler mouseHandler: Lists.reverse(Tools.getImplements(elements, MouseHandler.class)))
-            if(mouseHandler.onWindow(screenX, screenY)) {
-                if(mouseHandler.touchUp(screenX, screenY, pointer, button))
-                    break;
-                if(button == lastTouch.button && mouseHandler.onWindow(lastTouch.x, lastTouch.y) && mouseHandler.click(screenX, screenY, pointer, button))
-                    break;
-            }
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        for(MouseHandler mouseHandler: Lists.reverse(Tools.getImplements(elements, MouseHandler.class)))
-            if(mouseHandler.onWindow(screenX, screenY))
-                if(mouseHandler.touchDragged(screenX, screenY, pointer))
-                    break;
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        for(MouseHandler mouseHandler: Lists.reverse(Tools.getImplements(elements, MouseHandler.class)))
-            if(mouseHandler.onWindow(screenX, screenY))
-                if(mouseHandler.mouseMoved(screenX, screenY))
-                    break;
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        for(MouseHandler mouseHandler: Lists.reverse(Tools.getImplements(elements, MouseHandler.class)))
-            if(mouseHandler.onWindow(Gdx.input.getX(), Gdx.input.getY()))
-                if(mouseHandler.scrolled(amount))
-                    break;
-        return false;
+        stage.draw();
     }
 }

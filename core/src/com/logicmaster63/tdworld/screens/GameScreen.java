@@ -2,7 +2,6 @@ package com.logicmaster63.tdworld.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,8 +17,6 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.IntMap;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
@@ -33,8 +30,7 @@ import com.logicmaster63.tdworld.entity.Entity;
 import com.logicmaster63.tdworld.tower.Tower;
 import com.logicmaster63.tdworld.tower.basic.Gun;
 import com.logicmaster63.tdworld.tower.basic.Laser;
-import com.logicmaster63.tdworld.ui.*;
-import com.logicmaster63.tdworld.ui.window.PopupWindow;
+import com.logicmaster63.tdworld.ui.CameraHandler;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -92,8 +88,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spawns = new ArrayList<Spawn>();
         cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
 
-        elements.add(cam);
-        elements.add(new PopupWindow(new Texture("theme/basic/ui/Window.png"), 100, 100, 100, 100, elements));
+        addInputProcessor(cam);
 
         vrCameraInputAdapter = new VRCameraInputAdapter(cam.getVRCam());
         //vrCameraInputAdapter.setLogging(try();
@@ -195,9 +190,9 @@ public class GameScreen extends TDScreen implements RendererForVR{
         //spriteBatch.draw(background, 0, 0, 200, 60);
         spriteBatch.end();
 
-        updateUI(delta);
         if(Gdx.graphics.getDeltaTime() > 0)
             vrCameraInputAdapter.update(Gdx.graphics.getDeltaTime());
+        cam.update(delta);
         cam.render(spriteBatch);
 
         if(TDWorld.isDebug()) {

@@ -11,7 +11,7 @@ import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCamera;
 import com.logicmaster63.tdworld.TDWorld;
 
-public class CameraHandler implements KeyboardHandler, MouseHandler, Element, Updatable {
+public class CameraHandler implements InputProcessor {
 
     private PerspectiveCamera cam;
     private Vector3 tmp, origin;
@@ -58,7 +58,6 @@ public class CameraHandler implements KeyboardHandler, MouseHandler, Element, Up
         }
     }
 
-    @Override
     public void update(float delta) {
         /*xRot = getCameraRotationX() + 180;
         yRot = getCameraRotationY() + 180;
@@ -151,11 +150,6 @@ public class CameraHandler implements KeyboardHandler, MouseHandler, Element, Up
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
     public boolean keyDown(int keycode) {
         return false;
     }
@@ -181,12 +175,7 @@ public class CameraHandler implements KeyboardHandler, MouseHandler, Element, Up
     }
 
     @Override
-    public boolean onWindow(float x, float y) {
-        return true;
-    }
-
-    @Override
-    public boolean click(int screenX, int screenY, int pointer, int button) {
+    public boolean mouseMoved(int screenX, int screenY) {
         return false;
     }
 
