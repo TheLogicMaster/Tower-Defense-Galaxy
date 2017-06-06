@@ -4,13 +4,12 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.logicmaster63.tdworld.ui.*;
+import com.logicmaster63.tdworld.ui.CloseListener;
+import com.logicmaster63.tdworld.ui.Element;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public abstract class Window implements Element, MouseHandler {
+public abstract class Window implements Element {
 
     protected float x, y, width, height;
     private Texture texture;
@@ -49,48 +48,5 @@ public abstract class Window implements Element, MouseHandler {
         if(closeListener != null)
             closeListener.close();
         elements.remove(this);
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean onWindow(float x, float y) {
-        return this.x < x && x < this.x + width && this.y < y && y < this.y + height;
-    }
-
-    @Override
-    public boolean click(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    private int touchNum(Map<Integer, TouchInfo> touches) {
-        int num = 0;
-        for(int i = 0; i < 5; i++)
-            if(touches.get(i).touched)
-                num++;
-        return num;
     }
 }
