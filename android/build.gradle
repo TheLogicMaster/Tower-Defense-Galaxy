@@ -1,6 +1,6 @@
 android {
     buildToolsVersion "23.0.3"
-    compileSdkVersion 23
+    compileSdkVersion 25
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -18,12 +18,12 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.logicmaster63.tdworld"
-        minSdkVersion 8
-        targetSdkVersion 23
+        multiDexEnabled true
+        applicationId "com.logicmaster63.tdgalaxy"
+        minSdkVersion 14
+        targetSdkVersion 25
     }
 }
-
 
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
@@ -71,7 +71,7 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.logicmaster63.tdworld/com.logicmaster63.tdworld.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.logicmaster63.tdworld/AndroidLauncher'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.

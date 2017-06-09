@@ -20,7 +20,7 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "TDWorld"
+        appName = "TDGalaxy"
         gdxVersion = '1.9.5'
         roboVMVersion = '2.3.0'
         ashleyVersion = '1.7.0'
@@ -68,6 +68,12 @@ project(":android") {
         compile project(":core")
         compile fileTree(dir: 'libs', include: '*.jar')
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+        compile 'com.android.support:multidex:1.0.0'
+        compile 'com.google.android.gms:play-services-drive:10.2.6'
+        compile 'com.google.android.gms:play-services-games:10.2.6'
+        compile 'com.google.android.gms:play-services-auth:10.2.6'
+        compile 'com.google.android.gms:play-services-plus:10.2.6'
+        //compile 'com.google.android.gms:play-services:10.2.6'
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a"
