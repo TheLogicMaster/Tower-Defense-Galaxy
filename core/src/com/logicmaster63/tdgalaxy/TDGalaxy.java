@@ -4,30 +4,41 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.logicmaster63.tdgalaxy.interfaces.Debug;
+import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
+import com.logicmaster63.tdgalaxy.interfaces.GooglePlayServices;
 import com.logicmaster63.tdgalaxy.screens.GameScreen;
+import com.logicmaster63.tdgalaxy.screens.MainScreen;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class TDWorld extends Game {
+public class TDGalaxy extends Game {
 
-	private static final Map<String, Integer> TYPES;
+    //Interfaces
+    public static FileStuff fileStuff;
+    public static GooglePlayServices googlePlayServices;
+
+    private static final Map<String, Integer> TYPES;
 	private static List<String> themes = new ArrayList<String>();
 	private static Map<String, BitmapFont> fonts;
     private static String ip = "";
-    private static com.logicmaster63.tdgalaxy.interfaces.FileStuff fileStuff;
-    private static com.logicmaster63.tdgalaxy.interfaces.Debug debugger;
+    private static Debug debugger;
     private static boolean isMe = false;
-    private static com.logicmaster63.tdgalaxy.interfaces.GooglePlayServices googlePlayServices;
 
+    //Preferences
     private static Preferences prefs;
     private static int res = 10;
     private static float sensitivity = 0.5f;
     private static boolean debug = true;
     private static boolean debugWindow = false;
     private static boolean vr = false;
+    private static boolean autoSignIn = true;
 
 	static {
 		TYPES = new HashMap<String, Integer>();
@@ -36,14 +47,14 @@ public class TDWorld extends Game {
 		TYPES.put("sharp", 4);
 	}
 
-	public TDWorld(com.logicmaster63.tdgalaxy.interfaces.FileStuff getter, com.logicmaster63.tdgalaxy.interfaces.Debug debugger, com.logicmaster63.tdgalaxy.interfaces.GooglePlayServices googlePlayServices) {
-        fileStuff = getter;
-        TDWorld.debugger = debugger;
-        TDWorld.googlePlayServices = googlePlayServices;
+	public TDGalaxy(FileStuff fileStuff, Debug debugger, GooglePlayServices googlePlayServices) {
+        TDGalaxy.fileStuff = fileStuff;
+        TDGalaxy.debugger = debugger;
+        TDGalaxy.googlePlayServices = googlePlayServices;
     }
 
-    public TDWorld(com.logicmaster63.tdgalaxy.interfaces.FileStuff getter, com.logicmaster63.tdgalaxy.interfaces.Debug debugger) {
-        fileStuff = getter;
+    public TDGalaxy(FileStuff fileStuff, Debug debugger) {
+	    this(fileStuff, debugger, null);
     }
 
     @Override
@@ -68,10 +79,10 @@ public class TDWorld extends Game {
 
         if(debug) {
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
-
         }
 
-		setScreen(new GameScreen(this, 0, themes.get(0)));
+        setScreen(new MainScreen(this));
+		//setScreen(new GameScreen(this, 0, themes.get(0)));
 	}
 
     public void updateNetwork() {
@@ -100,6 +111,7 @@ public class TDWorld extends Game {
         debug = (Boolean) getPref("debug", debug);
         debugWindow = (Boolean) getPref("debugWindow", debugWindow);
         vr = (Boolean) getPref("vr", vr);
+        autoSignIn = (Boolean) getPref("autoSignIn", autoSignIn);
         sensitivity = (Float) getPref("sensitivity", sensitivity);
         res = (Integer) getPref("res", res);
     }
@@ -107,7 +119,9 @@ public class TDWorld extends Game {
     public static Object getPref(String name, Object defaultValue) {
         if (prefs.get().containsKey(name))
             try {
-                return defaultValue.getClass().getConstructor(String.class).newInstance(prefs.get().get(name));
+                if(prefs.get().get(name) instanceof String)
+                    return defaultValue.getClass().getConstructor(String.class).newInstance(prefs.get().get(name));
+                else return prefs.get().get(name);
             } catch (Exception e) {
                 Gdx.app.error("getPref", e.toString());
             }
@@ -120,7 +134,7 @@ public class TDWorld extends Game {
 	    prefs.put(map);
 	    prefs.flush();
         try {
-            TDWorld.class.getDeclaredField(name).set(null, object);
+            TDGalaxy.class.getDeclaredField(name).set(null, object);
         } catch (Exception e) {
             Gdx.app.error("changePref", e.toString());
         }
@@ -197,10 +211,6 @@ public class TDWorld extends Game {
         return ip;
     }
 
-    public static com.logicmaster63.tdgalaxy.interfaces.FileStuff getFileStuff() {
-        return fileStuff;
-    }
-
     public static List<String> getThemes() {
         return themes;
     }
@@ -211,5 +221,9 @@ public class TDWorld extends Game {
 
     public static boolean isDebugWindow() {
         return debugWindow;
+    }
+
+    public static boolean autoSignIn() {
+	    return autoSignIn;
     }
 }

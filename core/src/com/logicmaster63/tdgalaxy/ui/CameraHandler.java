@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCamera;
-import com.logicmaster63.tdgalaxy.TDWorld;
+import com.logicmaster63.tdgalaxy.TDGalaxy;
 
 public class CameraHandler implements InputProcessor {
 
@@ -49,7 +49,7 @@ public class CameraHandler implements InputProcessor {
     }
 
     public void render(Batch batch) {
-        if(TDWorld.isVr())
+        if(TDGalaxy.isVr())
             vrCamera.render(batch);
         else {
             rendererForVR.renderForVR(cam);
@@ -85,8 +85,8 @@ public class CameraHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged (int screenX, int screenY, int pointer) {
-        float deltaX = -Gdx.input.getDeltaX() * TDWorld.getSensitivity();
-        float deltaY = -Gdx.input.getDeltaY() * TDWorld.getSensitivity();
+        float deltaX = -Gdx.input.getDeltaX() * TDGalaxy.getSensitivity();
+        float deltaY = -Gdx.input.getDeltaY() * TDGalaxy.getSensitivity();
         //cam.direction.rotate(cam.up, deltaX);
         //tempVector.set(cam.direction).crs(cam.up).nor();
         //cam.direction.rotate(tempVector, deltaY);

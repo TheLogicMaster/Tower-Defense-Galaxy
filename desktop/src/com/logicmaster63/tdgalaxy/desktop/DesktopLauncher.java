@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.google.common.reflect.ClassPath;
-import com.logicmaster63.tdgalaxy.TDWorld;
+import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.ValueReturner;
@@ -20,7 +20,7 @@ public class DesktopLauncher {
 		config.title = "Tower Defense World";
 		//config.width = 1280;
 		//config.height = 800;
-		new LwjglApplication(new TDWorld(new FileStuff() {
+		new LwjglApplication(new TDGalaxy(new FileStuff() {
 			@Override
 			public Set<Class<?>> getClasses(String packageName) {
 				final ClassLoader loader = Thread.currentThread().getContextClassLoader();

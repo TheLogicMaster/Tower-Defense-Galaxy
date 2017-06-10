@@ -2,6 +2,7 @@ package com.logicmaster63.tdgalaxy.tools;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+import com.logicmaster63.tdgalaxy.constants.ClientType;
 
 public class Network {
 
@@ -43,10 +44,10 @@ public class Network {
 
     public static class Register {
 
-        public com.logicmaster63.tdgalaxy.enums.ClientType type;
+        public ClientType type;
         public String id;
 
-        public Register(String id, com.logicmaster63.tdgalaxy.enums.ClientType type) {
+        public Register(String id, ClientType type) {
             this.id = id;
             this.type = type;
         }

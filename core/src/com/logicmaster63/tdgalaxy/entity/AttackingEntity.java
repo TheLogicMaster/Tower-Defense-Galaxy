@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdgalaxy.enemy.Enemy;
-import com.logicmaster63.tdgalaxy.enums.TargetMode;
+import com.logicmaster63.tdgalaxy.constants.TargetMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;

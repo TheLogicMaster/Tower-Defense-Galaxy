@@ -4,7 +4,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
-import com.logicmaster63.tdgalaxy.enums.ClientType;
+import com.logicmaster63.tdgalaxy.constants.ClientType;
 import com.logicmaster63.tdgalaxy.tools.Network;
 
 import java.io.IOException;

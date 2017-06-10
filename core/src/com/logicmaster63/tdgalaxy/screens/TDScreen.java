@@ -6,7 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.logicmaster63.tdgalaxy.TDWorld;
+import com.logicmaster63.tdgalaxy.TDGalaxy;
+import com.logicmaster63.tdgalaxy.ui.MessageWindow;
 
 public abstract class TDScreen implements Screen {
 
@@ -42,8 +43,8 @@ public abstract class TDScreen implements Screen {
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
-        stage.addActor(new com.logicmaster63.tdgalaxy.ui.MessageWindow("This is a message to test the wonderful abilities of the scene2d label. I am just typing some random text here to test this paragraph so completely disregard the exact contents because it is entirely irrelevant.", 2560, 1600));
-        if(TDWorld.isDebug())
+        stage.addActor(new MessageWindow("This is a message to test the wonderful abilities of the scene2d label. I am just typing some random text here to test this paragraph so completely disregard the exact contents because it is entirely irrelevant.", 2560, 1600));
+        if(TDGalaxy.isDebug())
             stage.setDebugAll(true);
     }
 

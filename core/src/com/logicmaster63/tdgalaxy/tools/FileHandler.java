@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.map.track.Curve;
 import com.logicmaster63.tdgalaxy.map.track.Track;
 import com.logicmaster63.tdgalaxy.screens.GameScreen;
@@ -49,7 +50,7 @@ public class FileHandler {
                 line = data.readLine();
             }
             for (Track t : track) {
-                path.addAll(t.getPoints(com.logicmaster63.tdgalaxy.TDWorld.getRes()));
+                path.addAll(t.getPoints(TDGalaxy.getRes()));
                 //System.out.println(t.getPoints(TDWorld.res));
                 //System.out.println(path);
             }
@@ -68,8 +69,9 @@ public class FileHandler {
 
     public static HashMap<String, Class<?>> loadClasses(String pakage) {
         HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
-        for(Class clazz: com.logicmaster63.tdgalaxy.TDWorld.getFileStuff().getClasses(pakage))
+        for(Class clazz: TDGalaxy.fileStuff.getClasses(pakage))
             classes.put(clazz.getSimpleName(), clazz);
+        System.out.println("Classes: " + TDGalaxy.fileStuff.getClasses(pakage));
         return classes;
     }
 

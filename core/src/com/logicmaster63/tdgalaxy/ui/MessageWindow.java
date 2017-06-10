@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+import com.logicmaster63.tdgalaxy.TDGalaxy;
 
 public class MessageWindow extends Actor {
 
@@ -28,10 +29,10 @@ public class MessageWindow extends Actor {
         table.setSize(getWidth(), getHeight());
         table.align(Align.center | Align.top);
         table.setPosition(getX(), getY());
-        Label label = new Label(message, new Label.LabelStyle(com.logicmaster63.tdgalaxy.TDWorld.getFonts().get("moonhouse64"), Color.BLACK));
+        Label label = new Label(message, new Label.LabelStyle(TDGalaxy.getFonts().get("moonhouse64"), Color.BLACK));
         label.setWrap(true);
         label.setFontScale(0.7f);
-        Label label2 = new Label("Tap to continue", new Label.LabelStyle(com.logicmaster63.tdgalaxy.TDWorld.getFonts().get("moonhouse64"), Color.BLACK));
+        Label label2 = new Label("Tap to continue", new Label.LabelStyle(TDGalaxy.getFonts().get("moonhouse64"), Color.BLACK));
         label2.setFontScale(0.6f);
         table.add(label).width(getWidth());
         table.row();

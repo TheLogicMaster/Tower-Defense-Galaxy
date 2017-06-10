@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.IntMap;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
+import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 import com.logicmaster63.tdgalaxy.tower.basic.Gun;
@@ -111,8 +112,8 @@ public class GameScreen extends TDScreen implements RendererForVR{
         reader = com.logicmaster63.tdgalaxy.tools.FileHandler.getReader("theme/" + theme + "/PlanetData");
         com.logicmaster63.tdgalaxy.tools.FileHandler.loadPlanet(reader, this);
 
-        classes.putAll(com.logicmaster63.tdgalaxy.tools.FileHandler.loadClasses("com.logicmaster63.tdworld.tower.basic"));
-        classes.putAll(com.logicmaster63.tdgalaxy.tools.FileHandler.loadClasses("com.logicmaster63.tdworld.enemy.basic"));
+        classes.putAll(com.logicmaster63.tdgalaxy.tools.FileHandler.loadClasses("com.logicmaster63.tdgalaxy.tower.basic"));
+        classes.putAll(com.logicmaster63.tdgalaxy.tools.FileHandler.loadClasses("com.logicmaster63.tdgalaxy.enemy.basic"));
         com.logicmaster63.tdgalaxy.tools.FileHandler.loadDependencies(classes);
 
         reader = com.logicmaster63.tdgalaxy.tools.FileHandler.getReader("theme/" + theme + "/SpawnData");
@@ -188,7 +189,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         cam.update(delta);
         cam.render(spriteBatch);
 
-        if(com.logicmaster63.tdgalaxy.TDWorld.isDebug()) {
+        if(TDGalaxy.isDebug()) {
             debugDrawer.begin(cam.getCam());
             collisionWorld.debugDrawWorld();
             debugDrawer.end();
@@ -197,7 +198,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spriteBatch.begin();
         //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + entities.size(), 0, 20);
         //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
-        com.logicmaster63.tdgalaxy.TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "(" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")", 0, 40);
+        TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, "(" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")", 0, 40);
         spriteBatch.end();
 
         super.render(delta);
