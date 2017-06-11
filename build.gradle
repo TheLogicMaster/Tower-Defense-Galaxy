@@ -50,6 +50,7 @@ project(":desktop") {
 
     dependencies {
         compile project(":core")
+        compile "com.google.guava:guava:20.0"
         compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -62,19 +63,19 @@ project(":desktop") {
 
 project(":android") {
     apply plugin: "android"
-
     configurations { natives }
 
     dependencies {
         compile project(":core")
         compile fileTree(dir: 'libs', include: '*.jar')
+        compile 'com.google.apis:google-api-services-gamesManagement:v1management-rev224-1.22.0'
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-        compile 'com.android.support:multidex:1.0.0'
-        compile 'com.google.android.gms:play-services-drive:10.2.6'
-        compile 'com.google.android.gms:play-services-games:10.2.6'
-        compile 'com.google.android.gms:play-services-auth:10.2.6'
-        compile 'com.google.android.gms:play-services-plus:10.2.6'
-        //compile 'com.google.android.gms:play-services:10.2.6'
+        compile 'com.android.support:multidex:1.0.1'
+        compile 'com.google.android.gms:play-services-drive:11.0.0'
+        compile 'com.google.android.gms:play-services-games:11.0.0'
+        //compile 'com.google.android.gms:play-services-auth:10.2.6'
+        //compile 'com.google.android.gms:play-services-plus:10.2.6'
+        //compile 'com.google.android.gms:play-services:11.0.0'
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a"
@@ -96,7 +97,7 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
     }
 
-    apply plugin: 'com.google.gms.google-services'
+    //apply plugin: 'com.google.gms.google-services'
 }
 
 project(":core") {
@@ -109,7 +110,6 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.google.guava:guava:20.0"
     }
 }
 

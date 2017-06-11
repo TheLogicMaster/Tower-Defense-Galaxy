@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "165833522083",
+    "project_id": "tower-defense-galaxy-66926055"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165833522083:android:9a482b17d6653bb0",
+        "android_client_info": {
+          "package_name": "com.logicmaster63.tdgalaxy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165833522083-qlcrre21bnbv4qt2vlnmchiac8eq0e2c.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "165833522083-h8d9t2rgr172k8amj5mg84fd1gps6mvg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.logicmaster63.tdgalaxy",
+            "certificate_hash": "1eef43dc8564890d56060ef70c57b82ee0410f3a"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-Pg42oi32H9rqR4dfgM-AHsfOl3LPRZw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

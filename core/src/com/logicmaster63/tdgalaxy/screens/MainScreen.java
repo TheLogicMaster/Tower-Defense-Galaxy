@@ -73,16 +73,59 @@ public class MainScreen extends TDScreen{
         signOutButton.setVisible(false);
         stage.addActor(signOutButton);
 
-        TextButton textButton = new TextButton("Unlock Achievement", textButtonStyle);
-        textButton.addListener(new ChangeListener() {
+        TextButton achievementButton = new TextButton("Unlock Achievement", textButtonStyle);
+        achievementButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if(TDGalaxy.googlePlayServices != null)
                     TDGalaxy.googlePlayServices.unlockAchievement(Constants.ACHIEVEMENT_NO_LIFE);
             }
         });
-        textButton.setPosition(50 + signInButton.getWidth(), 100);
-        stage.addActor(textButton);
+        achievementButton.setPosition(50 + signInButton.getWidth(), 100);
+        stage.addActor(achievementButton);
+
+        TextButton achievementShowButton = new TextButton("Show Achievements", textButtonStyle);
+        achievementShowButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if(TDGalaxy.googlePlayServices != null)
+                    TDGalaxy.googlePlayServices.showAchievements();
+            }
+        });
+        achievementShowButton.setPosition(10, 140 + signInButton.getHeight());
+        stage.addActor(achievementShowButton);
+
+        TextButton playButton = new TextButton("Play Game", textButtonStyle);
+        playButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new GameScreen(game, 0, TDGalaxy.getThemes().get(0)));
+            }
+        });
+        playButton.setPosition(50 + achievementShowButton.getWidth(), 140 + signInButton.getHeight());
+        stage.addActor(playButton);
+
+        TextButton resetButton = new TextButton("Reset achievements", textButtonStyle);
+        resetButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if(TDGalaxy.googlePlayServices != null)
+                    TDGalaxy.googlePlayServices.resetAchievement(Constants.ACHIEVEMENT_NO_LIFE);
+            }
+        });
+        resetButton.setPosition(10, 180 + signInButton.getHeight() + achievementShowButton.getHeight());
+        stage.addActor(resetButton);
+
+        TextButton rateButton = new TextButton("Rate game", textButtonStyle);
+        rateButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if(TDGalaxy.googlePlayServices != null)
+                    TDGalaxy.googlePlayServices.rateGame();
+            }
+        });
+        rateButton.setPosition(50 + resetButton.getWidth(), 180 + signInButton.getHeight() + achievementShowButton.getHeight());
+        stage.addActor(rateButton);
 
         if(!TDGalaxy.googlePlayServices.isSignedIn() && TDGalaxy.autoSignIn()) {
             TDGalaxy.googlePlayServices.signIn();

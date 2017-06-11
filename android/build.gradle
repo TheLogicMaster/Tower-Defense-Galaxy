@@ -18,11 +18,13 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
+
         multiDexEnabled true
         applicationId "com.logicmaster63.tdgalaxy"
         minSdkVersion 14
         targetSdkVersion 25
     }
+
 }
 
 // called every time gradle gets executed, takes the native dependencies of

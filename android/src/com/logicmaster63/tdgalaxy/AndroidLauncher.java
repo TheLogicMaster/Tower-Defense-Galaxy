@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
@@ -8,28 +9,40 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.ErrorDialogFragment;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.testing.json.MockJsonFactory;
+import com.google.api.services.gamesManagement.GamesManagement;
+import com.google.api.services.gamesManagement.GamesManagementRequest;
+import com.google.api.services.gamesManagement.GamesManagementRequestInitializer;
+import com.google.api.services.gamesManagement.GamesManagementScopes;
+import com.google.common.base.FinalizableReference;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.GooglePlayServices;
 import dalvik.system.DexFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
 public class AndroidLauncher extends AndroidApplication implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GooglePlayServices {
 
-	private static final int RC_UNUSED = 5001;
+	private static final int REQUEST_ACHIEVEMENTS = 5001;
 	private static final int REQUEST_RESOLVE_ERROR = 1001;
 	private static final String STATE_RESOLVING_ERROR = "resolving_error";
 
@@ -61,6 +74,26 @@ public class AndroidLauncher extends AndroidApplication implements GoogleApiClie
 	}
 
 	@Override
+	public void resetAchievement(String name) {
+		//ArrayList<String> scopes = new ArrayList<>();
+		//scopes.add(Scopes.GAMES);
+		//GoogleAuthorizationCodeFlow codeFlow = new GoogleAuthorizationCodeFlow(new NetHttpTransport(), new MockJsonFactory(), "", "", scopes);
+		//codeFlow.loadCredential()
+		//GoogleCredential credential = new GoogleCredential().setAccessToken();
+
+		GamesManagement client = new GamesManagement.Builder(new NetHttpTransport(), new MockJsonFactory(),null)
+				.setApplicationName("TDGalaxy").build();
+
+		Gdx.app.error("Google Play Services", client.toString());
+
+		try {
+			Gdx.app.error("Google Play Services", client.achievements().resetAll().execute().toString());
+		} catch (IOException e) {
+			Gdx.app.error("Google Play Services", e.toString());
+		}
+	}
+
+	@Override
 	public void unlockAchievement(String name) {
 		if(isSignedIn())
 			Games.Achievements.unlock(mGoogleApiClient, name);
@@ -69,7 +102,7 @@ public class AndroidLauncher extends AndroidApplication implements GoogleApiClie
 	@Override
 	public void showAchievements() {
 		if(isSignedIn())
-			startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient), RC_UNUSED);
+			startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient), REQUEST_ACHIEVEMENTS);
 	}
 
 	@Override
@@ -118,7 +151,7 @@ public class AndroidLauncher extends AndroidApplication implements GoogleApiClie
 				.addApi(Games.API).addScope(Games.SCOPE_GAMES)
 				.build();
 
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = true;
 		config.useWakelock = true;
 		config.useImmersiveMode = false;

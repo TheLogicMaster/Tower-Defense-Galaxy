@@ -43,7 +43,6 @@ public abstract class TDScreen implements Screen {
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
-        stage.addActor(new MessageWindow("This is a message to test the wonderful abilities of the scene2d label. I am just typing some random text here to test this paragraph so completely disregard the exact contents because it is entirely irrelevant.", 2560, 1600));
         if(TDGalaxy.isDebug())
             stage.setDebugAll(true);
     }

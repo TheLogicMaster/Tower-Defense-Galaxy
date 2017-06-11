@@ -21,10 +21,17 @@ import com.badlogic.gdx.utils.IntMap;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
+import com.logicmaster63.tdgalaxy.map.Spawn;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 import com.logicmaster63.tdgalaxy.entity.Entity;
+import com.logicmaster63.tdgalaxy.tools.Asset;
+import com.logicmaster63.tdgalaxy.tools.ContactHandler;
+import com.logicmaster63.tdgalaxy.tools.EnemyHandler;
+import com.logicmaster63.tdgalaxy.tools.FileHandler;
+import com.logicmaster63.tdgalaxy.tower.Tower;
 import com.logicmaster63.tdgalaxy.tower.basic.Gun;
 import com.logicmaster63.tdgalaxy.tower.basic.Laser;
+import com.logicmaster63.tdgalaxy.ui.CameraHandler;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -36,8 +43,8 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private Texture background;
     private int map, planetRadius;
     private List<Vector3> path;
-    private com.logicmaster63.tdgalaxy.tools.EnemyHandler enemies;
-    private List<com.logicmaster63.tdgalaxy.tower.Tower> towers;
+    private EnemyHandler enemies;
+    private List<Tower> towers;
     private ModelBatch modelBatch;
     private Environment environment;
     private AssetManager assets;
@@ -49,12 +56,12 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private Vector3 planetSize, spawnPos;
     private String planetName, theme;
     private Map<String, Class<?>> classes;
-    private List<com.logicmaster63.tdgalaxy.map.Spawn> spawns;
+    private List<Spawn> spawns;
     private btCollisionWorld collisionWorld;
     private btBroadphaseInterface broadphase;
     private btCollisionConfiguration collisionConfig;
     private btDispatcher dispatcher;
-    private com.logicmaster63.tdgalaxy.tools.ContactHandler contactHandler;
+    private ContactHandler contactHandler;
     private IntMap<Entity> entities;
     private DebugDrawer debugDrawer;
     private ShapeRenderer shapeRenderer;
@@ -75,12 +82,12 @@ public class GameScreen extends TDScreen implements RendererForVR{
         broadphase = new btDbvtBroadphase();
         collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
         shapeRenderer = new ShapeRenderer();
-        com.logicmaster63.tdgalaxy.tools.FileHandler.addDisposables(shapeRenderer);
+        FileHandler.addDisposables(shapeRenderer);
 
         entities = new IntMap<Entity>();
 
-        spawns = new ArrayList<com.logicmaster63.tdgalaxy.map.Spawn>();
-        cam = new com.logicmaster63.tdgalaxy.ui.CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
+        spawns = new ArrayList<Spawn>();
+        cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
 
         addInputProcessor(cam);
 
@@ -90,13 +97,13 @@ public class GameScreen extends TDScreen implements RendererForVR{
         models = new HashMap<String, Model>();
         projectiles = new ArrayList<Projectile>();
         path = new ArrayList<Vector3>();
-        towers = new ArrayList<com.logicmaster63.tdgalaxy.tower.Tower>();
+        towers = new ArrayList<Tower>();
         modelBatch = new ModelBatch();
 
         debugDrawer = new DebugDrawer();
         collisionWorld.setDebugDrawer(debugDrawer);
         debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
-        contactHandler = new com.logicmaster63.tdgalaxy.tools.ContactHandler(entities, planet);
+        contactHandler = new ContactHandler(entities, planet);
 
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -106,18 +113,18 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, 1080, 720);
         background = new Texture("Background_MainMenu.png");
 
-        BufferedReader reader = com.logicmaster63.tdgalaxy.tools.FileHandler.getReader("track/Track" + Integer.toString(map));
-        path = com.logicmaster63.tdgalaxy.tools.FileHandler.loadTrack(reader, this);
+        BufferedReader reader = FileHandler.getReader("track/Track" + Integer.toString(map));
+        path = FileHandler.loadTrack(reader, this);
 
-        reader = com.logicmaster63.tdgalaxy.tools.FileHandler.getReader("theme/" + theme + "/PlanetData");
-        com.logicmaster63.tdgalaxy.tools.FileHandler.loadPlanet(reader, this);
+        reader = FileHandler.getReader("theme/" + theme + "/PlanetData");
+        FileHandler.loadPlanet(reader, this);
 
-        classes.putAll(com.logicmaster63.tdgalaxy.tools.FileHandler.loadClasses("com.logicmaster63.tdgalaxy.tower.basic"));
-        classes.putAll(com.logicmaster63.tdgalaxy.tools.FileHandler.loadClasses("com.logicmaster63.tdgalaxy.enemy.basic"));
-        com.logicmaster63.tdgalaxy.tools.FileHandler.loadDependencies(classes);
+        classes.putAll(FileHandler.loadClasses("com.logicmaster63.tdgalaxy.tower.basic"));
+        classes.putAll(FileHandler.loadClasses("com.logicmaster63.tdgalaxy.enemy.basic"));
+        FileHandler.loadDependencies(classes);
 
-        reader = com.logicmaster63.tdgalaxy.tools.FileHandler.getReader("theme/" + theme + "/SpawnData");
-        spawns = com.logicmaster63.tdgalaxy.tools.FileHandler.loadSpawns(reader);
+        reader = FileHandler.getReader("theme/" + theme + "/SpawnData");
+        spawns = FileHandler.loadSpawns(reader);
         try {
             reader.close();
         } catch (IOException e) {
@@ -130,11 +137,11 @@ public class GameScreen extends TDScreen implements RendererForVR{
         for(Class<?> clazz: new ArrayList<Class>(classes.values())) {
             try {
                 Method method = clazz.getMethod("getAssets");
-                ArrayList<com.logicmaster63.tdgalaxy.tools.Asset> assetsList = null;
+                ArrayList<Asset> assetsList = null;
                 if(method != null)
-                    assetsList = (ArrayList<com.logicmaster63.tdgalaxy.tools.Asset>) method.invoke(null);
+                    assetsList = (ArrayList<Asset>) method.invoke(null);
                 if(assetsList != null)
-                    for(com.logicmaster63.tdgalaxy.tools.Asset asset: assetsList)
+                    for(Asset asset: assetsList)
                         assets.load(asset.getPath(), asset.getClazz());
             } catch (Exception e) {
                 Gdx.app.error("GameScreen", e.toString());
@@ -148,7 +155,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
             assets.load("theme/" + theme + "/" + planetName + ".png", Texture.class);
         if(planetName == null)
             planetName = "planet";
-        com.logicmaster63.tdgalaxy.tools.FileHandler.addDisposables(spriteBatch, modelBatch, background, broadphase, collisionConfig, dispatcher, collisionWorld, debugDrawer);
+        FileHandler.addDisposables(spriteBatch, modelBatch, background, broadphase, collisionConfig, dispatcher, collisionWorld, debugDrawer);
     }
 
     @Override
@@ -219,9 +226,9 @@ public class GameScreen extends TDScreen implements RendererForVR{
                 Method method = clazz.getMethod("getAssets");
                 ArrayList<com.logicmaster63.tdgalaxy.tools.Asset> assetsList = null;
                 if(method != null)
-                    assetsList = (ArrayList<com.logicmaster63.tdgalaxy.tools.Asset>) method.invoke(null);
+                    assetsList = (ArrayList<Asset>) method.invoke(null);
                 if(assetsList != null)
-                    for(com.logicmaster63.tdgalaxy.tools.Asset asset: assetsList)
+                    for(Asset asset: assetsList)
                         models.put(clazz.getSimpleName(), (Model) assets.get(asset.getPath(), asset.getClazz()));
                         //assets.load(asset.getPath(), asset.getClazz());
             } catch (Exception e) {
@@ -249,7 +256,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         collisionObject.setUserValue(0);
         collisionWorld.addCollisionObject(collisionObject);
         //System.out.println(planet.calculateBoundingBox(new BoundingBox()).getHeight());
-        com.logicmaster63.tdgalaxy.tools.FileHandler.addDisposables(collisionObject);
+        FileHandler.addDisposables(collisionObject);
         if(models.containsKey("Basic"))
             for(int i = 0; i < models.get("Basic").animations.size; i++)
                 System.out.println(models.get("Basic").animations.get(i).id);
@@ -293,4 +300,3 @@ public class GameScreen extends TDScreen implements RendererForVR{
         return running;
     }
 }
-

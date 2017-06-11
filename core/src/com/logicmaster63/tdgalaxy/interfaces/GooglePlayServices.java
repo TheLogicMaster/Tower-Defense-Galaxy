@@ -13,4 +13,6 @@ public interface GooglePlayServices {
     public void unlockAchievement(String name);
 
     public void showAchievements();
+
+    public void resetAchievement(String name);
 }
