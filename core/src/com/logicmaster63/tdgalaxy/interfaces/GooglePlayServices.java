@@ -2,17 +2,21 @@ package com.logicmaster63.tdgalaxy.interfaces;
 
 public interface GooglePlayServices {
 
-    public void signIn();
+    void signIn();
 
-    public void signOut();
+    void signOut();
 
-    public void rateGame();
+    void rateGame();
 
-    public boolean isSignedIn();
+    boolean isSignedIn();
 
-    public void unlockAchievement(String name);
+    void unlockAchievement(String name);
 
-    public void showAchievements();
+    void showAchievements();
 
-    public void resetAchievement(String name);
+    void resetAchievement(String name);
+
+    void showScore(String name);
+
+    void submitScore(String name, long highScore);
 }

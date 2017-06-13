@@ -43,6 +43,7 @@ public class MainScreen extends TDScreen{
         label = new Label("Nope", new Label.LabelStyle(TDGalaxy.getFonts().get("moonhouse64"), Color.BLACK));
         label.setWrap(true);
         label.setFontScale(0.7f);
+        stage.addActor(label);
         Texture background = new Texture("theme/basic/ui/Window.png");
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.font = TDGalaxy.getFonts().get("moonhouse64");
@@ -128,7 +129,7 @@ public class MainScreen extends TDScreen{
         stage.addActor(rateButton);
 
         if(!TDGalaxy.googlePlayServices.isSignedIn() && TDGalaxy.autoSignIn()) {
-            TDGalaxy.googlePlayServices.signIn();
+            //TDGalaxy.googlePlayServices.signIn();
             Gdx.app.debug("Google Play Services", "Sign in");
         }
     }

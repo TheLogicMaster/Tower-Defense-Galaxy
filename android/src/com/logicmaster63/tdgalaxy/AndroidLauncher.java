@@ -40,22 +40,15 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AndroidLauncher extends AndroidApplication implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GooglePlayServices {
+public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, GooglePlayServices{
 
 	private static final int REQUEST_ACHIEVEMENTS = 5001;
-	private static final int REQUEST_RESOLVE_ERROR = 1001;
-	private static final String STATE_RESOLVING_ERROR = "resolving_error";
 
-	private GoogleApiClient mGoogleApiClient;
-	private boolean mResolvingError = false;
-
+	private GameHelper gameHelper;
 
 	@Override
 	public void signOut() {
-		Games.signOut(mGoogleApiClient);
-		if (mGoogleApiClient.isConnected()) {
-			mGoogleApiClient.disconnect();
-		}
+		gameHelper.signOut();
 	}
 
 	@Override
@@ -70,7 +63,7 @@ public class AndroidLauncher extends AndroidApplication implements GoogleApiClie
 
 	@Override
 	public boolean isSignedIn() {
-		return mGoogleApiClient != null && mGoogleApiClient.isConnected();
+		return gameHelper.isSignedIn();
 	}
 
 	@Override
@@ -81,8 +74,7 @@ public class AndroidLauncher extends AndroidApplication implements GoogleApiClie
 		//codeFlow.loadCredential()
 		//GoogleCredential credential = new GoogleCredential().setAccessToken();
 
-		GamesManagement client = new GamesManagement.Builder(new NetHttpTransport(), new MockJsonFactory(),null)
-				.setApplicationName("TDGalaxy").build();
+		GamesManagement client = new GamesManagement.Builder(new NetHttpTransport(), new MockJsonFactory(),null).setApplicationName("TDGalaxy").build();
 
 		Gdx.app.error("Google Play Services", client.toString());
 
@@ -94,62 +86,74 @@ public class AndroidLauncher extends AndroidApplication implements GoogleApiClie
 	}
 
 	@Override
+	public void onSignInFailed() {
+		Gdx.app.error("Google Play Services", "Sign in Failed");
+	}
+
+	@Override
+	public void onSignInSucceeded() {
+		Gdx.app.error("Google Play Services", "Sign in Succeeded");
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		gameHelper.onStart(this);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		gameHelper.onStart(this);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		gameHelper.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void signIn() {
+		gameHelper.beginUserInitiatedSignIn();
+	}
+
+	@Override
 	public void unlockAchievement(String name) {
-		if(isSignedIn())
-			Games.Achievements.unlock(mGoogleApiClient, name);
+		Games.Achievements.unlock(gameHelper.getApiClient(), name);
 	}
 
 	@Override
 	public void showAchievements() {
 		if(isSignedIn())
-			startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient), REQUEST_ACHIEVEMENTS);
+			startActivityForResult(Games.Achievements.getAchievementsIntent(gameHelper.getApiClient()), REQUEST_ACHIEVEMENTS);
+		else
+			signIn();
 	}
 
 	@Override
-	public void onConnectionFailed(@NonNull ConnectionResult result) {
-			if (mResolvingError) {
-			return;
-		} else if (result.hasResolution()) {
-			try {
-				mResolvingError = true;
-				result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
-			} catch (IntentSender.SendIntentException e) {
-				mGoogleApiClient.connect();
-			}
-		} else {
-			mResolvingError = true;
-		}
+	public void submitScore(String name, long highScore) {
+		if(isSignedIn())
+			Games.Leaderboards.submitScore(gameHelper.getApiClient(), name, highScore);
+		else
+			signIn();
 	}
 
 	@Override
-	public void onConnected(@Nullable Bundle bundle) {
-		Gdx.app.debug("Google Play Services", "Connected");
-	}
-
-	@Override
-	public void onConnectionSuspended(int i) {
-		Gdx.app.debug("Google Play Services", "Connection Suspended");
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
+	public void showScore(String name) {
+		if(isSignedIn())
+			startActivityForResult(Games.Leaderboards.getLeaderboardIntent(gameHelper.getApiClient(), name), REQUEST_ACHIEVEMENTS);
+		else
+			signIn();
 	}
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mResolvingError = savedInstanceState != null && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
-
-		new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).requestEmail().build();
-
-		mGoogleApiClient = new GoogleApiClient.Builder(this)
-				.addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this)
-				.addApi(Games.API).addScope(Games.SCOPE_GAMES)
-				.build();
+		gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+		gameHelper.setup(this);
+		//gameHelper.setConnectOnStart(true);
 
 		final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = true;
@@ -175,28 +179,5 @@ public class AndroidLauncher extends AndroidApplication implements GoogleApiClie
 				return classes;
 			}
 		}, null, this), config);
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		if (mGoogleApiClient.isConnected()) {
-			mGoogleApiClient.disconnect();
-		}
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-
-		if (requestCode == REQUEST_RESOLVE_ERROR) {
-			mResolvingError = false;
-			mGoogleApiClient.connect();
-		}
-	}
-
-	@Override
-	public void signIn() {
-		mGoogleApiClient.connect();
 	}
 }
