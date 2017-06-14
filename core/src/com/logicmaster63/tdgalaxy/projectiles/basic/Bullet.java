@@ -7,37 +7,45 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.constants.Effects;
+import com.logicmaster63.tdgalaxy.constants.Types;
+import com.logicmaster63.tdgalaxy.entity.Entity;
+import com.logicmaster63.tdgalaxy.projectiles.Projectile;
+import com.logicmaster63.tdgalaxy.tools.Asset;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
-public class Bullet extends com.logicmaster63.tdgalaxy.projectiles.Projectile {
+public class Bullet extends Projectile {
 
     public static final int HP = 20;
     public static final int LIFETIME = 10;
-    public static final int TYPES = 0;
+    public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
     public static final btCollisionShape SHAPE = new btSphereShape(10);
     public static final int SPEED = 10;
 
-    public Bullet(Vector3 pos, Vector3 velocity, int hp, int health, ModelInstance model, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities) {
-        super(pos, velocity, hp, health, TYPES, model, SHAPE, isTower, world, entities, LIFETIME);
+    public Bullet(Vector3 pos, Vector3 velocity, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, boolean isTemplate, IntMap<Entity> entities) {
+        super(pos, velocity, hp, health, types, effects, model, shape, isTower, world, entities, isTemplate, LIFETIME);
     }
 
-    public Bullet(ModelInstance model, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities) {
+    //Template constructor
+    public Bullet(ModelInstance model, boolean isTower, btCollisionWorld world, IntMap<Entity> entities) {
         super(HP, TYPES, model, SHAPE, isTower, world, entities, LIFETIME);
     }
 
+    //Copy constructor
     public Bullet(Bullet bullet, Vector3 pos, Vector3 velocity) {
         super(bullet, pos, velocity);
     }
 
-    public static ArrayList<com.logicmaster63.tdgalaxy.tools.Asset> getAssets() {
-        ArrayList<com.logicmaster63.tdgalaxy.tools.Asset> assets = new ArrayList<com.logicmaster63.tdgalaxy.tools.Asset>();
-        assets.add(new com.logicmaster63.tdgalaxy.tools.Asset("theme/basic/projectile/Bullet.g3db", Model.class));
+    public static ArrayList<Asset> getAssets() {
+        ArrayList<Asset> assets = new ArrayList<com.logicmaster63.tdgalaxy.tools.Asset>();
+        assets.add(new Asset("theme/basic/projectile/Bullet.g3db", Model.class));
         return assets;
     }
 
     @Override
-    public void collision(com.logicmaster63.tdgalaxy.entity.Entity entity) {
+    public void collision(Entity entity) {
 
     }
 

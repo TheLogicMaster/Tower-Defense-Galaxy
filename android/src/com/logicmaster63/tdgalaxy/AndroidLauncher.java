@@ -1,46 +1,26 @@
 package com.logicmaster63.tdgalaxy;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.net.HttpRequestBuilder;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
-import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.testing.json.MockJsonFactory;
 import com.google.api.services.gamesManagement.GamesManagement;
-import com.google.api.services.gamesManagement.GamesManagementRequest;
-import com.google.api.services.gamesManagement.GamesManagementRequestInitializer;
-import com.google.api.services.gamesManagement.GamesManagementScopes;
-import com.google.common.base.FinalizableReference;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
-import com.logicmaster63.tdgalaxy.interfaces.GooglePlayServices;
+import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import dalvik.system.DexFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, GooglePlayServices{
+public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, OnlineServices {
 
 	private static final int REQUEST_ACHIEVEMENTS = 5001;
 

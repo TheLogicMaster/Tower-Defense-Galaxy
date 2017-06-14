@@ -10,13 +10,19 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.constants.Effects;
+import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.enemy.Enemy;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
+
+import java.util.EnumSet;
 
 public abstract class Entity implements Disposable{
 
     protected Vector3 pos, tempVector;
-    protected int hp, health, effects, types;
+    protected int hp, health;
+    protected EnumSet<Effects> effects;
+    protected EnumSet<Types> types;
     protected AnimationController animation;
     protected ModelInstance instance;
     protected btCollisionShape shape;
@@ -28,7 +34,7 @@ public abstract class Entity implements Disposable{
     protected BoundingBox boundingBox;
     protected boolean isTemplate;
 
-    public Entity(Vector3 pos, int hp, int health, int types, int effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate){
+    public Entity(Vector3 pos, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate){
         this.instance = instance;
         this.pos = pos;
         this.hp = hp;

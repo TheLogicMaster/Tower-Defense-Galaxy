@@ -6,8 +6,7 @@ import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
-import com.logicmaster63.tdgalaxy.interfaces.GooglePlayServices;
-import com.logicmaster63.tdgalaxy.screens.GameScreen;
+import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.screens.MainScreen;
 
 import java.io.BufferedReader;
@@ -22,9 +21,8 @@ public class TDGalaxy extends Game {
 
     //Interfaces
     public static FileStuff fileStuff;
-    public static GooglePlayServices googlePlayServices;
+    public static OnlineServices onlineServices;
 
-    private static final Map<String, Integer> TYPES;
 	private static List<String> themes = new ArrayList<String>();
 	private static Map<String, BitmapFont> fonts;
     private static String ip = "";
@@ -40,21 +38,10 @@ public class TDGalaxy extends Game {
     private static boolean vr = false;
     private static boolean autoSignIn = true;
 
-	static {
-		TYPES = new HashMap<String, Integer>();
-		TYPES.put("ice", 1);
-		TYPES.put("fire", 2);
-		TYPES.put("sharp", 4);
-	}
-
-	public TDGalaxy(FileStuff fileStuff, Debug debugger, GooglePlayServices googlePlayServices) {
+	public TDGalaxy(FileStuff fileStuff, Debug debugger, OnlineServices onlineServices) {
         TDGalaxy.fileStuff = fileStuff;
         TDGalaxy.debugger = debugger;
-        TDGalaxy.googlePlayServices = googlePlayServices;
-    }
-
-    public TDGalaxy(FileStuff fileStuff, Debug debugger) {
-	    this(fileStuff, debugger, null);
+        TDGalaxy.onlineServices = onlineServices;
     }
 
     @Override
@@ -185,10 +172,6 @@ public class TDGalaxy extends Game {
 
     public static Map<String, BitmapFont> getFonts() {
         return fonts;
-    }
-
-    public static Map<String, Integer> getTYPES() {
-        return TYPES;
     }
 
     public static int getRes() {

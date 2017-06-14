@@ -33,8 +33,8 @@ public class MainScreen extends TDScreen{
         table = new Table() {
             @Override
             public void act(float delta) {
-                if(TDGalaxy.googlePlayServices != null)
-                    label.setText(Boolean.toString(TDGalaxy.googlePlayServices.isSignedIn()));
+                if(TDGalaxy.onlineServices != null)
+                    label.setText(Boolean.toString(TDGalaxy.onlineServices.isSignedIn()));
                 super.act(delta);
             }
         };
@@ -54,8 +54,8 @@ public class MainScreen extends TDScreen{
         signInButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(TDGalaxy.googlePlayServices != null)
-                    TDGalaxy.googlePlayServices.signIn();
+                if(TDGalaxy.onlineServices != null)
+                    TDGalaxy.onlineServices.signIn();
             }
         });
         signInButton.setPosition(10, 100);
@@ -65,8 +65,8 @@ public class MainScreen extends TDScreen{
         signOutButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(TDGalaxy.googlePlayServices != null)
-                    TDGalaxy.googlePlayServices.signOut();
+                if(TDGalaxy.onlineServices != null)
+                    TDGalaxy.onlineServices.signOut();
                 TDGalaxy.changePref("autoSignIn", false);
             }
         });
@@ -78,8 +78,8 @@ public class MainScreen extends TDScreen{
         achievementButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(TDGalaxy.googlePlayServices != null)
-                    TDGalaxy.googlePlayServices.unlockAchievement(Constants.ACHIEVEMENT_NO_LIFE);
+                if(TDGalaxy.onlineServices != null)
+                    TDGalaxy.onlineServices.unlockAchievement(Constants.ACHIEVEMENT_NO_LIFE);
             }
         });
         achievementButton.setPosition(50 + signInButton.getWidth(), 100);
@@ -89,8 +89,8 @@ public class MainScreen extends TDScreen{
         achievementShowButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(TDGalaxy.googlePlayServices != null)
-                    TDGalaxy.googlePlayServices.showAchievements();
+                if(TDGalaxy.onlineServices != null)
+                    TDGalaxy.onlineServices.showAchievements();
             }
         });
         achievementShowButton.setPosition(10, 140 + signInButton.getHeight());
@@ -110,8 +110,8 @@ public class MainScreen extends TDScreen{
         resetButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(TDGalaxy.googlePlayServices != null)
-                    TDGalaxy.googlePlayServices.resetAchievement(Constants.ACHIEVEMENT_NO_LIFE);
+                if(TDGalaxy.onlineServices != null)
+                    TDGalaxy.onlineServices.resetAchievement(Constants.ACHIEVEMENT_NO_LIFE);
             }
         });
         resetButton.setPosition(10, 180 + signInButton.getHeight() + achievementShowButton.getHeight());
@@ -121,26 +121,21 @@ public class MainScreen extends TDScreen{
         rateButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(TDGalaxy.googlePlayServices != null)
-                    TDGalaxy.googlePlayServices.rateGame();
+                if(TDGalaxy.onlineServices != null)
+                    TDGalaxy.onlineServices.rateGame();
             }
         });
         rateButton.setPosition(50 + resetButton.getWidth(), 180 + signInButton.getHeight() + achievementShowButton.getHeight());
         stage.addActor(rateButton);
-
-        if(!TDGalaxy.googlePlayServices.isSignedIn() && TDGalaxy.autoSignIn()) {
-            //TDGalaxy.googlePlayServices.signIn();
-            Gdx.app.debug("Google Play Services", "Sign in");
-        }
     }
 
     @Override
     public void render (float delta) {
-        if(TDGalaxy.googlePlayServices.isSignedIn() && !TDGalaxy.autoSignIn())
+        if(TDGalaxy.onlineServices.isSignedIn() && !TDGalaxy.autoSignIn())
             TDGalaxy.changePref("autoSignIn", true);
 
-        signOutButton.setVisible(TDGalaxy.googlePlayServices.isSignedIn());
-        signInButton.setVisible(!TDGalaxy.googlePlayServices.isSignedIn());
+        signOutButton.setVisible(TDGalaxy.onlineServices.isSignedIn());
+        signInButton.setVisible(!TDGalaxy.onlineServices.isSignedIn());
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         super.render(delta);

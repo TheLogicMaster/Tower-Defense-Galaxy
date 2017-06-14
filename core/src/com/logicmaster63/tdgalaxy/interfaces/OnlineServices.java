@@ -1,6 +1,6 @@
 package com.logicmaster63.tdgalaxy.interfaces;
 
-public interface GooglePlayServices {
+public interface OnlineServices {
 
     void signIn();
 

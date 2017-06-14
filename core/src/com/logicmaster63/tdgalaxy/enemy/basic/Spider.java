@@ -9,24 +9,31 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.constants.Effects;
+import com.logicmaster63.tdgalaxy.constants.Types;
+import com.logicmaster63.tdgalaxy.enemy.Enemy;
+import com.logicmaster63.tdgalaxy.entity.Entity;
+import com.logicmaster63.tdgalaxy.tools.Asset;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
-public class Spider extends com.logicmaster63.tdgalaxy.enemy.Enemy {
+public class Spider extends Enemy {
 
+    public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
     public static final int HP = 20;
     public static final float COOLDOWN = 0.3f;
     public static final int RANGE = 1000;
     public static final String ATTACK_ANIMATION = "";
     public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
 
-    public Spider(Vector3 position, double speeed, int types, ModelInstance instance, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, boolean isTemplate, List<Vector3> path) {
-        this(position, speeed, HP, COOLDOWN, types, instance, 0, world, entities, isTemplate, path);
+    public Spider(Vector3 pos, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate, List<Vector3> path) {
+        super(pos, speeed, hp, health, range, coolDown, types, effects, instance, new btBoxShape(instance.extendBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, entities, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate, path);
     }
 
-    public Spider(Vector3 pos, double speeed, int health, float coolDown, int types, ModelInstance instance, int effects, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, boolean isTemplate, List<Vector3> path) {
-        super(pos, speeed, HP, health, RANGE, coolDown, types, instance, new btBoxShape(instance.extendBoundingBox(new BoundingBox()).getDimensions(new Vector3())), effects, world, entities, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate, path);
+    public Spider(Vector3 pos, double speeed, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate, List<Vector3> path) {
+        this(pos, speeed, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), instance, world, entities, isTemplate, path);
     }
 
     @Override
@@ -40,8 +47,8 @@ public class Spider extends com.logicmaster63.tdgalaxy.enemy.Enemy {
     }
 
     public static ArrayList<com.logicmaster63.tdgalaxy.tools.Asset> getAssets() {
-        ArrayList<com.logicmaster63.tdgalaxy.tools.Asset> assets = new ArrayList<com.logicmaster63.tdgalaxy.tools.Asset>();
-        assets.add(new com.logicmaster63.tdgalaxy.tools.Asset("theme/basic/enemy/Basic.g3db", Model.class));
+        ArrayList<Asset> assets = new ArrayList<Asset>();
+        assets.add(new Asset("theme/basic/enemy/Basic.g3db", Model.class));
         return assets;
     }
 }

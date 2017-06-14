@@ -7,16 +7,25 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.constants.Effects;
+import com.logicmaster63.tdgalaxy.constants.Types;
+import com.logicmaster63.tdgalaxy.entity.Entity;
+import com.logicmaster63.tdgalaxy.projectiles.basic.Bullet;
+import com.logicmaster63.tdgalaxy.tools.Asset;
+import com.logicmaster63.tdgalaxy.tools.Dependency;
+import com.logicmaster63.tdgalaxy.tower.Tower;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
-public class Laser extends com.logicmaster63.tdgalaxy.tower.Tower {
+public class Laser extends Tower {
 
     public static final int HP = 20;
-    public static final int TYPES = 0;
+    public static final EnumSet<Types> TYPES = EnumSet.of(Types.fire);
     public static final float COOLDOWN = 1f;
     public static final int RANGE = 3000;
     public static final String ATTACK_ANIMATION = "";
@@ -24,11 +33,15 @@ public class Laser extends com.logicmaster63.tdgalaxy.tower.Tower {
     private float laserTime = 0;
     private Vector3 laserTo;
 
-    public Laser(Vector3 pos, ModelInstance instance, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> objects, boolean isTemplate) {
-        super(pos, HP, RANGE, COOLDOWN, TYPES, instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate);
+    public Laser(Vector3 pos, int hp, int health, int range, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> objects, String animation, Vector3 attackOffset, boolean isTemplate) {
+        super(pos, hp, health, range, cooldown, types, effects, instance, shape, world, objects, animation, attackOffset, isTemplate);
         for(int i = 0; i < instance.nodes.size; i++)
             System.out.println(instance.nodes.get(i).id);
         laserTo = new Vector3();
+    }
+
+    public Laser(Vector3 pos, ModelInstance instance, btCollisionWorld world, IntMap<Entity> objects, boolean isTemplate) {
+        this(pos, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate);
     }
 
     @Override
@@ -49,21 +62,21 @@ public class Laser extends com.logicmaster63.tdgalaxy.tower.Tower {
     }
 
     @Override
-    public void attack(ArrayList<com.logicmaster63.tdgalaxy.entity.Entity> target) {
+    public void attack(ArrayList<Entity> target) {
         super.attack(target);
         laserTime = 0.5f;
         laserTo.set(target.get(0).getPos());
     }
 
-    public static ArrayList<com.logicmaster63.tdgalaxy.tools.Asset> getAssets() {
-        ArrayList<com.logicmaster63.tdgalaxy.tools.Asset> assets = new ArrayList<com.logicmaster63.tdgalaxy.tools.Asset>();
-        assets.add(new com.logicmaster63.tdgalaxy.tools.Asset("theme/basic/tower/Laser.g3db", Model.class));
+    public static ArrayList<Asset> getAssets() {
+        ArrayList<Asset> assets = new ArrayList<com.logicmaster63.tdgalaxy.tools.Asset>();
+        assets.add(new Asset("theme/basic/tower/Laser.g3db", Model.class));
         return assets;
     }
 
     public static List getDependencies() {
-        List<com.logicmaster63.tdgalaxy.tools.Dependency> dependencies = new ArrayList<com.logicmaster63.tdgalaxy.tools.Dependency>();
-        dependencies.add(new com.logicmaster63.tdgalaxy.tools.Dependency(com.logicmaster63.tdgalaxy.projectiles.basic.Bullet.class, "Bullet"));
+        List<Dependency> dependencies = new ArrayList<Dependency>();
+        dependencies.add(new Dependency(Bullet.class, "Bullet"));
         return dependencies;
     }
 }

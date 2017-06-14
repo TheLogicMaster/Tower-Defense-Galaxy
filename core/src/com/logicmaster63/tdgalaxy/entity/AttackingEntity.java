@@ -5,11 +5,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.constants.Effects;
+import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.enemy.Enemy;
 import com.logicmaster63.tdgalaxy.constants.TargetMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 public abstract class AttackingEntity extends Entity {
@@ -21,7 +24,7 @@ public abstract class AttackingEntity extends Entity {
     private Vector3 rayFrom = new Vector3(), rayTo = new Vector3();
     private ClosestRayResultCallback callback;
 
-    public AttackingEntity(Vector3 pos, int hp, int health, int range, int types, int effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, boolean isTemplate){
+    public AttackingEntity(Vector3 pos, int hp, int health, int range, EnumSet<Types> types, EnumSet<Effects> effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, boolean isTemplate){
         super(pos, hp, health, types, effects, instance, shape, world, entities, isTemplate);
         this.coolDown = coolDown;
         this.range = range;

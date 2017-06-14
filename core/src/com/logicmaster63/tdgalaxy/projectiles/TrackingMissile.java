@@ -5,16 +5,21 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.constants.Effects;
+import com.logicmaster63.tdgalaxy.constants.Types;
+import com.logicmaster63.tdgalaxy.entity.Entity;
+
+import java.util.EnumSet;
 
 public class TrackingMissile extends Missile {
 
-    private com.logicmaster63.tdgalaxy.entity.Entity target;
+    private Entity target;
 
-    public TrackingMissile(Vector3 pos, Vector3 velocity, com.logicmaster63.tdgalaxy.entity.Entity target, int hp, int health, int types, int effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, float lifetime) {
+    public TrackingMissile(Vector3 pos, Vector3 velocity, Entity target, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, float lifetime) {
         super(pos, velocity, hp, health, types, effects, model, shape, isTower, world, entities, lifetime);
     }
 
-    public TrackingMissile(Vector3 pos, Vector3 velocity, com.logicmaster63.tdgalaxy.entity.Entity target, int hp, int types, int effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, float lifetime) {
+    public TrackingMissile(Vector3 pos, Vector3 velocity, Entity target, int hp, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, float lifetime) {
         this(pos, velocity, target, hp, hp, types, effects, model, shape, isTower, world, entities, lifetime);
     }
 
