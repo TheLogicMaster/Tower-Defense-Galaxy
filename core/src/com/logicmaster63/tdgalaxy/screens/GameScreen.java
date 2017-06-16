@@ -166,13 +166,8 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
         modelBatch.begin(perspectiveCamera);
         shapeRenderer.setProjectionMatrix(perspectiveCamera.combined);
-        Iterator iterator = entities.iterator();
-        while (iterator.hasNext()) {
-            Entity entity = (Entity)((IntMap.Entry) iterator.next()).value;
-            entity.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
-        }
-        //for(IntMap.Entry<Entity> entry: entities.entries())
-            //entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
+        for(IntMap.Entry<Entity> entry: entities.entries())
+            entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
         modelBatch.render(planet);
         modelBatch.end();
     }
@@ -185,28 +180,13 @@ public class GameScreen extends TDScreen implements RendererForVR{
             else
                 return;
         }
-        Iterator iterator = entities.iterator();
-        while (iterator.hasNext()) {
-            Entity entity = (Entity)((IntMap.Entry) iterator.next()).value;
-            entity.tick(delta);
-            if(entity.isDead) {
-                entity.destroy();
-                iterator.remove();
-            }
-        }
-        /*List<Integer> deadKeys = new ArrayList<Integer>();
-        List<Entity> dead = new ArrayList<Entity>();
         for(IntMap.Entry<Entity> entry: entities.entries()) {
             entry.value.tick(delta);
             if(entry.value.isDead) {
-                deadKeys.add(entry.key);
-                dead.add(entry.value);
+                entry.value.destroy();
             }
         }
-        for(Entity entity: dead)
-            entity.destroy();
-        for(int key: deadKeys)
-            entities.remove(key);*/
+
         enemies.tick(delta, this);
 
         collisionWorld.performDiscreteCollisionDetection();
