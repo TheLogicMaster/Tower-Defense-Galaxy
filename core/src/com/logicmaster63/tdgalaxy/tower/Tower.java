@@ -18,8 +18,8 @@ import java.util.EnumSet;
 
 public abstract class Tower extends AttackingEntity {
 
-    public Tower(Vector3 pos, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, boolean isTemplate) {
-        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, entities, attackAnimation, attackOffset, isTemplate);
+    public Tower(Vector3 pos, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset) {
+        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, entities, attackAnimation, attackOffset);
     }
 
     @Override

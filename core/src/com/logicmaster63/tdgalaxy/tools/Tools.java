@@ -2,10 +2,26 @@ package com.logicmaster63.tdgalaxy.tools;
 
 import com.badlogic.gdx.math.Vector3;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Tools {
+
+    public static <T> T[] concatenate(T[] first, T[]... rest) {
+        int totalLength = first.length;
+        for (T[] array : rest) {
+            totalLength += array.length;
+        }
+        T[] result = Arrays.copyOf(first, totalLength);
+        int offset = first.length;
+        for (T[] array : rest) {
+            System.arraycopy(array, 0, result, offset, array.length);
+            offset += array.length;
+        }
+        return result;
+    }
 
     @SuppressWarnings("unchecked")
     public static <T> List<T> getImplements(List list, Class<T> type) {

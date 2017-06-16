@@ -178,6 +178,7 @@ public class FileHandler {
     }
 
     public static void dispose() {
+        System.err.println("DISPOSE");
         if (disposables != null)
             for (Disposable d : disposables)
                 d.dispose();

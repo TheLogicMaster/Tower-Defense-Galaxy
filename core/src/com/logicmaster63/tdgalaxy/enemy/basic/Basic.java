@@ -34,8 +34,8 @@ public class Basic extends Enemy{
 
     private AnimationController.AnimationListener listener;
 
-    public Basic(Vector3 pos, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate, List<Vector3> path) {
-        super(pos, speeed, hp, health, range, coolDown, types, effects, instance, new btCompoundShape(), world, entities, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate, path);
+    public Basic(Vector3 pos, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path) {
+        super(pos, speeed, hp, health, range, coolDown, types, effects, instance, new btCompoundShape(), world, entities, ATTACK_ANIMATION, ATTACK_OFFSET, path);
         ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 30, 0), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(75, 30, 90)));
         //System.out.println(getModelInstance().getAnimation("Spider_Armature|walk_ani_vor").id);
         listener = new AnimationController.AnimationListener() {
@@ -56,8 +56,8 @@ public class Basic extends Enemy{
         //animation.queue("Spider_Armature|walk_ani_vor", 0, 1000, -1, 1, listener, 0);
     }
 
-    public Basic(Vector3 position, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate, List<Vector3> path) {
-        this(position, SPEED, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), instance, world, entities, isTemplate, path);
+    public Basic(Vector3 position, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path) {
+        this(position, SPEED, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), instance, world, entities, path);
     }
 
     public static ArrayList<Asset> getAssets() {

@@ -19,23 +19,17 @@ import java.util.EnumSet;
 public class Bullet extends Projectile {
 
     public static final int HP = 20;
-    public static final int LIFETIME = 10;
+    public static final float LIFETIME = 10;
     public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
     public static final btCollisionShape SHAPE = new btSphereShape(10);
-    public static final int SPEED = 10;
+    public static final float SPEED = 300;
 
-    public Bullet(Vector3 pos, Vector3 velocity, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, boolean isTemplate, IntMap<Entity> entities) {
-        super(pos, velocity, hp, health, types, effects, model, shape, isTower, world, entities, isTemplate, LIFETIME);
+    public Bullet(Vector3 pos, Vector3 velocity, int hp, int health, float speed, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<Entity> entities, float lifetime) {
+        super(pos, velocity, hp, health, speed, types, effects, model, shape, isTower, world, entities, lifetime);
     }
 
-    //Template constructor
-    public Bullet(ModelInstance model, boolean isTower, btCollisionWorld world, IntMap<Entity> entities) {
-        super(HP, TYPES, model, SHAPE, isTower, world, entities, LIFETIME);
-    }
-
-    //Copy constructor
-    public Bullet(Bullet bullet, Vector3 pos, Vector3 velocity) {
-        super(bullet, pos, velocity);
+    public Bullet(Vector3 pos, Vector3 velocity, ModelInstance model, boolean isTower, btCollisionWorld world, IntMap<Entity> entities) {
+        super(pos, velocity, HP, HP, SPEED, TYPES, EnumSet.noneOf(Effects.class), model, SHAPE, isTower, world, entities, LIFETIME);
     }
 
     public static ArrayList<Asset> getAssets() {

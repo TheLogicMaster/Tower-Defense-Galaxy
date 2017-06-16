@@ -24,8 +24,8 @@ public abstract class AttackingEntity extends Entity {
     private Vector3 rayFrom = new Vector3(), rayTo = new Vector3();
     private ClosestRayResultCallback callback;
 
-    public AttackingEntity(Vector3 pos, int hp, int health, int range, EnumSet<Types> types, EnumSet<Effects> effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, boolean isTemplate){
-        super(pos, hp, health, types, effects, instance, shape, world, entities, isTemplate);
+    public AttackingEntity(Vector3 pos, int hp, int health, int range, EnumSet<Types> types, EnumSet<Effects> effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset){
+        super(pos, hp, health, types, effects, instance, shape, world, entities);
         this.coolDown = coolDown;
         this.range = range;
         this.attackAnimation = attackAnimation;

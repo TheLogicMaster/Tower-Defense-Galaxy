@@ -33,15 +33,15 @@ public class Laser extends Tower {
     private float laserTime = 0;
     private Vector3 laserTo;
 
-    public Laser(Vector3 pos, int hp, int health, int range, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> objects, String animation, Vector3 attackOffset, boolean isTemplate) {
-        super(pos, hp, health, range, cooldown, types, effects, instance, shape, world, objects, animation, attackOffset, isTemplate);
+    public Laser(Vector3 pos, int hp, int health, int range, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> objects, String animation, Vector3 attackOffset) {
+        super(pos, hp, health, range, cooldown, types, effects, instance, shape, world, objects, animation, attackOffset);
         for(int i = 0; i < instance.nodes.size; i++)
             System.out.println(instance.nodes.get(i).id);
         laserTo = new Vector3();
     }
 
-    public Laser(Vector3 pos, ModelInstance instance, btCollisionWorld world, IntMap<Entity> objects, boolean isTemplate) {
-        this(pos, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, isTemplate);
+    public Laser(Vector3 pos, ModelInstance instance, btCollisionWorld world, IntMap<Entity> objects) {
+        this(pos, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), instance, new btBoxShape(instance.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, ATTACK_OFFSET);
     }
 
     @Override

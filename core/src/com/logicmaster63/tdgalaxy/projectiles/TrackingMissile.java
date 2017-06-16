@@ -15,12 +15,12 @@ public class TrackingMissile extends Missile {
 
     private Entity target;
 
-    public TrackingMissile(Vector3 pos, Vector3 velocity, Entity target, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, float lifetime) {
-        super(pos, velocity, hp, health, types, effects, model, shape, isTower, world, entities, lifetime);
+    public TrackingMissile(Vector3 pos, Vector3 velocity, Entity target, int hp, int health, float speed, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, float lifetime) {
+        super(pos, velocity, hp, health, speed, types, effects, model, shape, isTower, world, entities, lifetime);
     }
 
-    public TrackingMissile(Vector3 pos, Vector3 velocity, Entity target, int hp, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, float lifetime) {
-        this(pos, velocity, target, hp, hp, types, effects, model, shape, isTower, world, entities, lifetime);
+    public TrackingMissile(Vector3 pos, Vector3 velocity, float speed, Entity target, int hp, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<com.logicmaster63.tdgalaxy.entity.Entity> entities, float lifetime) {
+        this(pos, velocity, target, hp, hp, speed, types, effects, model, shape, isTower, world, entities, lifetime);
     }
 
     @Override

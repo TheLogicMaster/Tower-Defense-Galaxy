@@ -25,14 +25,15 @@ import com.logicmaster63.tdgalaxy.map.Spawn;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 import com.logicmaster63.tdgalaxy.tools.Asset;
-import com.logicmaster63.tdgalaxy.tools.ContactHandler;
-import com.logicmaster63.tdgalaxy.tools.EnemyHandler;
+import com.logicmaster63.tdgalaxy.entity.ContactHandler;
+import com.logicmaster63.tdgalaxy.enemy.EnemyHandler;
 import com.logicmaster63.tdgalaxy.tools.FileHandler;
 import com.logicmaster63.tdgalaxy.tower.Tower;
 import com.logicmaster63.tdgalaxy.tower.basic.Gun;
 import com.logicmaster63.tdgalaxy.tower.basic.Laser;
 import com.logicmaster63.tdgalaxy.ui.CameraHandler;
 
+import javax.swing.text.html.HTMLDocument;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -165,8 +166,13 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
         modelBatch.begin(perspectiveCamera);
         shapeRenderer.setProjectionMatrix(perspectiveCamera.combined);
-        for(IntMap.Entry<Entity> entry: entities.entries())
-            entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
+        Iterator iterator = entities.iterator();
+        while (iterator.hasNext()) {
+            Entity entity = (Entity)((IntMap.Entry) iterator.next()).value;
+            entity.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
+        }
+        //for(IntMap.Entry<Entity> entry: entities.entries())
+            //entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
         modelBatch.render(planet);
         modelBatch.end();
     }
@@ -179,8 +185,28 @@ public class GameScreen extends TDScreen implements RendererForVR{
             else
                 return;
         }
-        for(IntMap.Entry<Entity> entry: entities.entries())
+        Iterator iterator = entities.iterator();
+        while (iterator.hasNext()) {
+            Entity entity = (Entity)((IntMap.Entry) iterator.next()).value;
+            entity.tick(delta);
+            if(entity.isDead) {
+                entity.destroy();
+                iterator.remove();
+            }
+        }
+        /*List<Integer> deadKeys = new ArrayList<Integer>();
+        List<Entity> dead = new ArrayList<Entity>();
+        for(IntMap.Entry<Entity> entry: entities.entries()) {
             entry.value.tick(delta);
+            if(entry.value.isDead) {
+                deadKeys.add(entry.key);
+                dead.add(entry.value);
+            }
+        }
+        for(Entity entity: dead)
+            entity.destroy();
+        for(int key: deadKeys)
+            entities.remove(key);*/
         enemies.tick(delta, this);
 
         collisionWorld.performDiscreteCollisionDetection();
@@ -260,14 +286,19 @@ public class GameScreen extends TDScreen implements RendererForVR{
         if(models.containsKey("Basic"))
             for(int i = 0; i < models.get("Basic").animations.size; i++)
                 System.out.println(models.get("Basic").animations.get(i).id);
-        enemies = new com.logicmaster63.tdgalaxy.tools.EnemyHandler(spawnPos, classes, spawns, models, path, collisionWorld, entities);
+        enemies = new EnemyHandler(spawnPos, classes, spawns, models, path, collisionWorld, entities);
 
         //towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(models.get(0))));
-        if(models.containsKey("Laser"))
-            towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), new ModelInstance(models.get("Laser")), collisionWorld, entities, false));
-        if(models.containsKey("Gun"))
-            towers.add(new Gun(new Vector3(100, planetRadius + 100, 0), new ModelInstance(models.get("Gun")), new ModelInstance(models.get("Bullet")),collisionWorld, entities, false));
-        //ModelInstance instance = new ModelInstance(models.get(0));
+        try {
+            if(models.containsKey("Laser"))
+                towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), new ModelInstance(models.get("Laser")), collisionWorld, entities));
+            if(models.containsKey("Gun"))
+                towers.add(new Gun(new Vector3(100, planetRadius + 100, 0), new ModelInstance(models.get("Gun")), new ModelInstance(models.get("Bullet")), collisionWorld, entities));
+
+        } catch (NoSuchMethodException e) {
+            Gdx.app.error("Gamescreen add towers", e.toString());
+        }
+         //ModelInstance instance = new ModelInstance(models.get(0));
         //instance.materials.get(0).set(new BlendingAttribute(0.5f));
         //enemies.add(new Spider(new Vector3(0, 0, 0), 20d, 10, 500, 0, instance, new btBoxShape(instance.model.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()))));
     }

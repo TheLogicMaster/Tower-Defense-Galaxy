@@ -1,4 +1,4 @@
-package com.logicmaster63.tdgalaxy.tools;
+package com.logicmaster63.tdgalaxy.entity;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;

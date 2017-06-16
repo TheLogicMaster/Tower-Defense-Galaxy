@@ -17,7 +17,7 @@ import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 
 import java.util.EnumSet;
 
-public abstract class Entity implements Disposable{
+public abstract class Entity implements Disposable {
 
     protected Vector3 pos, tempVector;
     protected int hp, health;
@@ -32,9 +32,9 @@ public abstract class Entity implements Disposable{
     protected IntMap<Entity> entities;
     protected Quaternion quaternion;
     protected BoundingBox boundingBox;
-    protected boolean isTemplate;
+    public boolean isDead = false;
 
-    public Entity(Vector3 pos, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, boolean isTemplate){
+    public Entity(Vector3 pos, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities){
         this.instance = instance;
         this.pos = pos;
         this.hp = hp;
@@ -54,14 +54,12 @@ public abstract class Entity implements Disposable{
         if(this instanceof Enemy || this instanceof Projectile)
             body.setCollisionFlags(body.getCollisionFlags());
         int index = 1;
-        if(!isTemplate) {
-            while (entities.containsKey(index))
-                index++;
-            entities.put(index, this);
-            body.setUserValue(index);
-            world.addCollisionObject(body);
-            boundingBox = instance.calculateBoundingBox(new BoundingBox());
-        }
+        while (entities.containsKey(index))
+            index++;
+        entities.put(index, this);
+        body.setUserValue(index);
+        world.addCollisionObject(body);
+        boundingBox = instance.calculateBoundingBox(new BoundingBox());
         //for(Node node: instance.nodes)
             //System.out.println();
     }
@@ -84,8 +82,8 @@ public abstract class Entity implements Disposable{
 
     public void destroy() {
         world.removeCollisionObject(body);
-        if(getEntry() != null)
-            entities.remove(getEntry().key);
+        //if(getEntry() != null)
+            //entities.remove(getEntry().key);
         dispose();
     }
 
@@ -107,7 +105,9 @@ public abstract class Entity implements Disposable{
 
     @Override
     public void dispose() {
-        shape.dispose();
+        body.release();
+        //body.dispose();
+        //shape.dispose();
     }
 
     public Vector3 getPos() {

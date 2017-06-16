@@ -1,4 +1,4 @@
-package com.logicmaster63.tdgalaxy.tools;
+package com.logicmaster63.tdgalaxy.enemy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -61,8 +61,8 @@ public class EnemyHandler {
                 instance = new ModelInstance(models.get(name));
                 try {
                     Class<?> c = enemyClasses.get(name);
-                    Constructor constructor = c.getConstructor(Vector3.class, ModelInstance.class, btCollisionWorld.class, IntMap.class, boolean.class, List.class);
-                    enemies.add((Enemy) constructor.newInstance(pos, instance, world, entity, false, path));
+                    Constructor constructor = c.getConstructor(Vector3.class, ModelInstance.class, btCollisionWorld.class, IntMap.class, List.class);
+                    enemies.add((Enemy) constructor.newInstance(pos, instance, world, entity, path));
                 } catch (Exception e) {
                     Gdx.app.log("Error", e.toString());
                 }
