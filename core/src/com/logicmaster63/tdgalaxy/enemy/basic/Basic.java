@@ -21,6 +21,7 @@ import com.logicmaster63.tdgalaxy.tools.Asset;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 public class Basic extends Enemy{
 
@@ -56,8 +57,8 @@ public class Basic extends Enemy{
         //animation.queue("Spider_Armature|walk_ani_vor", 0, 1000, -1, 1, listener, 0);
     }
 
-    public Basic(Vector3 position, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path) {
-        this(position, SPEED, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), instance, world, entities, path);
+    public Basic(Vector3 position, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path) {
+        this(position, SPEED, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Basic")), world, entities, path);
     }
 
     public static ArrayList<Asset> getAssets() {

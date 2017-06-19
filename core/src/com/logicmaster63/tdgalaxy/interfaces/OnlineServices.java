@@ -19,4 +19,6 @@ public interface OnlineServices {
     void showScore(String name);
 
     void submitScore(String name, long highScore);
+
+    void saveGame(String name);
 }

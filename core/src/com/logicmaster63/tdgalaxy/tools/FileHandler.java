@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
+import com.logicmaster63.tdgalaxy.map.Spawn;
 import com.logicmaster63.tdgalaxy.map.track.Curve;
 import com.logicmaster63.tdgalaxy.map.track.Track;
 import com.logicmaster63.tdgalaxy.screens.GameScreen;
@@ -15,8 +16,6 @@ import java.io.*;
 import java.util.*;
 
 public class FileHandler {
-
-    private static List<Disposable> disposables = new ArrayList<Disposable>();
 
     public static List<Vector3> loadTrack(BufferedReader data, GameScreen screen) {
         if (data == null)
@@ -153,10 +152,10 @@ public class FileHandler {
 
     }
 
-    public static List<com.logicmaster63.tdgalaxy.map.Spawn> loadSpawns(BufferedReader data) {
+    public static List<Spawn> loadSpawns(BufferedReader data) {
         if (data == null)
             return null;
-        List<com.logicmaster63.tdgalaxy.map.Spawn> spawns = new ArrayList<com.logicmaster63.tdgalaxy.map.Spawn>();
+        List<Spawn> spawns = new ArrayList<com.logicmaster63.tdgalaxy.map.Spawn>();
         try {
             int spawnNum = Integer.parseInt(data.readLine());
             for (int i = 0; i < spawnNum; i++) {
@@ -164,23 +163,12 @@ public class FileHandler {
                 String name = data.readLine();
                 int delay = Integer.parseInt(data.readLine());
                 for (int j = 0; j < repeatNum; j++)
-                    spawns.add(new com.logicmaster63.tdgalaxy.map.Spawn(name, delay));
+                    spawns.add(new Spawn(name, delay));
                 data.close();
             }
         } catch (IOException e) {
             Gdx.app.log("Error", e.toString());
         }
         return spawns;
-    }
-
-    public static void addDisposables(Disposable... d) {
-        disposables.addAll(Arrays.asList(d));
-    }
-
-    public static void dispose() {
-        System.err.println("DISPOSE");
-        if (disposables != null)
-            for (Disposable d : disposables)
-                d.dispose();
     }
 }

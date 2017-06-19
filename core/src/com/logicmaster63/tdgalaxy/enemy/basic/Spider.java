@@ -18,6 +18,7 @@ import com.logicmaster63.tdgalaxy.tools.Asset;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 public class Spider extends Enemy {
 
@@ -32,8 +33,8 @@ public class Spider extends Enemy {
         super(pos, speeed, hp, health, range, coolDown, types, effects, instance, new btBoxShape(instance.extendBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, entities, ATTACK_ANIMATION, ATTACK_OFFSET, path);
     }
 
-    public Spider(Vector3 pos, double speeed, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path) {
-        this(pos, speeed, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), instance, world, entities, path);
+    public Spider(Vector3 pos, double speeed, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path) {
+        this(pos, speeed, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Basic")), world, entities, path);
     }
 
     @Override

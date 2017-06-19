@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdgalaxy.constants.Effects;
 import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.entity.Entity;
-import com.logicmaster63.tdgalaxy.entity.EntityTemplate;
+import com.logicmaster63.tdgalaxy.entity.Template;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 
 import java.util.ArrayList;
@@ -17,9 +17,9 @@ import java.util.EnumSet;
 
 public class ProjectileTower extends Tower{
 
-    private EntityTemplate<Projectile> projectileTemplate;
+    private Template<? extends Projectile> projectileTemplate;
 
-    public ProjectileTower(Vector3 pos, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, EntityTemplate<Projectile> projectileTemplate, Vector3 attackOffset) {
+    public ProjectileTower(Vector3 pos, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Template<? extends Projectile> projectileTemplate, Vector3 attackOffset) {
         super(pos, hp, health, range, coolDown, types, effects, instance, shape, world, entities, attackAnimation, attackOffset);
         this.projectileTemplate = projectileTemplate;
     }

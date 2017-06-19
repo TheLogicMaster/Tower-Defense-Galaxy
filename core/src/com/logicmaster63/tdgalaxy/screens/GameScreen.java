@@ -24,16 +24,16 @@ import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.map.Spawn;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 import com.logicmaster63.tdgalaxy.entity.Entity;
-import com.logicmaster63.tdgalaxy.tools.Asset;
+import com.logicmaster63.tdgalaxy.tools.*;
 import com.logicmaster63.tdgalaxy.entity.ContactHandler;
 import com.logicmaster63.tdgalaxy.enemy.EnemyHandler;
-import com.logicmaster63.tdgalaxy.tools.FileHandler;
 import com.logicmaster63.tdgalaxy.tower.Tower;
 import com.logicmaster63.tdgalaxy.tower.basic.Gun;
 import com.logicmaster63.tdgalaxy.tower.basic.Laser;
 import com.logicmaster63.tdgalaxy.ui.CameraHandler;
+import com.logicmaster63.tdgalaxy.ui.PlacementCell;
+import com.logicmaster63.tdgalaxy.ui.PlacementWindow;
 
-import javax.swing.text.html.HTMLDocument;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -52,7 +52,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private Map<String, Model> models;
     private boolean loading, hasPlanetModel, running;
     private ModelInstance planet;
-    private com.logicmaster63.tdgalaxy.ui.CameraHandler cam;
+    private CameraHandler cam;
     private List<Projectile> projectiles;
     private Vector3 planetSize, spawnPos;
     private String planetName, theme;
@@ -78,17 +78,23 @@ public class GameScreen extends TDScreen implements RendererForVR{
     public void show() {
         super.show();
 
+        Encrypter encrypter = new Encrypter("1234123412341234", "1234123412341234");
+        Encrypter.Encryption encryption = encrypter.encrypt("This is a message, y'all");
+        //System.out.println(encryption);
+        System.out.println(encrypter.decryptString(encryption));
+
         collisionConfig = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfig);
         broadphase = new btDbvtBroadphase();
         collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
         shapeRenderer = new ShapeRenderer();
-        FileHandler.addDisposables(shapeRenderer);
+        addDisposables(shapeRenderer);
+        background = new Texture("Background_MainMenu.png");
 
         entities = new IntMap<Entity>();
 
         spawns = new ArrayList<Spawn>();
-        cam = new CameraHandler(new Vector3(250, 20, 250), 1, 5000, this);
+        cam = new CameraHandler(new Vector3(250, 20, 250), 1, 10000, this);
 
         addInputProcessor(cam);
 
@@ -112,7 +118,6 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
         spriteBatch = new SpriteBatch();
         spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, 1080, 720);
-        background = new Texture("Background_MainMenu.png");
 
         BufferedReader reader = FileHandler.getReader("track/Track" + Integer.toString(map));
         path = FileHandler.loadTrack(reader, this);
@@ -156,7 +161,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
             assets.load("theme/" + theme + "/" + planetName + ".png", Texture.class);
         if(planetName == null)
             planetName = "planet";
-        FileHandler.addDisposables(spriteBatch, modelBatch, background, broadphase, collisionConfig, dispatcher, collisionWorld, debugDrawer);
+        addDisposables(spriteBatch, modelBatch, background, broadphase, collisionConfig, dispatcher, collisionWorld, debugDrawer);
     }
 
     @Override
@@ -219,7 +224,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
     @Override
     public void hide() {
-        com.logicmaster63.tdgalaxy.tools.FileHandler.dispose();
+        dispose();
     }
 
     private void doneLoading() {
@@ -262,7 +267,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         collisionObject.setUserValue(0);
         collisionWorld.addCollisionObject(collisionObject);
         //System.out.println(planet.calculateBoundingBox(new BoundingBox()).getHeight());
-        FileHandler.addDisposables(collisionObject);
+        addDisposables(collisionObject);
         if(models.containsKey("Basic"))
             for(int i = 0; i < models.get("Basic").animations.size; i++)
                 System.out.println(models.get("Basic").animations.get(i).id);
@@ -271,9 +276,9 @@ public class GameScreen extends TDScreen implements RendererForVR{
         //towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(models.get(0))));
         try {
             if(models.containsKey("Laser"))
-                towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), new ModelInstance(models.get("Laser")), collisionWorld, entities));
+                towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), models, collisionWorld, entities));
             if(models.containsKey("Gun"))
-                towers.add(new Gun(new Vector3(100, planetRadius + 100, 0), new ModelInstance(models.get("Gun")), new ModelInstance(models.get("Bullet")), collisionWorld, entities));
+                towers.add(new Gun(new Vector3(100, planetRadius + 100, 0), models, collisionWorld, entities));
 
         } catch (NoSuchMethodException e) {
             Gdx.app.error("Gamescreen add towers", e.toString());
@@ -281,6 +286,10 @@ public class GameScreen extends TDScreen implements RendererForVR{
          //ModelInstance instance = new ModelInstance(models.get(0));
         //instance.materials.get(0).set(new BlendingAttribute(0.5f));
         //enemies.add(new Spider(new Vector3(0, 0, 0), 20d, 10, 500, 0, instance, new btBoxShape(instance.model.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()))));
+        PlacementCell[][] placementCells = new PlacementCell[2][2];
+        placementCells[0][0] = new PlacementCell(background, models.get("Gun"), Gun.class.getConstructors()[1]);
+        placementCells[1][0] = new PlacementCell(background, models.get("Laser"), Laser.class.getConstructors()[1]);
+        stage.addActor(new PlacementWindow(0, 0, 400, 400, 2, 2, placementCells, collisionWorld, cam.getCam(), modelBatch));
     }
 
     public Camera getCamera() {

@@ -9,7 +9,6 @@ import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.interfaces.ValueReturner;
-import sun.security.krb5.internal.crypto.Des;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,6 +29,7 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 		dialog = new JDialog(frame, "Dialog Example", true);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Tower Defense Galaxy";
+
 		//config.width = 1280;
 		//config.height = 800;
 		new LwjglApplication(new TDGalaxy(this, this, this), config);
@@ -148,6 +148,11 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 				});
 			}
 		});
+	}
+
+	@Override
+	public void saveGame(String name) {
+
 	}
 
 	@Override

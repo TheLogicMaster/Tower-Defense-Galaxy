@@ -2,13 +2,13 @@ package com.logicmaster63.tdgalaxy.entity;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdgalaxy.constants.Effects;
 import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.enemy.Enemy;
 import com.logicmaster63.tdgalaxy.constants.TargetMode;
+import com.logicmaster63.tdgalaxy.tools.Tools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +21,6 @@ public abstract class AttackingEntity extends Entity {
     protected TargetMode targetMode = TargetMode.FIRSTEST;
     protected String attackAnimation;
     protected Vector3 attackOffset, centerOffset;
-    private Vector3 rayFrom = new Vector3(), rayTo = new Vector3();
     private ClosestRayResultCallback callback;
 
     public AttackingEntity(Vector3 pos, int hp, int health, int range, EnumSet<Types> types, EnumSet<Effects> effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset){
@@ -30,7 +29,7 @@ public abstract class AttackingEntity extends Entity {
         this.range = range;
         this.attackAnimation = attackAnimation;
         this.attackOffset = attackOffset;
-        callback = new ClosestRayResultCallback(rayFrom, rayTo);
+        callback = new ClosestRayResultCallback(new Vector3(), new Vector3());
     }
 
     @Override
@@ -51,26 +50,10 @@ public abstract class AttackingEntity extends Entity {
             //System.out.println(this.toString() + " ---> " + target.toString());
     }
 
-    protected btCollisionObject rayTest(Ray ray, float range) {
-        rayFrom.set(ray.origin);
-        rayTo.set(ray.direction).scl(range).add(rayFrom);
-        callback.setCollisionObject(null);
-        callback.setClosestHitFraction(1f);
-        callback.setRayToWorld(rayTo);
-        callback.setRayFromWorld(rayFrom);
-        world.rayTest(rayFrom, rayTo, callback);
-        //if(callback.getCollisionObject() != null && this instanceof Tower)
-            //System.out.println(callback.getCollisionObject().getUserValue());
-
-        if (callback.hasHit())
-            return callback.getCollisionObject();
-        return null;
-    }
-
     protected boolean canPathTo(Entity target) {
-        btCollisionObject object = rayTest(new Ray(pos, new Vector3(target.body.getWorldTransform().getTranslation(tempVector)).sub(pos)), range);
-        //if(this instanceof Tower)
-            //System.out.println(object != null && (object.getUserValue() == target.body.getUserValue()));
+        callback.setRayFromWorld(pos);
+        callback.setRayToWorld(target.body.getWorldTransform().getTranslation(tempVector).sub(pos).setLength(range));
+        btCollisionObject object = Tools.closestRayTestObject(world, callback);
         return (object != null && (object.getUserValue() == target.body.getUserValue()));
     }
 

@@ -33,7 +33,7 @@ public abstract class Projectile extends Entity {
         super.tick(delta);
         age += delta;
         if(age > lifetime)
-            isDead = true;
+            destroy();
     }
 
     @Override

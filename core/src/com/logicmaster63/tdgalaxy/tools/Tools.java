@@ -1,13 +1,18 @@
 package com.logicmaster63.tdgalaxy.tools;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Tools {
+
+    private static Vector3 rayTo = new Vector3(), rayFrom = new Vector3(), tmp = new Vector3();
 
     public static <T> T[] concatenate(T[] first, T[]... rest) {
         int totalLength = first.length;
@@ -68,5 +73,29 @@ public class Tools {
         p = p.add(p2.scl(3 * u * tt)); //third term
         //p = p.add(p3.scl(ttt)); //fourth term           Can one just remove this to create a quadratic curve?
         return p;
+    }
+
+    public static btCollisionObject closestRayTestObject(btCollisionWorld world, ClosestRayResultCallback callback) {
+        callback.getRayFromWorld(rayFrom);
+        callback.getRayToWorld(rayTo);
+        callback.setCollisionObject(null);
+        callback.setClosestHitFraction(1f);
+        world.rayTest(rayFrom, rayTo, callback);
+        if (callback.hasHit())
+            return callback.getCollisionObject();
+        return null;
+    }
+
+    public static Vector3 closestRayTest(btCollisionWorld world, ClosestRayResultCallback callback) {
+        callback.getRayFromWorld(rayFrom);
+        callback.getRayToWorld(rayTo);
+        callback.setCollisionObject(null);
+        callback.setClosestHitFraction(1f);
+        world.rayTest(rayFrom, rayTo, callback);
+        if (callback.hasHit()) {
+            callback.getHitPointWorld(tmp);
+            return tmp;
+        }
+        return null;
     }
 }

@@ -57,20 +57,17 @@ public class EnemyHandler {
             prevTime = System.currentTimeMillis();
             String name = spawns.get(enemyIndex).getName();
             ModelInstance instance;
-            if(models.get(name) != null) {
-                instance = new ModelInstance(models.get(name));
-                try {
-                    Class<?> c = enemyClasses.get(name);
-                    Constructor constructor = c.getConstructor(Vector3.class, ModelInstance.class, btCollisionWorld.class, IntMap.class, List.class);
-                    enemies.add((Enemy) constructor.newInstance(pos, instance, world, entity, path));
-                } catch (Exception e) {
-                    Gdx.app.log("Error", e.toString());
-                }
-                enemyIndex++;
+            try {
+                Class<?> c = enemyClasses.get(name);
+                Constructor constructor = c.getConstructor(Vector3.class, Map.class, btCollisionWorld.class, IntMap.class, List.class);
+                enemies.add((Enemy) constructor.newInstance(pos, models, world, entity, path));
+            } catch (Exception e) {
+                Gdx.app.log("Error", e.toString());
             }
+            enemyIndex++;
         }
         //for (Enemy enemy : enemies)
-         //   enemy.tick(delta, path);
+        //   enemy.tick(delta, path);
     }
 
     public void render(float delta, ModelBatch batch, ShapeRenderer shapeRenderer) {

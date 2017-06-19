@@ -1,4 +1,4 @@
-package com.logicmaster63.tdgalaxy.projectiles.basic;
+package com.logicmaster63.tdgalaxy.projectiles;
 
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -15,21 +15,23 @@ import com.logicmaster63.tdgalaxy.tools.Asset;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Map;
 
 public class Bullet extends Projectile {
 
-    public static final int HP = 20;
-    public static final float LIFETIME = 10;
-    public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
-    public static final btCollisionShape SHAPE = new btSphereShape(10);
-    public static final float SPEED = 300;
+    private static final int HP = 20;
+    private static final float LIFETIME = 10;
+    private static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
+    private static final btCollisionShape SHAPE = new btSphereShape(10);
+    private static final float SPEED = 300;
 
+    //Debug constructor
     public Bullet(Vector3 pos, Vector3 velocity, int hp, int health, float speed, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<Entity> entities, float lifetime) {
         super(pos, velocity, hp, health, speed, types, effects, model, shape, isTower, world, entities, lifetime);
     }
 
-    public Bullet(Vector3 pos, Vector3 velocity, ModelInstance model, boolean isTower, btCollisionWorld world, IntMap<Entity> entities) {
-        super(pos, velocity, HP, HP, SPEED, TYPES, EnumSet.noneOf(Effects.class), model, SHAPE, isTower, world, entities, LIFETIME);
+    public Bullet(Vector3 pos, Vector3 velocity, Map<String, Model> models, boolean isTower, btCollisionWorld world, IntMap<Entity> entities) {
+        super(pos, velocity, HP, HP, SPEED, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Bullet")), SHAPE, isTower, world, entities, LIFETIME);
     }
 
     public static ArrayList<Asset> getAssets() {

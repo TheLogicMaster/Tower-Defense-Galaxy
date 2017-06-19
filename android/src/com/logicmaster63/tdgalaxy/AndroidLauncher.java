@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy;
 
+import android.app.backup.BackupAgentHelper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,18 +14,23 @@ import com.google.api.client.testing.json.MockJsonFactory;
 import com.google.api.services.gamesManagement.GamesManagement;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
+import com.logicmaster63.tdgalaxy.tools.Tools;
 import dalvik.system.DexFile;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, OnlineServices {
+public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, OnlineServices, FileStuff {
 
 	private static final int REQUEST_ACHIEVEMENTS = 5001;
 
 	private GameHelper gameHelper;
+	private BackupAgentHelper helper;
 
 	@Override
 	public void signOut() {
@@ -128,36 +134,53 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
 	}
 
 	@Override
+	public void saveGame(String name) {
+
+	}
+
+	@Override
+	public Set<Class<?>> getClasses(String packageName) {
+		Set<Class<?>> classes = new HashSet<Class<?>>();
+		try {
+			DexFile dex = new DexFile(getContext().getApplicationInfo().sourceDir);
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			Enumeration<String> entries = dex.entries();
+			while (entries.hasMoreElements()) {
+				String entry = entries.nextElement();
+				if (entry.toLowerCase().startsWith(packageName.toLowerCase()))
+					classes.add(classLoader.loadClass(entry));
+			}
+		} catch (Exception e) {
+			Gdx.app.error("Errorororor", e.toString());
+		}
+		return classes;
+	}
+
+	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
+		gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES | GameHelper.CLIENT_SNAPSHOT);
 		gameHelper.setup(this);
+		helper = new BackupAgentHelper();
 		//gameHelper.setConnectOnStart(true);
+
+		try {
+			IvParameterSpec iv = new IvParameterSpec("key".getBytes("UTF-8"));
+			SecretKeySpec sKeySpec = new SecretKeySpec("key".getBytes("UTF-8"), "AES");
+			Cipher cipher = Cipher.getInstance("");
+			Encryption encryption = Tools.encrypt(cipher, sKeySpec, iv, "This is a message".getBytes("UTF-8"));
+			System.out.println(encryption);
+			System.out.println(new String(Tools.decrypt(cipher, sKeySpec, iv, encryption), "UTF-8"));
+		} catch(Exception e) {
+			Gdx.app.error("Encrypt (AndroidLauncher)", e.toString());
+		}
 
 		final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = true;
 		config.useWakelock = true;
 		config.useImmersiveMode = false;
 		config.useGyroscope = true;
-		initialize(new TDGalaxy(new FileStuff() {
-			@Override
-			public Set<Class<?>> getClasses(String packageName) {
-				Set<Class<?>> classes = new HashSet<Class<?>>();
-				try {
-					DexFile dex = new DexFile(getContext().getApplicationInfo().sourceDir);
-					ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-					Enumeration<String> entries = dex.entries();
-					while (entries.hasMoreElements()) {
-						String entry = entries.nextElement();
-						if (entry.toLowerCase().startsWith(packageName.toLowerCase()))
-							classes.add(classLoader.loadClass(entry));
-					}
-				} catch (Exception e) {
-					Gdx.app.error("Errorororor", e.toString());
-				}
-				return classes;
-			}
-		}, null, this), config);
+		initialize(new TDGalaxy(this, null, this), config);
 	}
 }

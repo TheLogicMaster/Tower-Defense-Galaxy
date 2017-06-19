@@ -4,18 +4,25 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.ui.MessageWindow;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class TDScreen implements Screen {
 
-    Game game;
+    protected Game game;
     protected SpriteBatch spriteBatch;
     protected OrthographicCamera orthographicCamera;
     protected Viewport viewport;
     protected Stage stage;
+    protected List<Disposable> disposables = new ArrayList<Disposable>();
+
     private InputMultiplexer multiplexer;
 
     public TDScreen (Game game) {
@@ -65,6 +72,9 @@ public abstract class TDScreen implements Screen {
     @Override
     public void dispose () {
         System.out.println("Dispose");
+        if (disposables != null)
+            for (Disposable d : disposables)
+                d.dispose();
     }
 
     @Override
@@ -76,5 +86,9 @@ public abstract class TDScreen implements Screen {
         //TDWorld.getFonts().get("ui32").draw(spriteBatch, orthographicCamera.unproject(tmp.set(Gdx.input.getX(), Gdx.input.getY(), 0)).toString(), 100, 100);
         spriteBatch.end();
         stage.draw();
+    }
+
+    protected void addDisposables(Disposable... d) {
+        disposables.addAll(Arrays.asList(d));
     }
 }
