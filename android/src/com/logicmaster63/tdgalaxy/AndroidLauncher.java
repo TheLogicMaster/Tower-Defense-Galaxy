@@ -165,17 +165,6 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
 		helper = new BackupAgentHelper();
 		//gameHelper.setConnectOnStart(true);
 
-		try {
-			IvParameterSpec iv = new IvParameterSpec("key".getBytes("UTF-8"));
-			SecretKeySpec sKeySpec = new SecretKeySpec("key".getBytes("UTF-8"), "AES");
-			Cipher cipher = Cipher.getInstance("");
-			Encryption encryption = Tools.encrypt(cipher, sKeySpec, iv, "This is a message".getBytes("UTF-8"));
-			System.out.println(encryption);
-			System.out.println(new String(Tools.decrypt(cipher, sKeySpec, iv, encryption), "UTF-8"));
-		} catch(Exception e) {
-			Gdx.app.error("Encrypt (AndroidLauncher)", e.toString());
-		}
-
 		final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = true;
 		config.useWakelock = true;

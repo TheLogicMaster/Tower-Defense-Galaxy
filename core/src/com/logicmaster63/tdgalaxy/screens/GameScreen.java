@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
@@ -21,12 +22,17 @@ import com.badlogic.gdx.utils.IntMap;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
+import com.logicmaster63.tdgalaxy.entity.Template;
 import com.logicmaster63.tdgalaxy.map.Spawn;
+import com.logicmaster63.tdgalaxy.map.region.Region;
+import com.logicmaster63.tdgalaxy.map.region.SphereRegion;
+import com.logicmaster63.tdgalaxy.map.world.PlanetWorld;
+import com.logicmaster63.tdgalaxy.map.world.World;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 import com.logicmaster63.tdgalaxy.tools.*;
 import com.logicmaster63.tdgalaxy.entity.ContactHandler;
-import com.logicmaster63.tdgalaxy.enemy.EnemyHandler;
+import com.logicmaster63.tdgalaxy.enemy.EnemySpawner;
 import com.logicmaster63.tdgalaxy.tower.Tower;
 import com.logicmaster63.tdgalaxy.tower.basic.Gun;
 import com.logicmaster63.tdgalaxy.tower.basic.Laser;
@@ -43,8 +49,9 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
     private Texture background;
     private int map, planetRadius;
+    private Money money = new Money(100);
     private List<Vector3> path;
-    private EnemyHandler enemies;
+    private EnemySpawner enemies;
     private List<Tower> towers;
     private ModelBatch modelBatch;
     private Environment environment;
@@ -67,6 +74,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private DebugDrawer debugDrawer;
     private ShapeRenderer shapeRenderer;
     private VRCameraInputAdapter vrCameraInputAdapter;
+    private World world;
 
     public GameScreen(Game game, int map, String theme) {
         super(game);
@@ -80,7 +88,6 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
         Encrypter encrypter = new Encrypter("1234123412341234", "1234123412341234");
         Encrypter.Encryption encryption = encrypter.encrypt("This is a message, y'all");
-        //System.out.println(encryption);
         System.out.println(encrypter.decryptString(encryption));
 
         collisionConfig = new btDefaultCollisionConfiguration();
@@ -216,7 +223,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         spriteBatch.begin();
         //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + entities.size(), 0, 20);
         //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
-        TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, "(" + Gdx.input.getX() + ", " + Gdx.input.getY() + ")", 0, 40);
+        TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, "$" + money.$, 0, viewport.getWorldHeight() - 30);
         spriteBatch.end();
 
         super.render(delta);
@@ -266,19 +273,22 @@ public class GameScreen extends TDScreen implements RendererForVR{
         collisionObject.setWorldTransform(planet.transform);
         collisionObject.setUserValue(0);
         collisionWorld.addCollisionObject(collisionObject);
+        ArrayList<Region> regions = new ArrayList<Region>();
+        regions.add(new SphereRegion(new Vector3(), planetRadius));
+        world = new PlanetWorld(regions, collisionWorld);
         //System.out.println(planet.calculateBoundingBox(new BoundingBox()).getHeight());
         addDisposables(collisionObject);
         if(models.containsKey("Basic"))
             for(int i = 0; i < models.get("Basic").animations.size; i++)
                 System.out.println(models.get("Basic").animations.get(i).id);
-        enemies = new EnemyHandler(spawnPos, classes, spawns, models, path, collisionWorld, entities);
+        enemies = new EnemySpawner(spawnPos, classes, spawns, models, path, collisionWorld, entities);
 
         //towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(models.get(0))));
         try {
-            if(models.containsKey("Laser"))
-                towers.add(new Laser(new Vector3(0, planetRadius + 10, 0), models, collisionWorld, entities));
+            if(models.containsKey("Laser"))//new Vector3(0, planetRadius + 10, 0)
+                towers.add(new Laser(new Matrix4().setToTranslation(new Vector3(0, planetRadius + 10, 0)), models, collisionWorld, entities));
             if(models.containsKey("Gun"))
-                towers.add(new Gun(new Vector3(100, planetRadius + 100, 0), models, collisionWorld, entities));
+                towers.add(new Gun(new Matrix4().setToTranslation(new Vector3(100, planetRadius + 100, 0)), models, collisionWorld, entities));
 
         } catch (NoSuchMethodException e) {
             Gdx.app.error("Gamescreen add towers", e.toString());
@@ -287,9 +297,15 @@ public class GameScreen extends TDScreen implements RendererForVR{
         //instance.materials.get(0).set(new BlendingAttribute(0.5f));
         //enemies.add(new Spider(new Vector3(0, 0, 0), 20d, 10, 500, 0, instance, new btBoxShape(instance.model.calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3()))));
         PlacementCell[][] placementCells = new PlacementCell[2][2];
-        placementCells[0][0] = new PlacementCell(background, models.get("Gun"), Gun.class.getConstructors()[1]);
-        placementCells[1][0] = new PlacementCell(background, models.get("Laser"), Laser.class.getConstructors()[1]);
-        stage.addActor(new PlacementWindow(0, 0, 400, 400, 2, 2, placementCells, collisionWorld, cam.getCam(), modelBatch));
+        try {
+            placementCells[0][0] = new PlacementCell(background, models.get("Gun"), new Template(Gun.class.getConstructors()[1], models, collisionWorld, entities), (Integer) classes.get("Gun").getField("PRICE").get(null));
+            placementCells[1][0] = new PlacementCell(background, models.get("Laser"), new Template(Laser.class.getConstructors()[1], models, collisionWorld, entities), (Integer)classes.get("Laser").getField("PRICE").get(null));
+        } catch (NoSuchFieldException e) {
+            Gdx.app.error("Create placement window", e.toString());
+        } catch (IllegalAccessException e) {
+            Gdx.app.error("Create placement window", e.toString());
+        }
+        stage.addActor(new PlacementWindow(0, 0, 400, 400, 2, 2, placementCells, collisionWorld, cam.getCam(), modelBatch, world, money));
     }
 
     public Camera getCamera() {

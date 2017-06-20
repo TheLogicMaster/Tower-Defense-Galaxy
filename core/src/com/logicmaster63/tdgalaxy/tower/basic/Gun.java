@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
@@ -26,21 +27,22 @@ import java.util.Map;
 
 public class Gun extends ProjectileTower{
 
-    private static final int HP = 20;
-    private static final float COOLDOWN = 2f;
-    private static final int RANGE = 3000;
-    private static final String ATTACK_ANIMATION = "";
-    private static final Vector3 ATTACK_OFFSET = Vector3.Zero;
-    private static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
+    public static final int HP = 20;
+    public static final int PRICE = 20;
+    public static final float COOLDOWN = 2f;
+    public static final int RANGE = 3000;
+    public static final String ATTACK_ANIMATION = "";
+    public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
+    public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
 
-    public Gun(Vector3 pos, int hp, int health, int range, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attack, Template<Bullet> projectile, Vector3 attackOffset) {
-        super(pos, hp, health, range, cooldown, types, effects, instance, shape, world, entities, attack, projectile, attackOffset);
+    public Gun(Matrix4 transform, int hp, int health, int range, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attack, Template<Bullet> projectile, Vector3 attackOffset) {
+        super(transform, hp, health, range, cooldown, types, effects, instance, shape, world, entities, attack, projectile, attackOffset);
         for(int i = 0; i < instance.nodes.size; i++)
             System.out.println(instance.nodes.get(i).id);
     }
 
-    public Gun(Vector3 pos, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> entities) throws NoSuchMethodException {
-        this(pos, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Gun")), new btBoxShape(models.get("Gun").calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, entities, ATTACK_ANIMATION, new Template<Bullet>(Bullet.class.getConstructors()[1], models, true, world, entities), ATTACK_OFFSET);
+    public Gun(Matrix4 transform, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> entities) throws NoSuchMethodException {
+        this(transform, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Gun")), new btBoxShape(models.get("Gun").calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, entities, ATTACK_ANIMATION, new Template<Bullet>(Bullet.class.getConstructors()[1], models, true, world, entities), ATTACK_OFFSET);
     }
 
     @Override

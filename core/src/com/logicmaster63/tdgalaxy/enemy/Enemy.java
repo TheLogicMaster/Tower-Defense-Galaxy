@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
@@ -15,6 +16,7 @@ import com.logicmaster63.tdgalaxy.entity.Entity;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Enemy extends com.logicmaster63.tdgalaxy.entity.AttackingEntity {
 
@@ -22,8 +24,8 @@ public abstract class Enemy extends com.logicmaster63.tdgalaxy.entity.AttackingE
     private double speeed, dist = 0;
     private int moveIndex = 0;
 
-    public Enemy(Vector3 pos, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, List<Vector3> path) {
-        super(pos, hp, health, range, types, effects, coolDown, instance, shape, world, entities, attackAnimation, attackOffset);
+    public Enemy(Matrix4 transform, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, List<Vector3> path) {
+        super(transform, hp, health, range, types, effects, coolDown, instance, shape, world, entities, attackAnimation, attackOffset);
         this.path = path;
         this.speeed = speeed;
     }
@@ -32,11 +34,14 @@ public abstract class Enemy extends com.logicmaster63.tdgalaxy.entity.AttackingE
     public void tick(float delta) {
         super.tick(delta);
         if(moveIndex + 1 < path.size()) {
+            transform.getTranslation(tempVector2);
             tempVector.set(path.get(moveIndex + 1));
-            tempVector.sub(pos).setLength((float) speeed / 10f);
-            pos.add(tempVector);
-            if(pos.dst(path.get(moveIndex + 1)) < speeed / 10f) {
-                pos.set(path.get(moveIndex + 1));
+            tempVector.sub(tempVector2).setLength((float) speeed / 10f);
+            transform.translate(tempVector);
+            //pos.add(tempVector);
+            if(tempVector2.dst(path.get(moveIndex + 1)) < speeed / 10f) {
+                transform.setToTranslation(path.get(moveIndex + 1));
+                //pos.set(path.get(moveIndex + 1));
                 moveIndex++;
             }
         } else {
@@ -74,11 +79,7 @@ public abstract class Enemy extends com.logicmaster63.tdgalaxy.entity.AttackingE
     public ModelInstance getModelInstance() {
         return instance;
     }
-
-    public Vector3 getPos() {
-        return pos;
-    }
-
+    
     public double getSpeeed() {
         return speeed;
     }

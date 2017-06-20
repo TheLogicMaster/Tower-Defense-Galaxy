@@ -3,6 +3,7 @@ package com.logicmaster63.tdgalaxy.projectiles;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
@@ -20,8 +21,8 @@ public abstract class Projectile extends Entity {
     protected float age;
     protected float lifetime;
 
-    public Projectile(Vector3 pos, Vector3 velocity, int hp, int health, float speed, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<Entity> entities, float lifetime) {
-        super(pos, hp, health, types, effects, model, shape, world, entities);
+    public Projectile(Matrix4 transform, Vector3 velocity, int hp, int health, float speed, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<Entity> entities, float lifetime) {
+        super(transform, hp, health, types, effects, model, shape, world, entities);
         this.isTower = isTower;
         this.velocity = velocity;
         this.velocity.scl(speed);
@@ -29,7 +30,8 @@ public abstract class Projectile extends Entity {
     }
 
     public void tick(float delta) {
-        pos.add(tempVector.set(velocity).scl(delta));
+        transform.translate(tempVector.set(velocity).scl(delta));
+        //pos.add(tempVector.set(velocity).scl(delta));
         super.tick(delta);
         age += delta;
         if(age > lifetime)

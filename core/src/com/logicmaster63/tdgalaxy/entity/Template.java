@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.logicmaster63.tdgalaxy.tools.Tools;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 
 public class Template<T extends Entity>{
 

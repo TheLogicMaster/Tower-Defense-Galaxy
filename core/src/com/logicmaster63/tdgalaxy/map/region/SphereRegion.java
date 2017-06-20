@@ -24,6 +24,6 @@ public class SphereRegion extends Region {
 
     @Override
     public boolean test(float x, float y, float z) {
-        return Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2) + Math.pow(pos.z - z, 2) < Math.pow(radius, 2);
+        return Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2) + Math.pow(pos.z - z, 2) < Math.pow(radius, 2) + 1;
     }
 }

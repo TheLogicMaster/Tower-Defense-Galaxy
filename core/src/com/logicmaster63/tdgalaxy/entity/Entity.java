@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -19,7 +20,8 @@ import java.util.EnumSet;
 
 public abstract class Entity implements Disposable {
 
-    protected Vector3 pos, tempVector;
+    protected Vector3 tempVector, tempVector2;
+    protected Matrix4 transform;
     protected int hp, health;
     protected EnumSet<Effects> effects;
     protected EnumSet<Types> types;
@@ -34,21 +36,22 @@ public abstract class Entity implements Disposable {
     protected BoundingBox boundingBox;
     public boolean isDead = false;
 
-    public Entity(Vector3 pos, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities){
+    public Entity(Matrix4 transform, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities){
         this.instance = instance;
-        this.pos = pos;
+        this.transform = transform;
         this.hp = hp;
         this.types = types;
         this.health = health;
         this.effects = effects;
         animation = new AnimationController(instance);
-        this.instance.transform.setTranslation(pos);
+        this.instance.transform.set(transform);
         this.shape = shape;
         body = new btCollisionObject();
         body.setCollisionShape(shape);
-        body.setWorldTransform(instance.transform);
+        body.setWorldTransform(this.instance.transform);
         this.world = world;
         tempVector = new Vector3();
+        tempVector2 = new Vector3();
         this.entities = entities;
         quaternion = new Quaternion();
         if(this instanceof Enemy || this instanceof Projectile)
@@ -74,7 +77,8 @@ public abstract class Entity implements Disposable {
     }
 
     public void tick(float delta) {
-        instance.transform.setToTranslation(pos);
+        instance.transform.set(transform);
+
         body.setWorldTransform(instance.transform);
         if(!animation.paused)
             animation.update(delta);
@@ -110,12 +114,12 @@ public abstract class Entity implements Disposable {
         //shape.dispose();
     }
 
-    public Vector3 getPos() {
-        return pos;
+    public Matrix4 getTransform() {
+        return transform;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + ": (" + pos.toString() + ", " + health + ", " + effects + ")";
+        return getClass().getSimpleName() + ": (" + transform + ", " + health + ", " + effects + ")";
     }
 }

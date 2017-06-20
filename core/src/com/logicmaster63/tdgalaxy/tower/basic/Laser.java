@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 public class Laser extends Tower {
 
+    public static final int PRICE = 40;
     public static final int HP = 20;
     public static final EnumSet<Types> TYPES = EnumSet.of(Types.fire);
     public static final float COOLDOWN = 1f;
@@ -38,16 +40,16 @@ public class Laser extends Tower {
     private Vector3 laserTo;
 
     //Debug constructor
-    public Laser(Vector3 pos, int hp, int health, int range, int laserRange, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> objects, String animation, Vector3 attackOffset) {
-        super(pos, hp, health, range, cooldown, types, effects, instance, shape, world, objects, animation, attackOffset);
+    public Laser(Matrix4 transform, int hp, int health, int range, int laserRange, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> objects, String animation, Vector3 attackOffset) {
+        super(transform, hp, health, range, cooldown, types, effects, instance, shape, world, objects, animation, attackOffset);
         for(int i = 0; i < instance.nodes.size; i++)
             System.out.println(instance.nodes.get(i).id);
         laserTo = new Vector3();
         this.laserRange = laserRange;
     }
 
-    public Laser(Vector3 pos, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> objects) {
-        this(pos, HP, HP, RANGE, LASER_RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Laser")), new btBoxShape(models.get("Laser").calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, ATTACK_OFFSET);
+    public Laser(Matrix4 transform, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> objects) {
+        this(transform, HP, HP, RANGE, LASER_RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Laser")), new btBoxShape(models.get("Laser").calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, ATTACK_OFFSET);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class Laser extends Tower {
             laserTime -= delta;
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(1, 0, 0, 1);
-            shapeRenderer.line(pos, laserTo);
+            shapeRenderer.line(transform.getTranslation(tempVector), laserTo);
             shapeRenderer.end();
         }
     }
@@ -71,7 +73,7 @@ public class Laser extends Tower {
     public void attack(ArrayList<Entity> target) {
         super.attack(target);
         laserTime = 0.5f;
-        laserTo.set(target.get(0).getPos()).setLength(laserRange);
+        laserTo.set(target.get(0).getTransform().getTranslation(tempVector)).setLength(laserRange);
     }
 
     public static ArrayList<Asset> getAssets() {
