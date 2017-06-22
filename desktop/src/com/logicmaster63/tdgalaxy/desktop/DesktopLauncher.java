@@ -1,19 +1,25 @@
 package com.logicmaster63.tdgalaxy.desktop;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
+import com.logicmaster63.tdgalaxy.constants.Constants;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.interfaces.ValueReturner;
+import com.logicmaster63.tdgalaxy.tools.ArchiveFileHandleResolver;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.zip.ZipFile;
 
 public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 
@@ -153,6 +159,19 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 	@Override
 	public void saveGame(String name) {
 
+	}
+
+	@Override
+	public AssetManager getExternalAssets() {
+		AssetManager externalAssets = null;
+		try {
+			ZipFile archive = new ZipFile(Gdx.files.internal("OBB.zip").file());
+			ArchiveFileHandleResolver resolver = new ArchiveFileHandleResolver(archive);
+			externalAssets = new AssetManager(resolver);
+		} catch (IOException e) {
+			Gdx.app.error("Get external assets", e.toString());
+		}
+		return externalAssets;
 	}
 
 	@Override

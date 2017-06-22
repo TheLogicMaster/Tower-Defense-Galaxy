@@ -83,6 +83,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private ShapeRenderer shapeRenderer;
     private VRCameraInputAdapter vrCameraInputAdapter;
     private World world;
+    private Music music;
 
     public GameScreen(Game game, int map, String theme) {
         super(game);
@@ -158,12 +159,8 @@ public class GameScreen extends TDScreen implements RendererForVR{
         if(externalAssets != null) {
             externalAssets.load("X.png", Texture.class);
             externalAssets.load("Transmission.mp3", Music.class);
-            externalAssets.finishLoading();
-            background = externalAssets.get("X.png", Texture.class);
-            Music music = externalAssets.get("Transmission.mp3", Music.class);
-            music.setLooping(true);
-            music.setVolume(1);
-            music.play();
+            externalAssets.load("Jump Up.mp3", Music.class);
+            externalAssets.load("Crystal Waters.mp3", Music.class);
         }
 
         for(Class<?> clazz: new ArrayList<Class>(classes.values())) {
@@ -208,11 +205,15 @@ public class GameScreen extends TDScreen implements RendererForVR{
         orthographicCamera.update();
         spriteBatch.setProjectionMatrix(orthographicCamera.combined);
         if (isLoading) {
-            if (assets.update())
+            if (assets.update() && (externalAssets == null || externalAssets.update()))
                 doneLoading();
             else {
                 Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-                float progress = assets.getProgress();
+                float progress;
+                if(externalAssets == null)
+                    progress = assets.getProgress();
+                else
+                    progress = 0.5f * assets.getProgress() + 0.5f * externalAssets.getProgress();
                 spriteBatch.begin();
                 spriteBatch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
                 spriteBatch.draw(loading, viewport.getWorldWidth() / 2 - 200, viewport.getWorldHeight() / 4 - 50, 400, 100, 0, 0.5f, 1, 1);
@@ -270,6 +271,13 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private void doneLoading() {
         isLoading = false;
         running = true;
+
+        background = externalAssets.get("X.png", Texture.class);
+        music = externalAssets.get("Transmission.mp3", Music.class);
+        music.setLooping(true);
+        music.setVolume(1);
+        music.play();
+
         for(Class clazz: new ArrayList<Class>(classes.values())) {
             try {
                 //clazz.getMethod("getAssets", null);

@@ -174,15 +174,13 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
 	@Override
 	public AssetManager getExternalAssets() {
 		AssetManager externalAssets = null;
-
 		try {
 			String[] files = getAPKExpansionFiles(this, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode, Constants.EXPANSION_FILE_VERSION);
 			ZipFile archive = new ZipFile(new File(files[0]));
 			ArchiveFileHandleResolver resolver = new ArchiveFileHandleResolver(archive);
 			externalAssets = new AssetManager(resolver);
-			//externalAssets.setLoader(Music.class, new MusicLoader(resolver));
 		} catch (IOException | PackageManager.NameNotFoundException e) {
-			System.err.println(e.toString());
+			Gdx.app.error("Get external assets", e.toString());
 		}
 		return externalAssets;
 	}
