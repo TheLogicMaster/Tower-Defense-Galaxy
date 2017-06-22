@@ -1,14 +1,20 @@
 package com.logicmaster63.tdgalaxy.tools;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class Tools {
 
@@ -95,6 +101,33 @@ public class Tools {
         if (callback.hasHit()) {
             callback.getHitPointWorld(tmp);
             return tmp;
+        }
+        return null;
+    }
+
+    public static FileHandle getRealFileHandle(String zipEntryPath, ZipFile zipFile) {
+        if (Gdx.files.local(zipEntryPath).exists()) {
+            return Gdx.files.local(zipEntryPath);
+        } else {
+            Gdx.app.log("OBB", "Unzipping file '" + zipEntryPath + "'...");
+            try {
+                FileHandle unzippedFile;
+                ZipEntry entry = zipFile.getEntry(zipEntryPath);
+                if (entry != null) {
+                    unzippedFile = Gdx.files.local(zipEntryPath);
+                    InputStream is = zipFile.getInputStream(entry);
+                    byte[] buffer = new byte[65536];
+                    int readLength;
+                    while ((readLength = is.read(buffer)) >= 0) {
+                        unzippedFile.writeBytes(buffer, 0, readLength, true);
+                    }
+                    return unzippedFile;
+                } else {
+                    Gdx.app.error("OBB", "Entry '" + zipEntryPath + "' not found inside zip file.");
+                }
+            } catch (IOException ioe) {
+                Gdx.app.error("OBB", "A problem occurred while writing to the local file.");
+            }
         }
         return null;
     }

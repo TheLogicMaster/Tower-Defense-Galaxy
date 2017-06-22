@@ -219,14 +219,3 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 		new DesktopLauncher();
 	}
 }
-
-class TextButton {
-
-	public JButton button;
-	public TextField field;
-
-	public TextButton(JButton button, TextField field) {
-		this.button = button;
-		this.field = field;
-	}
-}

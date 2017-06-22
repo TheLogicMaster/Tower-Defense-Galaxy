@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy.enemy;
 
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdgalaxy.constants.Effects;
 import com.logicmaster63.tdgalaxy.constants.Types;
+import com.logicmaster63.tdgalaxy.entity.AttackingEntity;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Enemy extends com.logicmaster63.tdgalaxy.entity.AttackingEntity {
+public abstract class Enemy extends AttackingEntity {
 
     private List<Vector3> path;
     private double speeed, dist = 0;
@@ -50,7 +52,7 @@ public abstract class Enemy extends com.logicmaster63.tdgalaxy.entity.AttackingE
     }
 
     @Override
-    public void attack(ArrayList<com.logicmaster63.tdgalaxy.entity.Entity> target) {
+    public void attack(ArrayList<Entity> target) {
         super.attack(target);
         if(attackAnimation != null)
             animation.animate(attackAnimation, 1, new AnimationController.AnimationListener() {
@@ -64,11 +66,6 @@ public abstract class Enemy extends com.logicmaster63.tdgalaxy.entity.AttackingE
 
                 }
             }, 0);
-    }
-
-    @Override
-    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
-        modelBatch.render(instance);
     }
 
     @Override

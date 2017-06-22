@@ -1,29 +1,44 @@
 package com.logicmaster63.tdgalaxy;
 
 import android.app.backup.BackupAgentHelper;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.os.Environment;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.MusicLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidFileHandle;
+import com.badlogic.gdx.graphics.Texture;
 import com.google.android.gms.games.Games;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.testing.json.MockJsonFactory;
 import com.google.api.services.gamesManagement.GamesManagement;
+import com.logicmaster63.tdgalaxy.constants.Constants;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
+import com.logicmaster63.tdgalaxy.screens.GameScreen;
+import com.logicmaster63.tdgalaxy.tools.ArchiveFileHandleResolver;
 import com.logicmaster63.tdgalaxy.tools.Tools;
 import dalvik.system.DexFile;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
+import java.util.zip.ZipFile;
 
 public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, OnlineServices, FileStuff {
 
@@ -157,6 +172,22 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
 	}
 
 	@Override
+	public AssetManager getExternalAssets() {
+		AssetManager externalAssets = null;
+
+		try {
+			String[] files = getAPKExpansionFiles(this, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode, Constants.EXPANSION_FILE_VERSION);
+			ZipFile archive = new ZipFile(new File(files[0]));
+			ArchiveFileHandleResolver resolver = new ArchiveFileHandleResolver(archive);
+			externalAssets = new AssetManager(resolver);
+			//externalAssets.setLoader(Music.class, new MusicLoader(resolver));
+		} catch (IOException | PackageManager.NameNotFoundException e) {
+			System.err.println(e.toString());
+		}
+		return externalAssets;
+	}
+
+	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -171,5 +202,42 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
 		config.useImmersiveMode = false;
 		config.useGyroscope = true;
 		initialize(new TDGalaxy(this, null, this), config);
+
+	}
+
+	private final static String EXP_PATH = "/Android/obb/";
+
+	static String[] getAPKExpansionFiles(Context ctx, int mainVersion, int patchVersion) {
+		String packageName = ctx.getPackageName();
+		Vector<String> ret = new Vector<String>();
+		if (Environment.getExternalStorageState()
+				.equals(Environment.MEDIA_MOUNTED)) {
+			// Build the full path to the app's expansion files
+			File root = Environment.getExternalStorageDirectory();
+			File expPath = new File(root.toString() + EXP_PATH + packageName);
+
+			// Check that expansion file path exists
+			if (expPath.exists()) {
+				if ( mainVersion > 0 ) {
+					String strMainPath = expPath + File.separator + "main." +
+							mainVersion + "." + packageName + ".obb";
+					File main = new File(strMainPath);
+					if ( main.isFile() ) {
+						ret.add(strMainPath);
+					}
+				}
+				if ( patchVersion > 0 ) {
+					String strPatchPath = expPath + File.separator + "patch." +
+							mainVersion + "." + packageName + ".obb";
+					File main = new File(strPatchPath);
+					if ( main.isFile() ) {
+						ret.add(strPatchPath);
+					}
+				}
+			}
+		}
+		String[] retArray = new String[ret.size()];
+		ret.toArray(retArray);
+		return retArray;
 	}
 }

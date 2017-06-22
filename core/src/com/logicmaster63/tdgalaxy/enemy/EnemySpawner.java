@@ -70,11 +70,6 @@ public class EnemySpawner {
         //   enemy.tick(delta, path);
     }
 
-    public void render(float delta, ModelBatch batch, ShapeRenderer shapeRenderer) {
-        for (Enemy enemy : enemies)
-            enemy.render(delta, batch, shapeRenderer);
-    }
-
     public Enemy add(Enemy enemy) {
         enemies.add(enemy);
         return enemy;

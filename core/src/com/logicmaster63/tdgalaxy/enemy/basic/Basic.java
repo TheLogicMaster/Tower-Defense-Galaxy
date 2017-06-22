@@ -71,9 +71,4 @@ public class Basic extends Enemy{
     public void tick(float delta) {
         super.tick(delta);
     }
-
-    @Override
-    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
-        super.render(delta, modelBatch, shapeRenderer);
-    }
 }

@@ -32,7 +32,6 @@ public abstract class TDScreen implements Screen {
     @Override
     public void resize (int width, int height) {
         viewport.update(width, height);
-        System.out.println("Resize");
     }
 
     public void addInputProcessor(InputProcessor processor) {
@@ -56,17 +55,17 @@ public abstract class TDScreen implements Screen {
 
     @Override
     public void hide () {
-        System.out.println("Hide");
+
     }
 
     @Override
     public void pause () {
-        System.out.println("Pause");
+
     }
 
     @Override
     public void resume () {
-        System.out.println("Resume");
+
     }
 
     @Override

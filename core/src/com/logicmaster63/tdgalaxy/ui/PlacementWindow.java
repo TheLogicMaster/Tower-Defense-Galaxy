@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -28,8 +29,9 @@ public class PlacementWindow extends Actor {
     private Camera camera;
     private World world;
     private Money money;
+    private Environment environment;
 
-    public PlacementWindow(float x, float y, float width, float height, int xCells, int yCells, PlacementCell[][] cells, btCollisionWorld collisionWorld, Camera cam, final ModelBatch modelBatch, World world, final Money money) {
+    public PlacementWindow(float x, float y, float width, float height, int xCells, int yCells, PlacementCell[][] cells, btCollisionWorld collisionWorld, Camera cam, final ModelBatch modelBatch, Environment environment, World world, final Money money) {
         this.xCells = xCells;
         this.yCells = yCells;
         this.cells = cells;
@@ -38,6 +40,7 @@ public class PlacementWindow extends Actor {
         this.world = world;
         this.camera = cam;
         this.money = money;
+        this.environment = environment;
 
         setTouchable(Touchable.enabled);
         setBounds(x, y, width, height);
@@ -98,7 +101,7 @@ public class PlacementWindow extends Actor {
                     ghost.transform.rotate(vector, 30);
                 }
                 if(ghost != null)
-                    modelBatch.render(ghost);
+                    modelBatch.render(ghost, environment);
             }
         }
     }

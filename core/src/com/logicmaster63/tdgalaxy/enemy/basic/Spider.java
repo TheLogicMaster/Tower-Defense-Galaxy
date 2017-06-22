@@ -43,11 +43,6 @@ public class Spider extends Enemy {
         super.tick(delta);
     }
 
-    @Override
-    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
-        super.render(delta, modelBatch, shapeRenderer);
-    }
-
     public static ArrayList<com.logicmaster63.tdgalaxy.tools.Asset> getAssets() {
         ArrayList<Asset> assets = new ArrayList<Asset>();
         assets.add(new Asset("theme/basic/enemy/Basic.g3db", Model.class));

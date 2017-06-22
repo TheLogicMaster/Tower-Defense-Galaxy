@@ -1,10 +1,13 @@
 package com.logicmaster63.tdgalaxy.tower.basic;
 
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
@@ -20,10 +23,7 @@ import com.logicmaster63.tdgalaxy.tools.Asset;
 import com.logicmaster63.tdgalaxy.tools.Dependency;
 import com.logicmaster63.tdgalaxy.tower.ProjectileTower;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Gun extends ProjectileTower{
 
@@ -35,10 +35,23 @@ public class Gun extends ProjectileTower{
     public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
     public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
 
+    private float muzzle, muzzleInc = 0.1f;
+    private int legInc = 1, leg, legTo = 30;
+    private Map<String, Node> nodes;
+
     public Gun(Matrix4 transform, int hp, int health, int range, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attack, Template<Bullet> projectile, Vector3 attackOffset) {
         super(transform, hp, health, range, cooldown, types, effects, instance, shape, world, entities, attack, projectile, attackOffset);
-        for(int i = 0; i < instance.nodes.size; i++)
-            System.out.println(instance.nodes.get(i).id);
+        nodes = new HashMap<String, Node>();
+        /*for(Node node: instance.model.nodes) {
+            System.out.println(node.id);
+            if (node.id.startsWith("Leg")) {
+                legs.add(node);
+            }
+        }*/
+        //legs.get(0).rotation.setEulerAngles(100, 0, 0);
+
+        for(Node node: instance.getNode("Gun_root").getChildren())
+            nodes.put(node.id, node);
     }
 
     public Gun(Matrix4 transform, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> entities) throws NoSuchMethodException {
@@ -51,8 +64,42 @@ public class Gun extends ProjectileTower{
     }
 
     @Override
-    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
-        super.render(delta, modelBatch, shapeRenderer);
+    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer, Environment environment) {
+        super.render(delta, modelBatch, shapeRenderer, environment);
+        //instance.getNode("Leg0").rotation.setEulerAngles(0, 5, 0);
+        //instance.calculateTransforms();
+        //instance.getNode("Muzzle").inheritTransform = false;
+
+        /*muzzle += muzzleInc;
+        if(muzzleInc > 0) {
+            instance.getNode("Muzzle").translation.add(0, 0, 0.1f);
+            if(muzzle > 5)
+                muzzleInc *= -1;
+        } else {
+            instance.getNode("Muzzle").translation.add(0, 0, -0.1f);
+            if(muzzle < 0)
+                muzzleInc *= -1;
+        }
+        */
+        //for(Node node: legs)
+            //node.rotation.setEulerAngles(45, 0, 0);
+        nodes.get("GunBase").rotation.mul(new Quaternion(Vector3.Y, 1));
+        nodes.get("Gun").rotation.mul(new Quaternion(Vector3.Y, 1));
+        nodes.get("BarrelGuard").rotation.mul(new Quaternion(Vector3.Y, 1));
+
+        leg += legInc;
+        if(leg <= 0 || leg >= 75)
+            legInc *= -1;
+        if(leg == legTo) {
+            legInc = 0;
+        }
+        nodes.get("Leg0").rotation.set(new Quaternion(Vector3.X, leg));
+        nodes.get("Leg1").rotation.set(new Quaternion(Vector3.Z, leg));
+        nodes.get("Leg2").rotation.set(new Quaternion(Vector3.X, -leg));
+        nodes.get("Leg3").rotation.set(new Quaternion(Vector3.Z, -leg));
+        //nodes.get("Leg0").translation.add(nodes.get("Leg0").translation);
+        //System.out.println(nodes.get("BarrelGuard").translation);
+        instance.calculateTransforms();
     }
 
     public static ArrayList<Asset> getAssets() {

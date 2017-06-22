@@ -3,6 +3,9 @@ package com.logicmaster63.tdgalaxy.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.*;
@@ -10,8 +13,11 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
+import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -44,10 +50,12 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class GameScreen extends TDScreen implements RendererForVR{
 
-    private Texture background;
+    private Texture background, loading;
     private int map, planetRadius;
     private Money money = new Money(100);
     private List<Vector3> path;
@@ -55,9 +63,9 @@ public class GameScreen extends TDScreen implements RendererForVR{
     private List<Tower> towers;
     private ModelBatch modelBatch;
     private Environment environment;
-    private AssetManager assets;
+    private AssetManager assets, externalAssets;
     private Map<String, Model> models;
-    private boolean loading, hasPlanetModel, running;
+    private boolean isLoading, hasPlanetModel, running;
     private ModelInstance planet;
     private CameraHandler cam;
     private List<Projectile> projectiles;
@@ -97,6 +105,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         shapeRenderer = new ShapeRenderer();
         addDisposables(shapeRenderer);
         background = new Texture("Background_MainMenu.png");
+        loading = new Texture("theme/basic/ui/Loading.png");
 
         entities = new IntMap<Entity>();
 
@@ -121,10 +130,8 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-
-        spriteBatch = new SpriteBatch();
-        spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, 1080, 720);
+        environment.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f));
+        //environment.add(new SpotLight().set(Color.RED, 200, 200, 200, -1, -1, -1, 1, 130, 100));
 
         BufferedReader reader = FileHandler.getReader("track/Track" + Integer.toString(map));
         path = FileHandler.loadTrack(reader, this);
@@ -146,6 +153,18 @@ public class GameScreen extends TDScreen implements RendererForVR{
 
         assets = new AssetManager();
         assets.load("theme/" + theme + "/planet.g3db", Model.class);
+        //assets.load("Transmission.wav", Music.class);
+        externalAssets = TDGalaxy.fileStuff.getExternalAssets();
+        if(externalAssets != null) {
+            externalAssets.load("X.png", Texture.class);
+            externalAssets.load("Transmission.mp3", Music.class);
+            externalAssets.finishLoading();
+            background = externalAssets.get("X.png", Texture.class);
+            Music music = externalAssets.get("Transmission.mp3", Music.class);
+            music.setLooping(true);
+            music.setVolume(1);
+            music.play();
+        }
 
         for(Class<?> clazz: new ArrayList<Class>(classes.values())) {
             try {
@@ -161,7 +180,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
             }
         }
 
-        loading = true;
+        isLoading = true;
         running = false;
 
         if (!hasPlanetModel && planetName != null)
@@ -179,18 +198,32 @@ public class GameScreen extends TDScreen implements RendererForVR{
         modelBatch.begin(perspectiveCamera);
         shapeRenderer.setProjectionMatrix(perspectiveCamera.combined);
         for(IntMap.Entry<Entity> entry: entities.entries())
-            entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer);
-        modelBatch.render(planet);
+            entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer, environment);
+        modelBatch.render(planet, environment);
         modelBatch.end();
     }
 
     @Override
     public void render(float delta) {
-        if (loading) {
+        orthographicCamera.update();
+        spriteBatch.setProjectionMatrix(orthographicCamera.combined);
+        if (isLoading) {
             if (assets.update())
                 doneLoading();
-            else
+            else {
+                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+                float progress = assets.getProgress();
+                spriteBatch.begin();
+                spriteBatch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+                spriteBatch.draw(loading, viewport.getWorldWidth() / 2 - 200, viewport.getWorldHeight() / 4 - 50, 400, 100, 0, 0.5f, 1, 1);
+                spriteBatch.draw(loading, viewport.getWorldWidth() / 2 - 200 + 400f * progress, viewport.getWorldHeight() / 4 - 50, 400 - progress * 400f, 100, progress, 0, 1, 0.5f);
+                Color color = new Color(TDGalaxy.getFonts().get("moonhouse64").getColor());
+                TDGalaxy.getFonts().get("moonhouse64").setColor(Color.BLACK);
+                TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, "Loading...", viewport.getWorldWidth() / 2 - 170, viewport.getWorldHeight() / 4 + 30);
+                TDGalaxy.getFonts().get("moonhouse64").setColor(color);
+                spriteBatch.end();
                 return;
+            }
         }
         for(IntMap.Entry<Entity> entry: entities.entries()) {
             entry.value.tick(delta);
@@ -235,8 +268,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
     }
 
     private void doneLoading() {
-        System.out.println("Done");
-        loading = false;
+        isLoading = false;
         running = true;
         for(Class clazz: new ArrayList<Class>(classes.values())) {
             try {
@@ -267,6 +299,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
                 planetSize = new Vector3(100, 100, 100);
             planet = new ModelInstance(builder.createSphere(planetSize.x, planetSize.y, planetSize.z, 60, 60, material, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates));
         }
+
         planetRadius = (int)(planet.calculateBoundingBox(new BoundingBox()).getHeight() / 2f);
         btCollisionObject collisionObject = new btCollisionObject();
         collisionObject.setCollisionShape(new btSphereShape(planetRadius));
@@ -278,9 +311,9 @@ public class GameScreen extends TDScreen implements RendererForVR{
         world = new PlanetWorld(regions, collisionWorld);
         //System.out.println(planet.calculateBoundingBox(new BoundingBox()).getHeight());
         addDisposables(collisionObject);
-        if(models.containsKey("Basic"))
-            for(int i = 0; i < models.get("Basic").animations.size; i++)
-                System.out.println(models.get("Basic").animations.get(i).id);
+        //if(models.containsKey("Basic"))
+            //for(int i = 0; i < models.get("Basic").animations.size; i++)
+                //System.out.println(models.get("Basic").animations.get(i).id);
         enemies = new EnemySpawner(spawnPos, classes, spawns, models, path, collisionWorld, entities);
 
         //towers.add(new Gun(new Vector3(0, 0, 0), 50, 50, 0, new ModelInstance(models.get(0))));
@@ -305,7 +338,7 @@ public class GameScreen extends TDScreen implements RendererForVR{
         } catch (IllegalAccessException e) {
             Gdx.app.error("Create placement window", e.toString());
         }
-        stage.addActor(new PlacementWindow(0, 0, 400, 400, 2, 2, placementCells, collisionWorld, cam.getCam(), modelBatch, world, money));
+        stage.addActor(new PlacementWindow(0, 0, 400, 400, 2, 2, placementCells, collisionWorld, cam.getCam(), modelBatch, environment, world, money));
     }
 
     public Camera getCamera() {

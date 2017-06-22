@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy.tower;
 
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
@@ -43,17 +44,6 @@ public abstract class Tower extends AttackingEntity {
 
                 }
             }, 0);
-    }
-
-    @Override
-    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
-        //for(int i = 0; i < instance.nodes.size; i++)
-            //Gdx.app.log(Double.toString(position.x), instance.nodes.get(i).id);
-        //instance.nodes.get(0).rotation.set(Vector3.Y, (instance.nodes.get(0).rotation.getAngle() + 1) % 360);
-        //instance.nodes.get(0).inheritTransform = false;
-        //Gdx.app.log(Double.toString(position.x), Float.toString(instance.nodes.get(0).rotation.getAngle()));
-        //instance.transform.rotate(Vector3.X, 1);
-        modelBatch.render(instance);
     }
 
     @Override

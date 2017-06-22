@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy.tower.basic;
 
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -42,8 +43,6 @@ public class Laser extends Tower {
     //Debug constructor
     public Laser(Matrix4 transform, int hp, int health, int range, int laserRange, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> objects, String animation, Vector3 attackOffset) {
         super(transform, hp, health, range, cooldown, types, effects, instance, shape, world, objects, animation, attackOffset);
-        for(int i = 0; i < instance.nodes.size; i++)
-            System.out.println(instance.nodes.get(i).id);
         laserTo = new Vector3();
         this.laserRange = laserRange;
     }
@@ -58,8 +57,8 @@ public class Laser extends Tower {
     }
 
     @Override
-    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer) {
-        super.render(delta, modelBatch, shapeRenderer);
+    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer, Environment environment) {
+        super.render(delta, modelBatch, shapeRenderer, environment);
         if(laserTime > 0) {
             laserTime -= delta;
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

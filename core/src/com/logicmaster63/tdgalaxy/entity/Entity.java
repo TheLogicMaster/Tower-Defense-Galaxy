@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy.entity;
 
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
@@ -32,7 +33,7 @@ public abstract class Entity implements Disposable {
     protected btCollisionObject body;
     protected Entity tempEntity;
     protected IntMap<Entity> entities;
-    protected Quaternion quaternion;
+    protected Quaternion quaternion, tempQuaternion;
     protected BoundingBox boundingBox;
     public boolean isDead = false;
 
@@ -53,6 +54,7 @@ public abstract class Entity implements Disposable {
         tempVector = new Vector3();
         tempVector2 = new Vector3();
         this.entities = entities;
+        tempQuaternion = new Quaternion();
         quaternion = new Quaternion();
         if(this instanceof Enemy || this instanceof Projectile)
             body.setCollisionFlags(body.getCollisionFlags());
@@ -105,7 +107,9 @@ public abstract class Entity implements Disposable {
         return null;
     }
 
-    public abstract void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer);
+    public void render(float delta, ModelBatch modelBatch, ShapeRenderer shapeRenderer, Environment environment) {
+        modelBatch.render(instance, environment);
+    }
 
     @Override
     public void dispose() {
