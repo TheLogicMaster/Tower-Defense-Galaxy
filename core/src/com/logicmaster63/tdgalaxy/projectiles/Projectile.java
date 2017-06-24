@@ -1,9 +1,7 @@
 package com.logicmaster63.tdgalaxy.projectiles;
 
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -14,6 +12,7 @@ import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 
 import java.util.EnumSet;
+import java.util.Map;
 
 public abstract class Projectile extends Entity {
 
@@ -22,8 +21,8 @@ public abstract class Projectile extends Entity {
     protected float age;
     protected float lifetime;
 
-    public Projectile(Matrix4 transform, Vector3 velocity, int hp, int health, float speed, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<Entity> entities, float lifetime) {
-        super(transform, hp, health, types, effects, model, shape, world, entities);
+    public Projectile(Matrix4 transform, Vector3 velocity, int hp, int health, float speed, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance model, btCollisionShape shape, boolean isTower, btCollisionWorld world, IntMap<Entity> entities, float lifetime, Map<String, Sound> sounds) {
+        super(transform, hp, health, types, effects, model, shape, world, entities, sounds);
         this.isTower = isTower;
         this.velocity = velocity;
         this.velocity.scl(speed);

@@ -57,7 +57,7 @@ public class FileHandler {
             path.add(new Vector3(parsed[0], parsed[1], parsed[2]));
             data.close();
         } catch (IOException e) {
-            Gdx.app.log("Error", e.toString());
+            Gdx.app.error("Error", e.toString());
         }
         return path;
     }
@@ -84,7 +84,7 @@ public class FileHandler {
             screen.setPlanetName(data.readLine());
             data.close();
         } catch (IOException e) {
-            Gdx.app.log("Error", e.toString());
+            Gdx.app.error("Error", e.toString());
         }
         screen.setPlanetSize(new Vector3(coords[0], coords[1], coords[2]));
     }
@@ -96,7 +96,7 @@ public class FileHandler {
         List<Class<?>> classArray = new ArrayList<Class<?>>(classes.values());
         for (int i = 0; i < length; i++) {
             try {
-                dependencies = (ArrayList<Dependency>) classArray.get(i).getMethod("getDependencies").invoke(null);
+                dependencies = new ArrayList<Dependency>((List<Dependency>) classArray.get(i).getMethod("getDependencies").invoke(null));
                 if (dependencies != null)
                     for (Dependency dependency : dependencies) {
                     if(!classes.containsKey(dependency.getName())) {
@@ -107,7 +107,7 @@ public class FileHandler {
             } catch (NoSuchMethodException ignored) {
 
             } catch (Exception e) {
-                Gdx.app.log("Error", "FileHandler:150: " + e.toString());
+                Gdx.app.error("FileHandler Load Dependencies", e.toString());
             }
         }
         System.out.println(classes);
@@ -167,7 +167,7 @@ public class FileHandler {
                 data.close();
             }
         } catch (IOException e) {
-            Gdx.app.log("Error", e.toString());
+            Gdx.app.error("Error", e.toString());
         }
         return spawns;
     }

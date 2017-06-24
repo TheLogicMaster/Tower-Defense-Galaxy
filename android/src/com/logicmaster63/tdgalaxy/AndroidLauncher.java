@@ -176,9 +176,12 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
 		AssetManager externalAssets = null;
 		try {
 			String[] files = getAPKExpansionFiles(this, getPackageManager().getPackageInfo(getPackageName(), 0).versionCode, Constants.EXPANSION_FILE_VERSION);
-			ZipFile archive = new ZipFile(new File(files[0]));
-			ArchiveFileHandleResolver resolver = new ArchiveFileHandleResolver(archive);
-			externalAssets = new AssetManager(resolver);
+			if(files.length > 0) {
+				ZipFile archive = new ZipFile(new File(files[0]));
+				externalAssets = new AssetManager(new ArchiveFileHandleResolver(archive));
+			} else {
+				Gdx.app.error("AndroidLauncher", "Couldn't load .obb file");
+			}
 		} catch (IOException | PackageManager.NameNotFoundException e) {
 			Gdx.app.error("Get external assets", e.toString());
 		}

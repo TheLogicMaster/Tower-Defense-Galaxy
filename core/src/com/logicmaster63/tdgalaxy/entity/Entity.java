@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy.entity;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -18,6 +19,8 @@ import com.logicmaster63.tdgalaxy.enemy.Enemy;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 
 import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class Entity implements Disposable {
 
@@ -35,15 +38,17 @@ public abstract class Entity implements Disposable {
     protected IntMap<Entity> entities;
     protected Quaternion quaternion, tempQuaternion;
     protected BoundingBox boundingBox;
+    protected Map<String, Sound> sounds;
     public boolean isDead = false;
 
-    public Entity(Matrix4 transform, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities){
+    public Entity(Matrix4 transform, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, Map<String, Sound> sounds){
         this.instance = instance;
         this.transform = transform;
         this.hp = hp;
         this.types = types;
         this.health = health;
         this.effects = effects;
+        this.sounds = sounds;
         animation = new AnimationController(instance);
         this.instance.transform.set(transform);
         this.shape = shape;

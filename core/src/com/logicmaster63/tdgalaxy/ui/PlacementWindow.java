@@ -65,19 +65,14 @@ public class PlacementWindow extends Actor {
                 if(lastCell != null) {
                     Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
                     Vector3 pos = Tools.closestRayTest(btcollisionWorld, new ClosestRayResultCallback(ray.origin, new Vector3(ray.direction).setLength(9999).add(ray.origin)));
-                    if(pos != null) {
-                        lastCell.template.create(new Matrix4().setTranslation(pos));
+                    if(pos != null && Tools.closestRayTestObject(btcollisionWorld, new ClosestRayResultCallback(ray.origin, new Vector3(ray.direction).setLength(9999).add(ray.origin))).getUserValue() == 0) {
+                        lastCell.entityTemplate.create(new Matrix4().setTranslation(pos));
                         money.$ -= lastCell.price;
                     }
                 }
                 lastCell = null;
             }
         });
-    }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
     }
 
     @Override

@@ -17,6 +17,8 @@ public class CameraHandler implements InputProcessor {
     private VRCamera vrCamera;
     private RendererForVR rendererForVR;
 
+    public boolean paused = false;
+
     public CameraHandler(Vector3 pos, float near, float far, RendererForVR rendererForVR) {
         this(new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), new VRCamera(67, near, far, 0.5f, (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight(), rendererForVR), pos, new Vector3(0, 0, 0), near, far, rendererForVR);
     }
@@ -85,6 +87,8 @@ public class CameraHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged (int screenX, int screenY, int pointer) {
+        if(paused)
+            return false;
         float deltaX = -Gdx.input.getDeltaX() * TDGalaxy.getSensitivity();
         float deltaY = -Gdx.input.getDeltaY() * TDGalaxy.getSensitivity();
         //cam.direction.rotate(cam.up, deltaX);
@@ -111,6 +115,8 @@ public class CameraHandler implements InputProcessor {
 
     @Override
     public boolean scrolled(int amount) {
+        if(paused)
+            return false;
         tmp.set(cam.direction).nor().scl(amount * -4f);
         cam.position.add(tmp);
         return true;

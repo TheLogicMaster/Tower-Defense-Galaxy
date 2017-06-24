@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy.enemy.basic;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -13,15 +14,13 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdgalaxy.constants.Effects;
+import com.logicmaster63.tdgalaxy.constants.Source;
 import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.enemy.Enemy;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 import com.logicmaster63.tdgalaxy.tools.Asset;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Basic extends Enemy{
 
@@ -35,8 +34,8 @@ public class Basic extends Enemy{
 
     private AnimationController.AnimationListener listener;
 
-    public Basic(Matrix4 transform, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path) {
-        super(transform, speeed, hp, health, range, coolDown, types, effects, instance, new btCompoundShape(), world, entities, ATTACK_ANIMATION, ATTACK_OFFSET, path);
+    public Basic(Matrix4 transform, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path, Map<String, Sound> sounds) {
+        super(transform, speeed, hp, health, range, coolDown, types, effects, instance, new btCompoundShape(), world, entities, ATTACK_ANIMATION, ATTACK_OFFSET, path, sounds);
         ((btCompoundShape)shape).addChildShape(new Matrix4(new Vector3(0, 30, 0), new Quaternion().setEulerAngles(0, 0, 0), new Vector3(1, 1, 1)), new btBoxShape(new Vector3(75, 30, 90)));
         //System.out.println(getModelInstance().getAnimation("Spider_Armature|walk_ani_vor").id);
         listener = new AnimationController.AnimationListener() {
@@ -57,14 +56,12 @@ public class Basic extends Enemy{
         //animation.queue("Spider_Armature|walk_ani_vor", 0, 1000, -1, 1, listener, 0);
     }
 
-    public Basic(Matrix4 transform, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path) {
-        this(transform, SPEED, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Basic")), world, entities, path);
+    public Basic(Matrix4 transform, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path, Map<String, Sound> sounds) {
+        this(transform, SPEED, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Basic")), world, entities, path, sounds);
     }
 
-    public static ArrayList<Asset> getAssets() {
-        ArrayList<Asset> assets = new ArrayList<Asset>();
-        assets.add(new Asset("theme/basic/enemy/Basic.g3db", Model.class));
-        return assets;
+    public static List<Asset> getAssets() {
+        return Arrays.asList(new Asset(Source.INTERNAL,"theme/basic/enemy/Basic.g3db", Model.class));
     }
 
     @Override

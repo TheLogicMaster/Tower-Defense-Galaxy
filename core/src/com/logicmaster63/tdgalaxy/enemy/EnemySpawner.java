@@ -1,10 +1,9 @@
 package com.logicmaster63.tdgalaxy.enemy;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
@@ -31,8 +30,9 @@ public class EnemySpawner {
     private List<Vector3> path;
     private btCollisionWorld world;
     private IntMap<Entity> entity;
+    private Map<String, Sound> sounds;
 
-    public EnemySpawner(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Enemy> enemies, List<Vector3> path, btCollisionWorld world, IntMap<Entity> entities) {
+    public EnemySpawner(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Enemy> enemies, List<Vector3> path, btCollisionWorld world, IntMap<Entity> entities, Map<String, Sound> sounds) {
         this.enemies = enemies;
         this.pos = pos;
         this.enemyClasses = enemyClasses;
@@ -41,15 +41,16 @@ public class EnemySpawner {
         this.path = path;
         this.world = world;
         this.entity = entities;
+        this.sounds = sounds;
         System.out.println(spawns);
     }
 
-    public EnemySpawner(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Vector3> path, btCollisionWorld world, IntMap<Entity> entities) {
-        this(pos, enemyClasses, spawns, models, new ArrayList<Enemy>(), path, world, entities);
+    public EnemySpawner(Vector3 pos, Map<String, Class<?>> enemyClasses, List<Spawn> spawns, Map<String, Model> models, List<Vector3> path, btCollisionWorld world, IntMap<Entity> entities, Map<String, Sound> sounds) {
+        this(pos, enemyClasses, spawns, models, new ArrayList<Enemy>(), path, world, entities, sounds);
     }
 
     public void tick(float delta, GameScreen screen) {
-        if (!started && screen.isRunning()) {
+        if (!started && screen.isPaused()) {
             started = true;
             prevTime = System.currentTimeMillis();
         }
@@ -59,10 +60,10 @@ public class EnemySpawner {
             ModelInstance instance;
             try {
                 Class<?> c = enemyClasses.get(name);
-                Constructor constructor = c.getConstructor(Matrix4.class, Map.class, btCollisionWorld.class, IntMap.class, List.class);
-                enemies.add((Enemy) constructor.newInstance(new Matrix4().setToTranslation(pos), models, world, entity, path));
+                Constructor constructor = c.getConstructor(Matrix4.class, Map.class, btCollisionWorld.class, IntMap.class, List.class, Map.class);
+                enemies.add((Enemy) constructor.newInstance(new Matrix4().setToTranslation(pos), models, world, entity, path, sounds));
             } catch (Exception e) {
-                Gdx.app.log("Error", e.toString());
+                Gdx.app.log("EnemySpawner spawn enemy", e.toString());
             }
             enemyIndex++;
         }

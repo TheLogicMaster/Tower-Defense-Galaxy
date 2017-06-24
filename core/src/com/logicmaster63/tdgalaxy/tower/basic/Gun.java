@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy.tower.basic;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -14,10 +15,12 @@ import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.constants.Effects;
+import com.logicmaster63.tdgalaxy.constants.Source;
 import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.entity.Entity;
-import com.logicmaster63.tdgalaxy.entity.Template;
+import com.logicmaster63.tdgalaxy.entity.EntityTemplate;
 import com.logicmaster63.tdgalaxy.projectiles.Bullet;
 import com.logicmaster63.tdgalaxy.tools.Asset;
 import com.logicmaster63.tdgalaxy.tools.Dependency;
@@ -36,11 +39,12 @@ public class Gun extends ProjectileTower{
     public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
 
     private float muzzle, muzzleInc = 0.1f;
+    private boolean installed = false;
     private int legInc = 1, leg, legTo = 30;
     private Map<String, Node> nodes;
 
-    public Gun(Matrix4 transform, int hp, int health, int range, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attack, Template<Bullet> projectile, Vector3 attackOffset) {
-        super(transform, hp, health, range, cooldown, types, effects, instance, shape, world, entities, attack, projectile, attackOffset);
+    public Gun(Matrix4 transform, int hp, int health, int range, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attack, EntityTemplate<Bullet> projectile, Vector3 attackOffset, Map<String, Sound> sounds) {
+        super(transform, hp, health, range, cooldown, types, effects, instance, shape, world, entities, attack, projectile, attackOffset, sounds);
         nodes = new HashMap<String, Node>();
         /*for(Node node: instance.model.nodes) {
             System.out.println(node.id);
@@ -54,8 +58,8 @@ public class Gun extends ProjectileTower{
             nodes.put(node.id, node);
     }
 
-    public Gun(Matrix4 transform, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> entities) throws NoSuchMethodException {
-        this(transform, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Gun")), new btBoxShape(models.get("Gun").calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, entities, ATTACK_ANIMATION, new Template<Bullet>(Bullet.class.getConstructors()[1], models, true, world, entities), ATTACK_OFFSET);
+    public Gun(Matrix4 transform, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> entities, Map<String, Sound> sounds) throws NoSuchMethodException {
+        this(transform, HP, HP, RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Gun")), new btBoxShape(models.get("Gun").calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, entities, ATTACK_ANIMATION, new EntityTemplate<Bullet>(Bullet.class.getConstructors()[1], models, true, world, entities, sounds), ATTACK_OFFSET, sounds);
     }
 
     @Override
@@ -92,6 +96,10 @@ public class Gun extends ProjectileTower{
             legInc *= -1;
         if(leg == legTo) {
             legInc = 0;
+            if(!installed && leg == 30) {
+                installed = true;
+                sounds.get("ButtonPress").setVolume(sounds.get("ButtonPress").play(), TDGalaxy.getEffectVolumeCombined());
+            }
         }
         nodes.get("Leg0").rotation.set(new Quaternion(Vector3.X, leg));
         nodes.get("Leg1").rotation.set(new Quaternion(Vector3.Z, leg));
@@ -102,15 +110,11 @@ public class Gun extends ProjectileTower{
         instance.calculateTransforms();
     }
 
-    public static ArrayList<Asset> getAssets() {
-        ArrayList<Asset> assets = new ArrayList<com.logicmaster63.tdgalaxy.tools.Asset>();
-        assets.add(new Asset("theme/basic/tower/Gun.g3db", Model.class));
-        return assets;
+    public static List<Asset> getAssets() {
+        return Arrays.asList(new Asset(Source.INTERNAL, "theme/basic/tower/Gun.g3db", Model.class), new Asset(Source.EXTERNAL, "ButtonPress.mp3", Sound.class));
     }
 
     public static List getDependencies() {
-        List<Dependency> dependencies = new ArrayList<Dependency>();
-        dependencies.add(new Dependency(Bullet.class, "Bullet"));
-        return dependencies;
+        return Arrays.asList(new Dependency(Bullet.class, "Bullet"));
     }
 }

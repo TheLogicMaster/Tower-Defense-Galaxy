@@ -1,10 +1,8 @@
 package com.logicmaster63.tdgalaxy.enemy;
 
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -15,10 +13,7 @@ import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.entity.AttackingEntity;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Enemy extends AttackingEntity {
 
@@ -26,8 +21,8 @@ public abstract class Enemy extends AttackingEntity {
     private double speeed, dist = 0;
     private int moveIndex = 0;
 
-    public Enemy(Matrix4 transform, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, List<Vector3> path) {
-        super(transform, hp, health, range, types, effects, coolDown, instance, shape, world, entities, attackAnimation, attackOffset);
+    public Enemy(Matrix4 transform, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, List<Vector3> path, Map<String, Sound> sounds) {
+        super(transform, hp, health, range, types, effects, coolDown, instance, shape, world, entities, attackAnimation, attackOffset, sounds);
         this.path = path;
         this.speeed = speeed;
     }

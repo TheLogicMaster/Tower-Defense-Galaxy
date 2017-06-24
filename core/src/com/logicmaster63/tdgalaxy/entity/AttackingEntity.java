@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy.entity;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -10,11 +11,9 @@ import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.enemy.Enemy;
 import com.logicmaster63.tdgalaxy.constants.TargetMode;
 import com.logicmaster63.tdgalaxy.tools.Tools;
+import com.logicmaster63.tdgalaxy.tower.Tower;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 public abstract class AttackingEntity extends Entity {
 
@@ -24,8 +23,8 @@ public abstract class AttackingEntity extends Entity {
     protected Vector3 attackOffset, centerOffset;
     private ClosestRayResultCallback callback;
 
-    public AttackingEntity(Matrix4 transform, int hp, int health, int range, EnumSet<Types> types, EnumSet<Effects> effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset){
-        super(transform, hp, health, types, effects, instance, shape, world, entities);
+    public AttackingEntity(Matrix4 transform, int hp, int health, int range, EnumSet<Types> types, EnumSet<Effects> effects, float coolDown, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, Map<String, Sound> sounds){
+        super(transform, hp, health, types, effects, instance, shape, world, entities, sounds);
         this.coolDown = coolDown;
         this.range = range;
         this.attackAnimation = attackAnimation;
@@ -38,7 +37,7 @@ public abstract class AttackingEntity extends Entity {
         super.tick(delta);
         coolTime += delta;
         if(coolTime > coolDown && canAttack()) {
-            ArrayList<Entity> targets = target(transform.getTranslation(tempVector), range, entities, TargetMode.CLOSEST, this instanceof Enemy ? com.logicmaster63.tdgalaxy.tower.Tower.class: Enemy.class);
+            ArrayList<Entity> targets = target(transform.getTranslation(tempVector), range, entities, TargetMode.CLOSEST, this instanceof Enemy ? Tower.class: Enemy.class);
             if(targets != null) {
                 attack(targets);
                 coolTime = 0;

@@ -1,5 +1,6 @@
 package com.logicmaster63.tdgalaxy.tower.basic;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.IntMap;
 import com.logicmaster63.tdgalaxy.constants.Effects;
+import com.logicmaster63.tdgalaxy.constants.Source;
 import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 import com.logicmaster63.tdgalaxy.projectiles.Bullet;
@@ -20,10 +22,7 @@ import com.logicmaster63.tdgalaxy.tools.Asset;
 import com.logicmaster63.tdgalaxy.tools.Dependency;
 import com.logicmaster63.tdgalaxy.tower.Tower;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Laser extends Tower {
 
@@ -41,14 +40,14 @@ public class Laser extends Tower {
     private Vector3 laserTo;
 
     //Debug constructor
-    public Laser(Matrix4 transform, int hp, int health, int range, int laserRange, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> objects, String animation, Vector3 attackOffset) {
-        super(transform, hp, health, range, cooldown, types, effects, instance, shape, world, objects, animation, attackOffset);
+    public Laser(Matrix4 transform, int hp, int health, int range, int laserRange, float cooldown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> objects, String animation, Vector3 attackOffset, Map<String, Sound> sounds) {
+        super(transform, hp, health, range, cooldown, types, effects, instance, shape, world, objects, animation, attackOffset, sounds);
         laserTo = new Vector3();
         this.laserRange = laserRange;
     }
 
-    public Laser(Matrix4 transform, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> objects) {
-        this(transform, HP, HP, RANGE, LASER_RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Laser")), new btBoxShape(models.get("Laser").calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, ATTACK_OFFSET);
+    public Laser(Matrix4 transform, Map<String, Model> models, btCollisionWorld world, IntMap<Entity> objects, Map<String, Sound> sounds) {
+        this(transform, HP, HP, RANGE, LASER_RANGE, COOLDOWN, TYPES, EnumSet.noneOf(Effects.class), new ModelInstance(models.get("Laser")), new btBoxShape(models.get("Laser").calculateBoundingBox(new BoundingBox()).getDimensions(new Vector3())), world, objects, ATTACK_ANIMATION, ATTACK_OFFSET, sounds);
     }
 
     @Override
@@ -75,15 +74,7 @@ public class Laser extends Tower {
         laserTo.set(target.get(0).getTransform().getTranslation(tempVector)).setLength(laserRange);
     }
 
-    public static ArrayList<Asset> getAssets() {
-        ArrayList<Asset> assets = new ArrayList<com.logicmaster63.tdgalaxy.tools.Asset>();
-        assets.add(new Asset("theme/basic/tower/Laser.g3db", Model.class));
-        return assets;
-    }
-
-    public static List getDependencies() {
-        List<Dependency> dependencies = new ArrayList<Dependency>();
-        dependencies.add(new Dependency(Bullet.class, "Bullet"));
-        return dependencies;
+    public static List<Asset> getAssets() {
+        return Arrays.asList(new Asset(Source.INTERNAL,"theme/basic/tower/Laser.g3db", Model.class));
     }
 }

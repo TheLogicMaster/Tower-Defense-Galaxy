@@ -8,6 +8,7 @@ import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.screens.MainScreen;
+import com.logicmaster63.tdgalaxy.tools.FileHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,15 +29,18 @@ public class TDGalaxy extends Game {
     private static String ip = "";
     private static Debug debugger;
     private static boolean isMe = false;
+    private static MainScreen mainScreen;
 
     //Preferences
     private static Preferences prefs;
     private static int res = 10;
     private static float sensitivity = 0.5f;
+    private static float masterVolume = 1f;
+    private static float effectVolume = 0.7f;
+    private static float musicVolume = 0.3f;
     private static boolean debug = true;
     private static boolean debugWindow = false;
     private static boolean vr = false;
-    private static boolean autoSignIn = true;
 
 	public TDGalaxy(FileStuff fileStuff, Debug debugger, OnlineServices onlineServices) {
         TDGalaxy.fileStuff = fileStuff;
@@ -62,13 +66,14 @@ public class TDGalaxy extends Game {
         loadPrefs();
 
         fonts = new HashMap<String, BitmapFont>();
-		com.logicmaster63.tdgalaxy.tools.FileHandler.loadFonts(fonts);
+		FileHandler.loadFonts(fonts);
 
         if(debug) {
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
         }
 
-        setScreen(new MainScreen(this));
+        mainScreen = new MainScreen(this);
+        setScreen(mainScreen);
 		//setScreen(new GameScreen(this, 0, themes.get(0)));
 	}
 
@@ -98,8 +103,10 @@ public class TDGalaxy extends Game {
         debug = (Boolean) getPref("debug", debug);
         debugWindow = (Boolean) getPref("debugWindow", debugWindow);
         vr = (Boolean) getPref("vr", vr);
-        autoSignIn = (Boolean) getPref("autoSignIn", autoSignIn);
         sensitivity = (Float) getPref("sensitivity", sensitivity);
+        masterVolume = (Float) getPref("masterVolume", masterVolume);
+        effectVolume = (Float) getPref("effectVolume", effectVolume);
+        musicVolume = (Float) getPref("musicVolume", musicVolume);
         res = (Integer) getPref("res", res);
     }
 
@@ -158,6 +165,10 @@ public class TDGalaxy extends Game {
             debugger.addButton(name, runnable);
     }
 
+    public void mainMenu() {
+	    setScreen(mainScreen);
+    }
+
     public static void removeDebugTextButton(String name) {
         debugger.removeTextButton(name);
     }
@@ -206,7 +217,23 @@ public class TDGalaxy extends Game {
         return debugWindow;
     }
 
-    public static boolean autoSignIn() {
-	    return autoSignIn;
+    public static float getMasterVolume() {
+        return masterVolume;
+    }
+
+    public static float getEffectVolume() {
+        return effectVolume;
+    }
+
+    public static float getEffectVolumeCombined() {
+        return effectVolume * masterVolume;
+    }
+
+    public static float getMusicVolume() {
+        return musicVolume;
+    }
+
+    public static float getMusicVolumeCombined() {
+        return musicVolume * masterVolume;
     }
 }

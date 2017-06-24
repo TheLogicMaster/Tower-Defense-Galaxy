@@ -1,20 +1,16 @@
 package com.logicmaster63.tdgalaxy.tools;
 
+import com.logicmaster63.tdgalaxy.constants.Source;
+
 public class Asset {
 
-    private Class clazz;
-    private String path;
+    public Class clazz;
+    public String path;
+    public Source source;
 
-    public Asset(String path, Class clazz) {
+    public Asset(Source source, String path, Class clazz) {
         this.clazz = clazz;
         this.path = path;
-    }
-
-    public Class getClazz() {
-        return clazz;
-    }
-
-    public String getPath() {
-        return path;
+        this.source = source;
     }
 }
