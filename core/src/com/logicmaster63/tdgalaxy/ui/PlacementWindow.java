@@ -31,6 +31,8 @@ public class PlacementWindow extends Actor {
     private Money money;
     private Environment environment;
 
+    public boolean paused = false;
+
     public PlacementWindow(float x, float y, float width, float height, int xCells, int yCells, PlacementCell[][] cells, btCollisionWorld collisionWorld, Camera cam, final ModelBatch modelBatch, Environment environment, World world, final Money money) {
         this.xCells = xCells;
         this.yCells = yCells;
@@ -51,6 +53,8 @@ public class PlacementWindow extends Actor {
         addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (paused)
+                    return false;
                 if(getCell((int) x, (int) y) != null) {
                     if (money.$ >= getCell((int) x, (int) y).price) {
                         lastCell = getCell((int) x, (int) y);
@@ -62,6 +66,8 @@ public class PlacementWindow extends Actor {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (paused)
+                    return;
                 if(lastCell != null) {
                     Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
                     Vector3 pos = Tools.closestRayTest(btcollisionWorld, new ClosestRayResultCallback(ray.origin, new Vector3(ray.direction).setLength(9999).add(ray.origin)));
@@ -85,7 +91,8 @@ public class PlacementWindow extends Actor {
                     if(cells[i][j].price > money.$)
                         batch.draw(cellX, getX() + i * getWidth() / xCells, getY() + j * getHeight() / yCells, getWidth() / xCells, getHeight() / yCells);
                 }
-
+        if (paused)
+            return;
         if(Gdx.input.isTouched() && lastCell != null) {
             Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
             Vector3 pos = Tools.closestRayTest(btcollisionWorld, new ClosestRayResultCallback(ray.origin, new Vector3(ray.direction).setLength(9999).add(ray.origin)));
@@ -108,6 +115,7 @@ public class PlacementWindow extends Actor {
     @Override
     public boolean remove() {
         texture.dispose();
+        cellX.dispose();
         return super.remove();
     }
 }

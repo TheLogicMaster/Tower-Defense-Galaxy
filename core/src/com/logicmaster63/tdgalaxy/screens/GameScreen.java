@@ -97,6 +97,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
     private Set<Pool> pools;
     private ParticleSystem particleSystem;
     private PauseWindow pauseWindow;
+    private Button button;
 
     public GameScreen(Game game, int map, String theme) {
         super(game);
@@ -117,7 +118,6 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         broadphase = new btDbvtBroadphase();
         collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
         shapeRenderer = new ShapeRenderer();
-        addDisposables(shapeRenderer);
         background = new Texture("Background_MainMenu.png");
         loading = new Texture("theme/basic/ui/Loading.png");
         entities = new IntMap<Entity>();
@@ -175,21 +175,21 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         assets.load("theme/" + theme + "/planet.g3db", Model.class);
         //assets.load("Transmission.wav", Music.class);
         externalAssets = TDGalaxy.fileStuff.getExternalAssets();
-        if(externalAssets != null) {
+        if (externalAssets != null) {
             externalAssets.load("X.png", Texture.class);
             externalAssets.load("Transmission.mp3", Music.class);
             //externalAssets.load("Jump Up.mp3", Music.class);
             //externalAssets.load("Crystal Waters.mp3", Music.class);
         }
 
-        for(Class<?> clazz: new ArrayList<Class>(classes.values())) {
+        for (Class<?> clazz : new ArrayList<Class>(classes.values())) {
             try {
                 Method method = clazz.getMethod("getAssets");
                 ArrayList<Asset> assetsList = null;
-                if(method != null)
+                if (method != null)
                     assetsList = new ArrayList<Asset>((List<Asset>) method.invoke(null));
-                if(assetsList != null)
-                    for(Asset asset: assetsList)
+                if (assetsList != null)
+                    for (Asset asset : assetsList)
                         getAssetManager(asset.source).load(asset.path, asset.clazz);
             } catch (Exception e) {
                 Gdx.app.error("GameScreen", e.toString());
@@ -200,9 +200,9 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
 
         if (!hasPlanetModel && planetName != null)
             assets.load("theme/" + theme + "/" + planetName + ".png", Texture.class);
-        if(planetName == null)
+        if (planetName == null)
             planetName = "planet";
-        addDisposables(spriteBatch, modelBatch, background, broadphase, collisionConfig, dispatcher, collisionWorld, debugDrawer);
+        addDisposables(spriteBatch, modelBatch, background, collisionWorld, broadphase, collisionConfig, dispatcher, debugDrawer, shapeRenderer);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
 
         modelBatch.begin(perspectiveCamera);
         shapeRenderer.setProjectionMatrix(perspectiveCamera.combined);
-        for(IntMap.Entry<Entity> entry: entities.entries())
+        for (IntMap.Entry<Entity> entry : entities.entries())
             entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer, environment);
         modelBatch.render(planet, environment);
         modelBatch.end();
@@ -229,7 +229,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
                 doneLoading();
             else {
                 float progress;
-                if(externalAssets == null)
+                if (externalAssets == null)
                     progress = assets.getProgress();
                 else
                     progress = 0.5f * assets.getProgress() + 0.5f * externalAssets.getProgress();
@@ -246,7 +246,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
             }
         }
 
-        if(!paused) {
+        if (!paused) {
             for (IntMap.Entry<Entity> entry : entities.entries()) {
                 entry.value.tick(delta);
                 if (entry.value.isDead) {
@@ -267,7 +267,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         spriteBatch.end();
         camHandler.render(spriteBatch);
 
-        if(TDGalaxy.isDebug()) {
+        if (TDGalaxy.isDebug()) {
             debugDrawer.begin(camHandler.getCam());
             collisionWorld.debugDrawWorld();
             debugDrawer.end();
@@ -277,6 +277,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + entities.size(), 0, 20);
         //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
         TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, "$" + money.$, 0, viewport.getWorldHeight() - 30);
+        TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, Gdx.graphics.getFramesPerSecond() + " FPS", 0, viewport.getWorldHeight() - 80);
         spriteBatch.end();
 
         super.render(delta);
@@ -302,18 +303,18 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
             planet = new ModelInstance(assets.get("theme/" + theme + "/planet.g3db", Model.class));
         } else {
             Texture texture;
-            if(assets.isLoaded("theme/" + theme + "/" + planetName + ".png"))
+            if (assets.isLoaded("theme/" + theme + "/" + planetName + ".png"))
                 texture = assets.get("theme/" + theme + "/" + planetName + ".png");//new Texture(Gdx.files.internal("Background_MainMenu.png"));
             else
                 texture = null;
             Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1, 1, 1, 1), FloatAttribute.createShininess(8f));
             ModelBuilder builder = new ModelBuilder();
-            if(planetSize == null)
+            if (planetSize == null)
                 planetSize = new Vector3(100, 100, 100);
             planet = new ModelInstance(builder.createSphere(planetSize.x, planetSize.y, planetSize.z, 60, 60, material, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates));
         }
 
-        planetRadius = (int)(planet.calculateBoundingBox(new BoundingBox()).getHeight() / 2f);
+        planetRadius = (int) (planet.calculateBoundingBox(new BoundingBox()).getHeight() / 2f);
         btCollisionObject collisionObject = new btCollisionObject();
         collisionObject.setCollisionShape(new btSphereShape(planetRadius));
         collisionObject.setWorldTransform(planet.transform);
@@ -327,9 +328,9 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         enemies = new EnemySpawner(spawnPos, classes, spawns, models, path, collisionWorld, entities, sounds);
 
         try {
-            if(models.containsKey("Laser"))//new Vector3(0, planetRadius + 10, 0)
-               new Laser(new Matrix4().setToTranslation(new Vector3(0, planetRadius + 10, 0)), models, collisionWorld, entities, sounds);
-            if(models.containsKey("Gun"))
+            if (models.containsKey("Laser"))//new Vector3(0, planetRadius + 10, 0)
+                new Laser(new Matrix4().setToTranslation(new Vector3(0, planetRadius + 10, 0)), models, collisionWorld, entities, sounds);
+            if (models.containsKey("Gun"))
                 new Gun(new Matrix4().setToTranslation(new Vector3(100, planetRadius + 100, 0)), models, collisionWorld, entities, sounds);
         } catch (NoSuchMethodException e) {
             Gdx.app.error("Gamescreen add towers", e.toString());
@@ -338,7 +339,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         PlacementCell[][] placementCells = new PlacementCell[2][2];
         try {
             placementCells[0][0] = new PlacementCell(background, models.get("Gun"), new EntityTemplate(Gun.class.getConstructors()[1], models, collisionWorld, entities, sounds), (Integer) classes.get("Gun").getField("PRICE").get(null));
-            placementCells[1][0] = new PlacementCell(background, models.get("Laser"), new EntityTemplate(Laser.class.getConstructors()[1], models, collisionWorld, entities, sounds), (Integer)classes.get("Laser").getField("PRICE").get(null));
+            placementCells[1][0] = new PlacementCell(background, models.get("Laser"), new EntityTemplate(Laser.class.getConstructors()[1], models, collisionWorld, entities, sounds), (Integer) classes.get("Laser").getField("PRICE").get(null));
         } catch (NoSuchFieldException e) {
             Gdx.app.error("Create placement window", e.toString());
         } catch (IllegalAccessException e) {
@@ -346,12 +347,12 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         }
         stage.addActor(new PlacementWindow(0, 0, 400, 400, 2, 2, placementCells, collisionWorld, camHandler.getCam(), modelBatch, environment, world, money));
 
-        Button button = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/menuButton.png"))), new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/menuButtonOver.png"))));
+        button = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/menuButton.png"))), new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/menuButtonOver.png"))));
         button.setBounds(viewport.getWorldWidth() - 300, viewport.getWorldHeight() - 300, 200, 200);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(paused)
+                if (paused)
                     unpauseGame();
                 else
                     pauseGame();
@@ -374,7 +375,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
     }
 
     private <T> Map<String, T> getAssetMap(AssetManager assetManager, Class<T> clazz, Map<String, T> map) {
-        for(T asset: assetManager.getAll(clazz, new Array<T>())) {
+        for (T asset : assetManager.getAll(clazz, new Array<T>())) {
             String name = assetManager.getAssetFileName(asset);
             map.put(name.substring(name.lastIndexOf("/") + 1, name.indexOf(".")), asset);
         }
@@ -382,9 +383,8 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
     }
 
     private void pauseGame() {
-        if(paused)
+        if (paused)
             return;
-        camHandler.paused = true;
         paused = true;
 
         final Window.WindowStyle pauseWindowStyle = new Window.WindowStyle();
@@ -396,22 +396,33 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
             public void run() {
                 unpauseGame();
             }
-        });
-        pauseWindow.setBounds(viewport.getWorldWidth() / 2 - 100, viewport.getWorldHeight() / 2 - viewport.getWorldHeight() / 4, viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2);
+        }, new Runnable() {
+            @Override
+            public void run() {
+                save();
+            }
+        }, game, button);
+        pauseWindow.setBounds(viewport.getWorldWidth() / 2 - viewport.getWorldWidth() / 3, viewport.getWorldHeight() / 2 - viewport.getWorldHeight() / 3, viewport.getWorldWidth() / 3 * 2, viewport.getWorldHeight() / 3 * 2);
         stage.addActor(pauseWindow);
     }
 
     private void unpauseGame() {
-        if(pauseWindow != null)
+        if (pauseWindow != null)
             pauseWindow.resume();
-        camHandler.paused = false;
         paused = false;
+    }
+
+    private void save() {
+
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        if(keycode == Input.Keys.ESCAPE)
-            pauseGame();
+        if (keycode == Input.Keys.ESCAPE)
+            if (paused)
+                unpauseGame();
+            else
+                pauseGame();
         return false;
     }
 
