@@ -34,8 +34,9 @@ public abstract class Projectile extends Entity {
         //pos.add(tempVector.set(velocity).scl(delta));
         super.tick(delta);
         age += delta;
-        if(age > lifetime)
+        if(age > lifetime) {
             destroy();
+        }
     }
 
     public abstract void collision(Entity entity);

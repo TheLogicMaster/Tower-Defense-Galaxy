@@ -18,6 +18,7 @@ import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.enemy.Enemy;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
@@ -63,9 +64,7 @@ public abstract class Entity implements Disposable {
         quaternion = new Quaternion();
         if(this instanceof Enemy || this instanceof Projectile)
             body.setCollisionFlags(body.getCollisionFlags());
-        int index = 1;
-        while (entities.containsKey(index))
-            index++;
+        int index = getNextIndex();
         entities.put(index, this);
         body.setUserValue(index);
         world.addCollisionObject(body);
@@ -93,8 +92,7 @@ public abstract class Entity implements Disposable {
 
     public void destroy() {
         world.removeCollisionObject(body);
-        //if(getEntry() != null)
-            //entities.remove(getEntry().key);
+            isDead = true;
         dispose();
     }
 

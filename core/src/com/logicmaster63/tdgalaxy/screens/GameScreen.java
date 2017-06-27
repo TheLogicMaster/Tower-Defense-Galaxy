@@ -202,7 +202,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
             assets.load("theme/" + theme + "/" + planetName + ".png", Texture.class);
         if (planetName == null)
             planetName = "planet";
-        addDisposables(spriteBatch, modelBatch, background, collisionWorld, broadphase, collisionConfig, dispatcher, debugDrawer, shapeRenderer);
+        addDisposables(spriteBatch, modelBatch, background, collisionWorld, broadphase, collisionConfig, dispatcher, debugDrawer, shapeRenderer, assets, externalAssets);
     }
 
     @Override
@@ -247,10 +247,19 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         }
 
         if (!paused) {
-            for (IntMap.Entry<Entity> entry : entities.entries()) {
+            /*for (IntMap.Entry<Entity> entry : entities.entries()) {
                 entry.value.tick(delta);
                 if (entry.value.isDead) {
                     entry.value.destroy();
+                }
+            }*/
+            Iterator<IntMap.Entry<Entity>> iterator = entities.entries().iterator();
+
+            while (iterator.hasNext()) {
+                IntMap.Entry<Entity> entry = iterator.next();
+                entry.value.tick(delta);
+                if (entry.value.isDead) {
+                    iterator.remove();
                 }
             }
             enemies.tick(delta, this);
@@ -278,6 +287,8 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
         TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, "$" + money.$, 0, viewport.getWorldHeight() - 30);
         TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, Gdx.graphics.getFramesPerSecond() + " FPS", 0, viewport.getWorldHeight() - 80);
+        TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, entities.size + " Entities", 0, viewport.getWorldHeight() - 130);
+
         spriteBatch.end();
 
         super.render(delta);

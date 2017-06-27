@@ -35,7 +35,8 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 		dialog = new JDialog(frame, "Dialog Example", true);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Tower Defense Galaxy";
-
+		config.backgroundFPS = 0;
+		config.foregroundFPS = 0;
 		//config.width = 1280;
 		//config.height = 800;
 		new LwjglApplication(new TDGalaxy(this, this, this), config);

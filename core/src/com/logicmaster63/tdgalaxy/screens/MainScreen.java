@@ -60,7 +60,7 @@ public class MainScreen extends TDScreen {
         stage.addActor(signInStack);
 
         //Settings button
-        Button settingsButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/SettingsButton.png"))));
+        ImageButton settingsButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/SettingsButton.png"))));
         settingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -152,5 +152,6 @@ public class MainScreen extends TDScreen {
     @Override
     public void dispose() {
         super.dispose();
+        background.dispose();
     }
 }

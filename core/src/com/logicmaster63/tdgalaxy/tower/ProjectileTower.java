@@ -33,9 +33,7 @@ public class ProjectileTower extends Tower{
         super.attack(targets);
         try {
             Projectile projectile = projectileEntityTemplate.create(new Matrix4(transform), targets.get(0).getTransform().getTranslation(new Vector3()).sub(transform.getTranslation(tempVector)).setLength(1));
-            if(projectile != null)
-                entities.put(getNextIndex(), projectile);//projectile.getClass().getConstructor(projectile.getClass(), Vector3.class, Vector3.class).newInstance(projectile, new Vector3(pos), new Vector3(targets.get(0).getTransform()).sub(pos).scl(projectile.getClass().getField("SPEED").getInt(null))));
-            else
+            if(projectile == null)
                 Gdx.app.error("ProjectileTower", "Failed to create " + projectileEntityTemplate);
         } catch (Exception e) {
             Gdx.app.error("ProjectileTower", e.getMessage());
