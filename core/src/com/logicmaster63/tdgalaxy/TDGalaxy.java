@@ -1,9 +1,11 @@
 package com.logicmaster63.tdgalaxy;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.logicmaster63.tdgalaxy.constants.Theme;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
@@ -72,10 +74,16 @@ public class TDGalaxy extends Game {
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
         }
 
-        mainScreen = new MainScreen(this);
+        mainScreen = new MainScreen(this, loadUI(new AssetManager(), Theme.BASIC));
         setScreen(mainScreen);
 		//setScreen(new GameScreen(this, 0, themes.get(0)));
 	}
+
+	public static AssetManager loadUI(AssetManager assets, Theme theme) {
+	    assets.clear();
+
+	    return assets;
+    }
 
     public void updateNetwork() {
             Gdx.net.sendHttpRequest(new HttpRequestBuilder().newRequest().method(Net.HttpMethods.GET).url("http://checkip.amazonaws.com").build(), new Net.HttpResponseListener() {

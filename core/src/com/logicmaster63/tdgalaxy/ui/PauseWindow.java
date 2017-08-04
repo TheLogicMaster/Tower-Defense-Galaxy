@@ -2,6 +2,7 @@ package com.logicmaster63.tdgalaxy.ui;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -23,7 +24,7 @@ public class PauseWindow extends Window {
     private Vector2 tempVector;
     private Button closeButton, resumeButton, homeButton;
 
-    public PauseWindow(WindowStyle style, final Runnable resume, final Runnable save, final Game game, Button button) {
+    public PauseWindow(WindowStyle style, final Runnable resume, final Runnable save, final Game game, final AssetManager uiAssets, Button button) {
         super("", style);
 
         this.resume = resume;
@@ -64,7 +65,7 @@ public class PauseWindow extends Window {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 save.run();
-                game.setScreen(new MainScreen(game));
+                game.setScreen(new MainScreen(game, uiAssets));
             }
         });
         addActor(homeButton);

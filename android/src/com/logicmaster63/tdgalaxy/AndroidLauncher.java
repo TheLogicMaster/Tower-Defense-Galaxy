@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Environment;
+import android.view.WindowManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -181,7 +183,10 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		if (Build.VERSION.SDK_INT < 16) {
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		}
 		gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES | GameHelper.CLIENT_SNAPSHOT);
 		gameHelper.setup(this);
 		helper = new BackupAgentHelper();

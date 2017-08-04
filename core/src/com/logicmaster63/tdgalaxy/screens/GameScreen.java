@@ -26,7 +26,6 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
@@ -40,6 +39,7 @@ import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.constants.Source;
+import com.logicmaster63.tdgalaxy.constants.Theme;
 import com.logicmaster63.tdgalaxy.entity.EntityTemplate;
 import com.logicmaster63.tdgalaxy.map.Spawn;
 import com.logicmaster63.tdgalaxy.map.region.Region;
@@ -79,7 +79,8 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
     private CameraHandler camHandler;
     private List<Projectile> projectiles;
     private Vector3 planetSize, spawnPos;
-    private String planetName, theme;
+    private String planetName;
+    private Theme theme;
     private Map<String, Class<?>> classes;
     private List<Spawn> spawns;
     private btCollisionWorld collisionWorld;
@@ -99,8 +100,8 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
     private PauseWindow pauseWindow;
     private Button button;
 
-    public GameScreen(Game game, int map, String theme) {
-        super(game);
+    public GameScreen(Game game, AssetManager uiAssets, int map, Theme theme) {
+        super(game, uiAssets);
         this.map = map;
         this.theme = theme;
     }
@@ -412,7 +413,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
             public void run() {
                 save();
             }
-        }, game, button);
+        }, game, uiAssets, button);
         pauseWindow.setBounds(viewport.getWorldWidth() / 2 - viewport.getWorldWidth() / 3, viewport.getWorldHeight() / 2 - viewport.getWorldHeight() / 3, viewport.getWorldWidth() / 3 * 2, viewport.getWorldHeight() / 3 * 2);
         stage.addActor(pauseWindow);
     }

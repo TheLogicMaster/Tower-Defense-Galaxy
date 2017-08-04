@@ -1,6 +1,7 @@
 package com.logicmaster63.tdgalaxy.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,11 +23,13 @@ public abstract class TDScreen implements Screen {
     protected Viewport viewport;
     protected Stage stage;
     protected List<Disposable> disposables = new ArrayList<Disposable>();
+    protected AssetManager uiAssets;
 
     private InputMultiplexer multiplexer;
 
-    public TDScreen (Game game) {
+    public TDScreen (Game game, AssetManager uiAssets) {
         this.game = game;
+        this.uiAssets = uiAssets;
     }
 
     @Override

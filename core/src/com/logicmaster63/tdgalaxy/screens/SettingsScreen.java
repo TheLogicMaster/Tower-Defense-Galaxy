@@ -2,6 +2,7 @@ package com.logicmaster63.tdgalaxy.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,8 +24,8 @@ public class SettingsScreen extends TDScreen {
     private Button backButton;
     private TDScreen lastScreen;
 
-    public SettingsScreen(Game game, TDScreen lastScreen) {
-        super(game);
+    public SettingsScreen(Game game, AssetManager uiAssets, TDScreen lastScreen) {
+        super(game, uiAssets);
         this.lastScreen = lastScreen;
     }
 
