@@ -17,7 +17,7 @@ import java.util.*;
 
 public class FileHandler {
 
-    public static List<Vector3> loadTrack(BufferedReader data, GameScreen screen) {
+    public static List<Vector3> loadTrack(BufferedReader data, TDGalaxy game, GameScreen screen) {
         if (data == null)
             return null;
         List<Track> track = new ArrayList<Track>();
@@ -49,7 +49,7 @@ public class FileHandler {
                 line = data.readLine();
             }
             for (Track t : track) {
-                path.addAll(t.getPoints(TDGalaxy.getRes()));
+                path.addAll(t.getPoints(game.preferences.getRes()));
                 //System.out.println(t.getPoints(TDWorld.res));
                 //System.out.println(path);
             }

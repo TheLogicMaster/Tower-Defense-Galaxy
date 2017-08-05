@@ -2,10 +2,8 @@ package com.logicmaster63.tdgalaxy.enemy.basic;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -24,7 +22,7 @@ import java.util.*;
 
 public class Basic extends Enemy{
 
-    public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
+    public static final EnumSet<Types> TYPES = EnumSet.of(Types.SHARP);
     public static final int HP = 20;
     public static final float COOLDOWN = 1f;
     public static final int RANGE = 300;

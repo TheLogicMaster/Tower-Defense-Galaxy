@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.ui.TabSelector;
 
 public class EditorScreen extends TDScreen {
@@ -12,8 +13,8 @@ public class EditorScreen extends TDScreen {
     private TabSelector tabs;
     private Texture background, back, knob;
 
-    public EditorScreen(Game game, AssetManager uiAssets) {
-        super(game, uiAssets);
+    public EditorScreen(TDGalaxy game) {
+        super(game);
     }
 
     @Override

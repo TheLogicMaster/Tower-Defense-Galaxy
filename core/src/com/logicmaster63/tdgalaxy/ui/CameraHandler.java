@@ -16,20 +16,22 @@ public class CameraHandler implements InputProcessor {
     private float xRot, yRot, zRot;
     private VRCamera vrCamera;
     private RendererForVR rendererForVR;
+    private TDGalaxy game;
 
-    public CameraHandler(Vector3 pos, float near, float far, RendererForVR rendererForVR) {
-        this(new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), new VRCamera(67, near, far, 0.5f, (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight(), rendererForVR), pos, new Vector3(0, 0, 0), near, far, rendererForVR);
+    public CameraHandler(Vector3 pos, TDGalaxy game, float near, float far, RendererForVR rendererForVR) {
+        this(new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), new VRCamera(67, near, far, 0.5f, (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight(), rendererForVR), pos, game, new Vector3(0, 0, 0), near, far, rendererForVR);
     }
 
-    public CameraHandler(Vector3 pos, int width, int height, float near, float far, RendererForVR rendererForVR) {
-        this(new PerspectiveCamera(67, width, height), new VRCamera(67, near, far, 0.5f, (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight(), rendererForVR), pos, new Vector3(0, 0, 0), near, far, rendererForVR);
+    public CameraHandler(Vector3 pos, TDGalaxy game, int width, int height, float near, float far, RendererForVR rendererForVR) {
+        this(new PerspectiveCamera(67, width, height), new VRCamera(67, near, far, 0.5f, (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight(), rendererForVR), pos, game, new Vector3(0, 0, 0), near, far, rendererForVR);
     }
 
-    public CameraHandler(PerspectiveCamera cam, VRCamera vrCamera, Vector3 pos, Vector3 looking, float near, float far, RendererForVR rendererForVR) {
+    public CameraHandler(PerspectiveCamera cam, VRCamera vrCamera, Vector3 pos, TDGalaxy game, Vector3 looking, float near, float far, RendererForVR rendererForVR) {
         cam.position.set(pos);
         cam.lookAt(looking);
         cam.near = near;
         cam.far = far;
+        this.game = game;
         //cam.update();
         this.rendererForVR = rendererForVR;
         this.cam = cam;
@@ -49,7 +51,7 @@ public class CameraHandler implements InputProcessor {
     }
 
     public void render(Batch batch) {
-        if(TDGalaxy.isVr())
+        if(game.preferences.isVr())
             vrCamera.render(batch);
         else {
             rendererForVR.renderForVR(cam);
@@ -85,8 +87,8 @@ public class CameraHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged (int screenX, int screenY, int pointer) {
-        float deltaX = -Gdx.input.getDeltaX() * TDGalaxy.getSensitivity();
-        float deltaY = -Gdx.input.getDeltaY() * TDGalaxy.getSensitivity();
+        float deltaX = -Gdx.input.getDeltaX() * game.preferences.getSensitivity();
+        float deltaY = -Gdx.input.getDeltaY() * game.preferences.getSensitivity();
         //cam.direction.rotate(cam.up, deltaX);
         //tempVector.set(cam.direction).crs(cam.up).nor();
         //cam.direction.rotate(tempVector, deltaY);

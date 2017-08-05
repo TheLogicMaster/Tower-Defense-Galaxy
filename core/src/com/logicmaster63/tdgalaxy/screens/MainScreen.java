@@ -3,19 +3,15 @@ package com.logicmaster63.tdgalaxy.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.constants.Constants;
-import com.logicmaster63.tdgalaxy.constants.Theme;
 
 public class MainScreen extends TDScreen {
 
@@ -23,8 +19,8 @@ public class MainScreen extends TDScreen {
     private Texture background;
     private MainScreen screen;
 
-    public MainScreen(Game game, AssetManager uiAssets) {
-        super(game, uiAssets);
+    public MainScreen(TDGalaxy game) {
+        super(game);
         screen = this;
     }
 
@@ -35,7 +31,7 @@ public class MainScreen extends TDScreen {
         background = new Texture("theme/basic/ui/Window.png");
 
         final TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = TDGalaxy.getFonts().get("moonhouse64");
+        textButtonStyle.font = game.getFonts().get("moonhouse64");
         textButtonStyle.up = new TextureRegionDrawable(new TextureRegion(background));
 
         //Sign in button
@@ -53,7 +49,7 @@ public class MainScreen extends TDScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 if(TDGalaxy.onlineServices != null)
                     TDGalaxy.onlineServices.signOut();
-                TDGalaxy.changePref("autoSignIn", false);
+                game.preferences.changePref("autoSignIn", false);
             }
         });
         signOutButton.setVisible(false);
@@ -66,7 +62,7 @@ public class MainScreen extends TDScreen {
         settingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new SettingsScreen(game, uiAssets, screen));
+                game.setScreen(new SettingsScreen(game, screen));
             }
         });
         settingsButton.setPosition(viewport.getWorldWidth() - settingsButton.getWidth() - 100, viewport.getWorldHeight() - settingsButton.getHeight() - 100);
@@ -80,7 +76,7 @@ public class MainScreen extends TDScreen {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new GameScreen(game, uiAssets, 0, Theme.BASIC));
+                game.setScreen(new GameScreen(game, 0, "basic"));
             }
         });
         table.add(playButton);
@@ -90,7 +86,7 @@ public class MainScreen extends TDScreen {
         editButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new EditorScreen(game, uiAssets));
+                game.setScreen(new EditorScreen(game));
             }
         });
         table.add(editButton);

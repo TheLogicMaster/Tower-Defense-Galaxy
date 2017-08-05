@@ -36,7 +36,7 @@ public class Gun extends ProjectileTower{
     public static final int RANGE = 3000;
     public static final String ATTACK_ANIMATION = "";
     public static final Vector3 ATTACK_OFFSET = Vector3.Zero;
-    public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
+    public static final EnumSet<Types> TYPES = EnumSet.of(Types.SHARP);
 
     private float muzzle, muzzleInc = 0.1f;
     private boolean installed = false;
@@ -98,7 +98,7 @@ public class Gun extends ProjectileTower{
             legInc = 0;
             if(!installed && leg == 30) {
                 installed = true;
-                sounds.get("ButtonPress").setVolume(sounds.get("ButtonPress").play(), TDGalaxy.getEffectVolumeCombined());
+                sounds.get("ButtonPress").setVolume(sounds.get("ButtonPress").play(), TDGalaxy.preferences.getEffectVolumeCombined());
             }
         }
         nodes.get("Leg0").rotation.set(new Quaternion(Vector3.X, leg));

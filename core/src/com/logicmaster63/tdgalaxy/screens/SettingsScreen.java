@@ -24,8 +24,8 @@ public class SettingsScreen extends TDScreen {
     private Button backButton;
     private TDScreen lastScreen;
 
-    public SettingsScreen(Game game, AssetManager uiAssets, TDScreen lastScreen) {
-        super(game, uiAssets);
+    public SettingsScreen(TDGalaxy game, TDScreen lastScreen) {
+        super(game);
         this.lastScreen = lastScreen;
     }
 
@@ -40,7 +40,7 @@ public class SettingsScreen extends TDScreen {
         sliderStyle.knob = new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/Knob.png")));
 
         final Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = TDGalaxy.getFonts().get("moonhouse64");
+        labelStyle.font = game.getFonts().get("moonhouse64");
         labelStyle.fontColor = Color.BLACK;
 
         //Update label and save percentages
@@ -50,36 +50,36 @@ public class SettingsScreen extends TDScreen {
                 musicLabel.setText("Music Volume: " + (int)(100f * musicSlider.getPercent()));
                 effectsLabel.setText("Effects Volume: " + (int)(100f * effectsSlider.getPercent()));
                 masterLabel.setText("Master Volume: " + (int)(100f * masterSlider.getPercent()));
-                TDGalaxy.changePref("musicVolume", musicSlider.getPercent());
-                TDGalaxy.changePref("effectVolume", effectsSlider.getPercent());
-                TDGalaxy.changePref("masterVolume", masterSlider.getPercent());
+                game.preferences.changePref("musicVolume", musicSlider.getPercent());
+                game.preferences.changePref("effectVolume", effectsSlider.getPercent());
+                game.preferences.changePref("masterVolume", masterSlider.getPercent());
             }
         };
 
         //Master volume slider
         masterSlider = new Slider(0, 100, 1, false, sliderStyle);
         masterSlider.setBounds(viewport.getWorldWidth() / 2 - 500, viewport.getWorldHeight() / 2 - 50, 1000, 100);
-        masterSlider.setValue(100 * TDGalaxy.getMasterVolume());
+        masterSlider.setValue(100 * game.preferences.getMasterVolume());
         stage.addActor(masterSlider);
-        masterLabel = new Label("Master Volume: " + (int)(100f * TDGalaxy.getMasterVolume()), labelStyle);
+        masterLabel = new Label("Master Volume: " + (int)(100f * game.preferences.getMasterVolume()), labelStyle);
         masterLabel.setPosition(viewport.getWorldWidth() / 2 - 500, viewport.getWorldHeight() / 2 + 70);
         stage.addActor(masterLabel);
 
         //Effects volume slider
         effectsSlider = new Slider(0, 100, 1, false, sliderStyle);
         effectsSlider.setBounds(viewport.getWorldWidth() / 2 - 500, viewport.getWorldHeight() / 2 - 350, 1000, 100);
-        effectsSlider.setValue(100 * TDGalaxy.getEffectVolume());
+        effectsSlider.setValue(100 * game.preferences.getEffectVolume());
         stage.addActor(effectsSlider);
-        effectsLabel = new Label("Effects Volume: " + (int)(100f * TDGalaxy.getEffectVolume()), labelStyle);
+        effectsLabel = new Label("Effects Volume: " + (int)(100f * game.preferences.getEffectVolume()), labelStyle);
         effectsLabel.setPosition(viewport.getWorldWidth() / 2 - 500, viewport.getWorldHeight() / 2 - 230);
         stage.addActor(effectsLabel);
 
         //Music volume slider
         musicSlider = new Slider(0, 100, 1, false, sliderStyle);
         musicSlider.setBounds(viewport.getWorldWidth() / 2 - 500, viewport.getWorldHeight() / 2 - 650, 1000, 100);
-        musicSlider.setValue(100 * TDGalaxy.getMusicVolume());
+        musicSlider.setValue(100 * game.preferences.getMusicVolume());
         stage.addActor(musicSlider);
-        musicLabel = new Label("Music Volume: " + (int)(100f * TDGalaxy.getMusicVolume()), labelStyle);
+        musicLabel = new Label("Music Volume: " + (int)(100f * game.preferences.getMusicVolume()), labelStyle);
         musicLabel.setPosition(viewport.getWorldWidth() / 2 - 500, viewport.getWorldHeight() / 2 - 530);
         stage.addActor(musicLabel);
 

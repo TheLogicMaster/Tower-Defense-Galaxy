@@ -39,7 +39,6 @@ import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.constants.Source;
-import com.logicmaster63.tdgalaxy.constants.Theme;
 import com.logicmaster63.tdgalaxy.entity.EntityTemplate;
 import com.logicmaster63.tdgalaxy.map.Spawn;
 import com.logicmaster63.tdgalaxy.map.region.Region;
@@ -80,7 +79,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
     private List<Projectile> projectiles;
     private Vector3 planetSize, spawnPos;
     private String planetName;
-    private Theme theme;
+    private String theme;
     private Map<String, Class<?>> classes;
     private List<Spawn> spawns;
     private btCollisionWorld collisionWorld;
@@ -100,8 +99,8 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
     private PauseWindow pauseWindow;
     private Button button;
 
-    public GameScreen(Game game, AssetManager uiAssets, int map, Theme theme) {
-        super(game, uiAssets);
+    public GameScreen(TDGalaxy game, int map, String theme) {
+        super(game);
         this.map = map;
         this.theme = theme;
     }
@@ -123,7 +122,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         loading = new Texture("theme/basic/ui/Loading.png");
         entities = new IntMap<Entity>();
         spawns = new ArrayList<Spawn>();
-        camHandler = new CameraHandler(new Vector3(250, 20, 250), 1, 10000, this);
+        camHandler = new CameraHandler(new Vector3(250, 20, 250), game, 1, 10000, this);
 
         addInputProcessor(camHandler);
         addInputProcessor(this);
@@ -149,7 +148,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         //environment.add(new SpotLight().set(Color.RED, 200, 200, 200, -1, -1, -1, 1, 130, 100));
 
         BufferedReader reader = FileHandler.getReader("track/Track" + Integer.toString(map));
-        path = FileHandler.loadTrack(reader, this);
+        path = FileHandler.loadTrack(reader, game, this);
 
         reader = FileHandler.getReader("theme/" + theme + "/PlanetData");
         FileHandler.loadPlanet(reader, this);
@@ -238,10 +237,10 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
                 spriteBatch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
                 spriteBatch.draw(loading, viewport.getWorldWidth() / 2 - 200, viewport.getWorldHeight() / 4 - 50, 400, 100, 0, 0.5f, 1, 1);
                 spriteBatch.draw(loading, viewport.getWorldWidth() / 2 - 200 + 400f * progress, viewport.getWorldHeight() / 4 - 50, 400 - progress * 400f, 100, progress, 0, 1, 0.5f);
-                Color color = new Color(TDGalaxy.getFonts().get("moonhouse64").getColor());
-                TDGalaxy.getFonts().get("moonhouse64").setColor(Color.BLACK);
-                TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, "Loading...", viewport.getWorldWidth() / 2 - 170, viewport.getWorldHeight() / 4 + 30);
-                TDGalaxy.getFonts().get("moonhouse64").setColor(color);
+                Color color = new Color(game.getFonts().get("moonhouse64").getColor());
+                game.getFonts().get("moonhouse64").setColor(Color.BLACK);
+                game.getFonts().get("moonhouse64").draw(spriteBatch, "Loading...", viewport.getWorldWidth() / 2 - 170, viewport.getWorldHeight() / 4 + 30);
+                game.getFonts().get("moonhouse64").setColor(color);
                 spriteBatch.end();
                 return;
             }
@@ -277,7 +276,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         spriteBatch.end();
         camHandler.render(spriteBatch);
 
-        if (TDGalaxy.isDebug()) {
+        if (game.preferences.isDebug()) {
             debugDrawer.begin(camHandler.getCam());
             collisionWorld.debugDrawWorld();
             debugDrawer.end();
@@ -286,9 +285,9 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         spriteBatch.begin();
         //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + entities.size(), 0, 20);
         //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
-        TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, "$" + money.$, 0, viewport.getWorldHeight() - 30);
-        TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, Gdx.graphics.getFramesPerSecond() + " FPS", 0, viewport.getWorldHeight() - 80);
-        TDGalaxy.getFonts().get("moonhouse64").draw(spriteBatch, entities.size + " Entities", 0, viewport.getWorldHeight() - 130);
+        game.getFonts().get("moonhouse64").draw(spriteBatch, "$" + money.$, 0, viewport.getWorldHeight() - 30);
+        game.getFonts().get("moonhouse64").draw(spriteBatch, Gdx.graphics.getFramesPerSecond() + " FPS", 0, viewport.getWorldHeight() - 80);
+        game.getFonts().get("moonhouse64").draw(spriteBatch, entities.size + " Entities", 0, viewport.getWorldHeight() - 130);
 
         spriteBatch.end();
 
@@ -305,7 +304,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
 
         music = externalAssets.get("Transmission.mp3", Music.class);
         music.setLooping(true);
-        music.setVolume(TDGalaxy.getMusicVolumeCombined());
+        music.setVolume(game.preferences.getMusicVolumeCombined());
         music.play();
 
         getAssetMap(externalAssets, Sound.class, sounds);
@@ -400,10 +399,10 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         paused = true;
 
         final Window.WindowStyle pauseWindowStyle = new Window.WindowStyle();
-        pauseWindowStyle.titleFont = TDGalaxy.getFonts().get("moonhouse64");
+        pauseWindowStyle.titleFont = game.getFonts().get("moonhouse64");
         pauseWindowStyle.background = new TextureRegionDrawable(new TextureRegion(background));
 
-        pauseWindow = new PauseWindow(pauseWindowStyle, new Runnable() {
+        pauseWindow = new PauseWindow(pauseWindowStyle, game.getFonts().get("moonhouse64"), new Runnable() {
             @Override
             public void run() {
                 unpauseGame();

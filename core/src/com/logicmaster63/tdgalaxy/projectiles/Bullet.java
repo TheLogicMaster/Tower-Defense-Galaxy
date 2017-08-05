@@ -18,13 +18,12 @@ import com.logicmaster63.tdgalaxy.tools.Asset;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 
 public class Bullet extends Projectile {
 
     private static final int HP = 20;
     private static final float LIFETIME = 10;
-    private static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
+    private static final EnumSet<Types> TYPES = EnumSet.of(Types.SHARP);
     private static final btCollisionShape SHAPE = new btSphereShape(10);
     private static final float SPEED = 300;
 

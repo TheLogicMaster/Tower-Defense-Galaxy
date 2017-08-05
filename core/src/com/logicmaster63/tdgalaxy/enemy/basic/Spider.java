@@ -20,7 +20,7 @@ import java.util.*;
 
 public class Spider extends Enemy {
 
-    public static final EnumSet<Types> TYPES = EnumSet.of(Types.sharp);
+    public static final EnumSet<Types> TYPES = EnumSet.of(Types.SHARP);
     public static final int HP = 20;
     public static final float COOLDOWN = 0.3f;
     public static final int RANGE = 1000;

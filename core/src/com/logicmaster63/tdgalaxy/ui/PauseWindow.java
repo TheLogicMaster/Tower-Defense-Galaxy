@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -24,7 +25,7 @@ public class PauseWindow extends Window {
     private Vector2 tempVector;
     private Button closeButton, resumeButton, homeButton;
 
-    public PauseWindow(WindowStyle style, final Runnable resume, final Runnable save, final Game game, final AssetManager uiAssets, Button button) {
+    public PauseWindow(WindowStyle style, BitmapFont font, final Runnable resume, final Runnable save, final TDGalaxy game, final AssetManager uiAssets, Button button) {
         super("", style);
 
         this.resume = resume;
@@ -32,10 +33,10 @@ public class PauseWindow extends Window {
         closeButton = button;
 
         final Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = TDGalaxy.getFonts().get("moonhouse64");
+        labelStyle.font = font;
 
         final TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = TDGalaxy.getFonts().get("moonhouse64");
+        textButtonStyle.font = font;
 
         //Set transparent
         Color color = getColor();
@@ -65,7 +66,7 @@ public class PauseWindow extends Window {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 save.run();
-                game.setScreen(new MainScreen(game, uiAssets));
+                game.setScreen(new MainScreen(game));
             }
         });
         addActor(homeButton);

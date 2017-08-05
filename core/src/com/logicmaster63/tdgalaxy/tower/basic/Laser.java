@@ -17,9 +17,7 @@ import com.logicmaster63.tdgalaxy.constants.Effects;
 import com.logicmaster63.tdgalaxy.constants.Source;
 import com.logicmaster63.tdgalaxy.constants.Types;
 import com.logicmaster63.tdgalaxy.entity.Entity;
-import com.logicmaster63.tdgalaxy.projectiles.Bullet;
 import com.logicmaster63.tdgalaxy.tools.Asset;
-import com.logicmaster63.tdgalaxy.tools.Dependency;
 import com.logicmaster63.tdgalaxy.tower.Tower;
 
 import java.util.*;
@@ -28,7 +26,7 @@ public class Laser extends Tower {
 
     public static final int PRICE = 40;
     public static final int HP = 20;
-    public static final EnumSet<Types> TYPES = EnumSet.of(Types.fire);
+    public static final EnumSet<Types> TYPES = EnumSet.of(Types.FIRE);
     public static final float COOLDOWN = 1f;
     public static final int RANGE = 3000;
     public static final int LASER_RANGE = 3000;

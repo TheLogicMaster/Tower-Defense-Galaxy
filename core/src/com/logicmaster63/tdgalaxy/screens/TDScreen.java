@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class TDScreen implements Screen {
 
-    protected Game game;
+    protected TDGalaxy game;
     protected SpriteBatch spriteBatch;
     protected OrthographicCamera orthographicCamera;
     protected Viewport viewport;
@@ -27,9 +27,9 @@ public abstract class TDScreen implements Screen {
 
     private InputMultiplexer multiplexer;
 
-    public TDScreen (Game game, AssetManager uiAssets) {
+    public TDScreen (TDGalaxy game) {
         this.game = game;
-        this.uiAssets = uiAssets;
+        this.uiAssets = game.getUIAssets();
     }
 
     @Override
@@ -52,7 +52,7 @@ public abstract class TDScreen implements Screen {
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
-        if(TDGalaxy.isDebug())
+        if(TDGalaxy.preferences.isDebug())
             stage.setDebugAll(true);
     }
 

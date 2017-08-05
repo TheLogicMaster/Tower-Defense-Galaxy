@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
@@ -21,7 +22,7 @@ public class MessageWindow extends Actor {
     private String message;
     private Table table;
 
-    public MessageWindow(String message, float width, float height) {
+    public MessageWindow(String message, BitmapFont font, float width, float height) {
         setTouchable(Touchable.enabled);
         setBounds(width / 2 - width / 4, height / 2 - height / 10, width / 2, height / 5);
         texture = new Texture("theme/basic/ui/Window.png");
@@ -30,10 +31,10 @@ public class MessageWindow extends Actor {
         table.setSize(getWidth(), getHeight());
         table.align(Align.center | Align.top);
         table.setPosition(getX(), getY());
-        Label label = new Label(message, new Label.LabelStyle(TDGalaxy.getFonts().get("moonhouse64"), Color.BLACK));
+        Label label = new Label(message, new Label.LabelStyle(font, Color.BLACK));
         label.setWrap(true);
         label.setFontScale(0.7f);
-        Label label2 = new Label("Tap to continue", new Label.LabelStyle(TDGalaxy.getFonts().get("moonhouse64"), Color.BLACK));
+        Label label2 = new Label("Tap to continue", new Label.LabelStyle(font, Color.BLACK));
         label2.setFontScale(0.6f);
         table.add(label).width(getWidth());
         table.row();

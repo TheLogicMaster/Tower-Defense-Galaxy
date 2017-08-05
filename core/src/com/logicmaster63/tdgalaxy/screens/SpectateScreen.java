@@ -2,6 +2,7 @@ package com.logicmaster63.tdgalaxy.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
+import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 
 import java.util.HashMap;
@@ -12,8 +13,8 @@ public class SpectateScreen extends TDScreen {
     private Map<Integer, Entity> entities;
 
 
-    public SpectateScreen(Game game, AssetManager uiAssets) {
-        super(game, uiAssets);
+    public SpectateScreen(TDGalaxy game) {
+        super(game);
     }
 
     @Override

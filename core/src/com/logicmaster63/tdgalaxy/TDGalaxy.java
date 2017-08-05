@@ -5,12 +5,12 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.logicmaster63.tdgalaxy.constants.Theme;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.screens.MainScreen;
 import com.logicmaster63.tdgalaxy.tools.FileHandler;
+import com.logicmaster63.tdgalaxy.tools.PreferenceHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,23 +26,16 @@ public class TDGalaxy extends Game {
     public static FileStuff fileStuff;
     public static OnlineServices onlineServices;
 
+    public static PreferenceHandler preferences;
+
 	private static List<String> themes = new ArrayList<String>();
-	private static Map<String, BitmapFont> fonts;
     private static String ip = "";
     private static Debug debugger;
     private static boolean isMe = false;
     private static MainScreen mainScreen;
 
-    //Preferences
-    private static Preferences prefs;
-    private static int res = 10;
-    private static float sensitivity = 0.5f;
-    private static float masterVolume = 1f;
-    private static float effectVolume = 0.7f;
-    private static float musicVolume = 0.3f;
-    private static boolean debug = true;
-    private static boolean debugWindow = false;
-    private static boolean vr = false;
+    private Map<String, BitmapFont> fonts;
+    private AssetManager uiAssets;
 
 	public TDGalaxy(FileStuff fileStuff, Debug debugger, OnlineServices onlineServices) {
         TDGalaxy.fileStuff = fileStuff;
@@ -62,27 +55,33 @@ public class TDGalaxy extends Game {
 
         themes.add("basic");
 
-        prefs = Gdx.app.getPreferences("My Preferences");
         //clearPrefs();
         //changePref("debug", true);
-        loadPrefs();
+        preferences = new PreferenceHandler();
 
         fonts = new HashMap<String, BitmapFont>();
 		FileHandler.loadFonts(fonts);
 
-        if(debug) {
+        if(preferences.isDebug()) {
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
         }
 
-        mainScreen = new MainScreen(this, loadUI(new AssetManager(), Theme.BASIC));
+        loadTheme("basic");
+
+        mainScreen = new MainScreen(this);
         setScreen(mainScreen);
 		//setScreen(new GameScreen(this, 0, themes.get(0)));
 	}
 
-	public static AssetManager loadUI(AssetManager assets, Theme theme) {
-	    assets.clear();
+	public AssetManager getUIAssets() {
+	    return uiAssets;
+    }
 
-	    return assets;
+	public void loadTheme(String theme) {
+	    if(uiAssets == null)
+	        uiAssets = new AssetManager();
+	    uiAssets.clear();
+
     }
 
     public void updateNetwork() {
@@ -107,46 +106,6 @@ public class TDGalaxy extends Game {
             });
     }
 
-    private void loadPrefs() {
-        debug = (Boolean) getPref("debug", debug);
-        debugWindow = (Boolean) getPref("debugWindow", debugWindow);
-        vr = (Boolean) getPref("vr", vr);
-        sensitivity = (Float) getPref("sensitivity", sensitivity);
-        masterVolume = (Float) getPref("masterVolume", masterVolume);
-        effectVolume = (Float) getPref("effectVolume", effectVolume);
-        musicVolume = (Float) getPref("musicVolume", musicVolume);
-        res = (Integer) getPref("res", res);
-    }
-
-    public static Object getPref(String name, Object defaultValue) {
-        if (prefs.get().containsKey(name))
-            try {
-                if(prefs.get().get(name) instanceof String)
-                    return defaultValue.getClass().getConstructor(String.class).newInstance(prefs.get().get(name));
-                else return prefs.get().get(name);
-            } catch (Exception e) {
-                Gdx.app.error("getPref", e.toString());
-            }
-        return defaultValue;
-    }
-
-    public static void changePref(String name, Object object) {
-	    Map map = prefs.get();
-	    map.put(name, object);
-	    prefs.put(map);
-	    prefs.flush();
-        try {
-            TDGalaxy.class.getDeclaredField(name).set(null, object);
-        } catch (Exception e) {
-            Gdx.app.error("changePref", e.toString());
-        }
-    }
-
-    public static void clearPrefs() {
-	    prefs.clear();
-	    prefs.flush();
-    }
-
 	@Override
 	public void dispose() {
 	    List<BitmapFont> fontArray = new ArrayList<BitmapFont>(fonts.values());
@@ -154,94 +113,50 @@ public class TDGalaxy extends Game {
 		    font.dispose();
 	}
 
-	public static void addTheme() {
+	public void addTheme() {
 
     }
 
-    public static void createDebugWindow(Object ... values) {
+    public void createDebugWindow(Object ... values) {
 	    if(debugger != null)
             debugger.create();
     }
 
-    public static void addDebugTextButton(String name, com.logicmaster63.tdgalaxy.interfaces.ValueReturner valueReturner) {
+    public void addDebugTextButton(String name, com.logicmaster63.tdgalaxy.interfaces.ValueReturner valueReturner) {
         if(debugger != null)
             debugger.addTextButton(name, valueReturner);
     }
 
-    public static void addDebugButton(String name, Runnable runnable) {
+    public void addDebugButton(String name, Runnable runnable) {
         if(debugger != null)
             debugger.addButton(name, runnable);
     }
 
-    public void mainMenu() {
-	    setScreen(mainScreen);
-    }
-
-    public static void removeDebugTextButton(String name) {
-        debugger.removeTextButton(name);
-    }
-
-    public static void removeDebugButton(String name) {
-        debugger.removeButton(name);
-    }
-
-    public static void updateDebug(Map<String, Object> values) {
-	    debugger.update(values);
-    }
-
-    public static Map<String, BitmapFont> getFonts() {
-        return fonts;
-    }
-
-    public static int getRes() {
-        return res;
-    }
-
-    public static float getSensitivity() {
-        return sensitivity;
-    }
-
-    public static boolean isDebug() {
-        return debug;
-    }
-
-    public static boolean isVr() {
-        return vr;
-    }
-
-    public static String getIp() {
+    public String getIp() {
         return ip;
     }
 
-    public static List<String> getThemes() {
+    public List<String> getThemes() {
         return themes;
     }
 
-    public static boolean isMe() {
+    public boolean isMe() {
         return isMe;
     }
 
-    public static boolean isDebugWindow() {
-        return debugWindow;
+    public void removeDebugTextButton(String name) {
+        debugger.removeTextButton(name);
     }
 
-    public static float getMasterVolume() {
-        return masterVolume;
+    public void removeDebugButton(String name) {
+        debugger.removeButton(name);
     }
 
-    public static float getEffectVolume() {
-        return effectVolume;
+    public void updateDebug(Map<String, Object> values) {
+	    debugger.update(values);
     }
 
-    public static float getEffectVolumeCombined() {
-        return effectVolume * masterVolume;
-    }
-
-    public static float getMusicVolume() {
-        return musicVolume;
-    }
-
-    public static float getMusicVolumeCombined() {
-        return musicVolume * masterVolume;
+    public Map<String, BitmapFont> getFonts() {
+        return fonts;
     }
 }
