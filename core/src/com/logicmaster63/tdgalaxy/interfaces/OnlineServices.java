@@ -21,4 +21,10 @@ public interface OnlineServices {
     void submitScore(String name, long highScore);
 
     void saveGame(String name);
+
+    void showBanner(boolean show);
+
+    //void updateBanner();
+
+    void showVideoAd();
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.logicmaster63.tdgalaxy.constants.Dialogs;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
@@ -26,6 +27,7 @@ public class TDGalaxy extends Game {
     public static FileStuff fileStuff;
     public static OnlineServices onlineServices;
 
+    public static Dialogs dialogs;
     public static PreferenceHandler preferences;
 
 	private static List<String> themes = new ArrayList<String>();
@@ -35,7 +37,7 @@ public class TDGalaxy extends Game {
     private static MainScreen mainScreen;
 
     private Map<String, BitmapFont> fonts;
-    private AssetManager uiAssets;
+    private AssetManager uiAssets, gameAssets;
 
 	public TDGalaxy(FileStuff fileStuff, Debug debugger, OnlineServices onlineServices) {
         TDGalaxy.fileStuff = fileStuff;
@@ -46,6 +48,7 @@ public class TDGalaxy extends Game {
     @Override
     public void setScreen(Screen screen) {
         super.setScreen(screen);
+        onlineServices.showBanner(screen instanceof MainScreen);
         updateNetwork();
     }
 
@@ -58,14 +61,16 @@ public class TDGalaxy extends Game {
         //clearPrefs();
         //changePref("debug", true);
         preferences = new PreferenceHandler();
+        dialogs = new Dialogs();
 
         fonts = new HashMap<String, BitmapFont>();
 		FileHandler.loadFonts(fonts);
 
-        if(preferences.isDebug()) {
+        //if(preferences.isDebug()) {
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        }
+        //}
 
+        loadExternalAssets();
         loadTheme("basic");
 
         mainScreen = new MainScreen(this);
@@ -77,11 +82,18 @@ public class TDGalaxy extends Game {
 	    return uiAssets;
     }
 
-	public void loadTheme(String theme) {
+    public AssetManager getGameAssets() {
+        return gameAssets;
+    }
+
+    public void loadExternalAssets() {
+        gameAssets = fileStuff.getExternalAssets();
+    }
+
+    public void loadTheme(String theme) {
 	    if(uiAssets == null)
 	        uiAssets = new AssetManager();
 	    uiAssets.clear();
-
     }
 
     public void updateNetwork() {

@@ -1,6 +1,5 @@
 package com.logicmaster63.tdgalaxy.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -174,13 +173,11 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         assets = new AssetManager();
         assets.load("theme/" + theme + "/planet.g3db", Model.class);
         //assets.load("Transmission.wav", Music.class);
-        externalAssets = TDGalaxy.fileStuff.getExternalAssets();
-        if (externalAssets != null) {
-            externalAssets.load("X.png", Texture.class);
-            externalAssets.load("Transmission.mp3", Music.class);
-            //externalAssets.load("Jump Up.mp3", Music.class);
-            //externalAssets.load("Crystal Waters.mp3", Music.class);
-        }
+        externalAssets = game.getGameAssets();
+        externalAssets.load("X.png", Texture.class);
+        externalAssets.load("Transmission.mp3", Music.class);
+        //externalAssets.load("Jump Up.mp3", Music.class);
+        //externalAssets.load("Crystal Waters.mp3", Music.class);
 
         for (Class<?> clazz : new ArrayList<Class>(classes.values())) {
             try {

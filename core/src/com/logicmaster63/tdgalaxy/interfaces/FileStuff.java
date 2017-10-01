@@ -9,4 +9,6 @@ public interface FileStuff {
     Set<Class<?>> getClasses(String packageName);
 
     AssetManager getExternalAssets();
+
+    void downloadAssets();
 }

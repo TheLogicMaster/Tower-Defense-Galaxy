@@ -12,6 +12,7 @@ public class PreferenceHandler {
     private Preferences prefs;
 
     private int res = 10;
+    private int money = 0;
     private String theme = Constants.THEMES.get(0);
     private float sensitivity = 0.5f;
     private float masterVolume = 1f;
@@ -35,6 +36,7 @@ public class PreferenceHandler {
         effectVolume = (Float) getPref("effectVolume", effectVolume);
         musicVolume = (Float) getPref("musicVolume", musicVolume);
         res = (Integer) getPref("res", res);
+        money = (Integer) getPref("money", money);
         theme = (String) getPref("theme", theme);
     }
 
@@ -122,5 +124,9 @@ public class PreferenceHandler {
 
     public float getMusicVolumeCombined() {
         return musicVolume * masterVolume;
+    }
+
+    public int getMoney() {
+        return money;
     }
 }

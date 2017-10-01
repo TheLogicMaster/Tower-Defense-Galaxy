@@ -1,8 +1,6 @@
 package com.logicmaster63.tdgalaxy.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -69,14 +67,17 @@ public class MainScreen extends TDScreen {
         stage.addActor(settingsButton);
 
         Table table = new Table();
-        table.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());
+        table.setBounds(0, 120, viewport.getWorldWidth(), viewport.getWorldHeight() - 120);
 
         //Play game button
         TextButton playButton = new TextButton("Play Game", textButtonStyle);
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new GameScreen(game, 0, "basic"));
+                if(game.getGameAssets() != null)
+                    game.setScreen(new GameScreen(game, 0, "basic"));
+                //else
+                    //game.loadExternalAssets();
             }
         });
         table.add(playButton);
@@ -117,30 +118,35 @@ public class MainScreen extends TDScreen {
 
         table.row();
 
-        //Unlock achievement button
-        TextButton achievementButton = new TextButton("Unlock Achievement", textButtonStyle);
-        achievementButton.addListener(new ChangeListener() {
+        //Reset achievement button
+        TextButton rewardVideo = new TextButton("Free Money", textButtonStyle);
+        rewardVideo.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if(TDGalaxy.onlineServices != null)
-                    TDGalaxy.onlineServices.unlockAchievement(Constants.ACHIEVEMENT_NO_LIFE);
+                    TDGalaxy.onlineServices.showVideoAd();
+                //TDGalaxy.onlineServices.resetAchievement(Constants.ACHIEVEMENT_NO_LIFE);
             }
         });
-        table.add(achievementButton);
+        table.add(rewardVideo);
 
         //Reset achievement button
-        TextButton resetButton = new TextButton("Reset achievements", textButtonStyle);
-        resetButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if(TDGalaxy.onlineServices != null)
-                    TDGalaxy.onlineServices.resetAchievement(Constants.ACHIEVEMENT_NO_LIFE);
-            }
-        });
-        table.add(resetButton);
+        if(TDGalaxy.preferences.isDebug()) {
+            final TextButton debugButton = new TextButton("Debug Menu", textButtonStyle);
+            debugButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    game.setScreen(new DebugScreen(game));
+                }
+            });
+            table.add(debugButton);
+        }
 
         table.center().bottom();
         stage.addActor(table);
+
+        if(game.getGameAssets() == null);
+            //TDGalaxy.dialogs.needAssets.build().show();
     }
 
     @Override
@@ -149,6 +155,7 @@ public class MainScreen extends TDScreen {
 
         spriteBatch.begin();
         spriteBatch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        game.getFonts().get("moonhouse64").draw(spriteBatch, "$" + TDGalaxy.preferences.getMoney(), viewport.getWorldWidth() / 2 - 4, viewport.getWorldHeight() - 30);
         spriteBatch.end();
 
         signOutButton.setVisible(TDGalaxy.onlineServices.isSignedIn());

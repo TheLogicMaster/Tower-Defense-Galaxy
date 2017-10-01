@@ -32,6 +32,7 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://maven.google.com" }
     }
 }
 
@@ -49,6 +50,7 @@ project(":desktop") {
 
     dependencies {
         compile project(":core")
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-desktop:1.2.1"
         compile "com.google.guava:guava:20.0"
         compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -68,13 +70,15 @@ project(":android") {
         compile project(":core")
         //compile project(":BaseGameUtils")
         compile fileTree(dir: 'libs', include: '*.jar')
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-android:1.2.1"
         compile 'com.google.apis:google-api-services-gamesManagement:v1management-rev224-1.22.0'
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile 'com.android.support:multidex:1.0.1'
-        compile 'com.google.android.gms:play-services-drive:11.0.0'
-        compile 'com.google.android.gms:play-services-games:11.0.0'
+        compile 'com.google.android.gms:play-services-drive:11.0.4'
+        compile 'com.google.android.gms:play-services-games:11.0.4'
         //compile 'com.google.android.gms:play-services-auth:10.2.6'
-        compile 'com.google.android.gms:play-services-plus:10.2.6'
+        compile 'com.google.android.gms:play-services-plus:11.0.4'
+        compile 'com.google.android.gms:play-services-ads:11.0.4'
         //compile 'com.google.android.gms:play-services:11.0.0'
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
@@ -106,6 +110,7 @@ project(":core") {
 
     dependencies {
         compile fileTree(dir: 'libs', include: '*.jar')
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-core:1.2.1"
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"

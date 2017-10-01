@@ -118,6 +118,21 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 	}
 
 	@Override
+	public void downloadAssets() {
+
+	}
+
+	@Override
+	public void showBanner(boolean show) {
+
+	}
+
+	@Override
+	public void showVideoAd() {
+
+	}
+
+	@Override
 	public void create() {
 		values = new HashMap<String, Object>();
 		jButtons = new HashMap<String, JButton>();
