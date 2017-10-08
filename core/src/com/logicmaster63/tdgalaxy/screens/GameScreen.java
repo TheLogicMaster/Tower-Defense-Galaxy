@@ -199,7 +199,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
             assets.load("theme/" + theme + "/" + planetName + ".png", Texture.class);
         if (planetName == null)
             planetName = "planet";
-        addDisposables(spriteBatch, modelBatch, background, collisionWorld, broadphase, collisionConfig, dispatcher, debugDrawer, shapeRenderer, assets, externalAssets);
+        addDisposables(spriteBatch, modelBatch, background, collisionWorld, broadphase, collisionConfig, dispatcher, debugDrawer, shapeRenderer, assets);
     }
 
     @Override

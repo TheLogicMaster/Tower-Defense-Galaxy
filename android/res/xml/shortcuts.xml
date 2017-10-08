@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+            android:shortcutId="campaign"
+            android:enabled="true"
+            android:icon="@drawable/ic_launcher"
+            android:shortcutShortLabel="@string/shortcut_campaign_short"
+            android:shortcutLongLabel="@string/shortcut_campaign_long"
+            android:shortcutDisabledMessage="@string/shortcut_campaign_disabled">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="com.logicmaster63.tdgalaxy.AndroidLauncher"
+                android:targetPackage="com.logicmaster63.tdgalaxy">
+            <extra
+                    android:name="mode"
+                    android:value="CAMPAIGN" />
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>

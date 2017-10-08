@@ -136,7 +136,7 @@ public class MainScreen extends TDScreen {
             debugButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    game.setScreen(new DebugScreen(game));
+                    game.setScreen(new CampaignScreen(game));
                 }
             });
             table.add(debugButton);

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.logicmaster63.tdgalaxy.constants.Dialogs;
+import com.logicmaster63.tdgalaxy.constants.GameMode;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
@@ -36,13 +37,16 @@ public class TDGalaxy extends Game {
     private static boolean isMe = false;
     private static MainScreen mainScreen;
 
+    private static String startingMode;
+
     private Map<String, BitmapFont> fonts;
     private AssetManager uiAssets, gameAssets;
 
-	public TDGalaxy(FileStuff fileStuff, Debug debugger, OnlineServices onlineServices) {
+	public TDGalaxy(String mode, FileStuff fileStuff, Debug debugger, OnlineServices onlineServices) {
         TDGalaxy.fileStuff = fileStuff;
         TDGalaxy.debugger = debugger;
         TDGalaxy.onlineServices = onlineServices;
+        TDGalaxy.startingMode = mode;
     }
 
     @Override
@@ -66,12 +70,19 @@ public class TDGalaxy extends Game {
         fonts = new HashMap<String, BitmapFont>();
 		FileHandler.loadFonts(fonts);
 
-        //if(preferences.isDebug()) {
+        if(preferences.isDebug())
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        //}
 
         loadExternalAssets();
         loadTheme("basic");
+
+        GameMode mode = null;
+        try {
+            mode = GameMode.valueOf(startingMode);
+            Gdx.app.log("StartingMode", mode.name());
+        } catch (Exception e) {
+            Gdx.app.error("TDGalaxy", "Invalid starting mode", e);
+        }
 
         mainScreen = new MainScreen(this);
         setScreen(mainScreen);

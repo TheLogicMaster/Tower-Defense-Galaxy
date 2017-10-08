@@ -43,10 +43,10 @@ public abstract class TDScreen implements Screen {
 
     @Override
     public void show () {
-        orthographicCamera = new OrthographicCamera(2560, 1600);
+        orthographicCamera = new OrthographicCamera(2560, 1440);
         spriteBatch = new SpriteBatch();
         orthographicCamera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
-        viewport = new FitViewport(2560, 1600, orthographicCamera);
+        viewport = new FitViewport(2560, 1440, orthographicCamera);
         viewport.apply();
         stage = new Stage(viewport);
         multiplexer = new InputMultiplexer();

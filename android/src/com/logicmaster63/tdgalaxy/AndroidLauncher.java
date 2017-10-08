@@ -29,6 +29,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.testing.json.MockJsonFactory;
 import com.google.api.services.gamesManagement.GamesManagement;
 import com.logicmaster63.tdgalaxy.constants.Constants;
+import com.logicmaster63.tdgalaxy.constants.GameMode;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.tools.ArchiveFileHandleResolver;
@@ -36,10 +37,7 @@ import dalvik.system.DexFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 import java.util.zip.ZipFile;
 
 public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, OnlineServices, FileStuff, RewardedVideoAdListener {
@@ -229,6 +227,10 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        String mode = null;
+        if(getIntent().getExtras() != null)
+            mode = getIntent().getExtras().getString("mode");
+
         if (Build.VERSION.SDK_INT < 16)
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES | GameHelper.CLIENT_SNAPSHOT);
@@ -242,7 +244,7 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
         config.useImmersiveMode = false;
         config.useGyroscope = true;
         //initialize(new TDGalaxy(this, null, this), config);
-        View view = initializeForView(new TDGalaxy(this, null, this), config);
+        View view = initializeForView(new TDGalaxy(mode,this, null, this), config);
         RelativeLayout layout = new RelativeLayout(this);
         MobileAds.initialize(this, Constants.ADSENSE_ID);
 
@@ -257,7 +259,7 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
 
         RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        adParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        adParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         layout.addView(view);
         layout.addView(banner, adParams);
         setContentView(layout);

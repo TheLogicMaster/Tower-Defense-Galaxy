@@ -87,15 +87,15 @@ public class CameraHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged (int screenX, int screenY, int pointer) {
-        float deltaX = -Gdx.input.getDeltaX() * game.preferences.getSensitivity();
-        float deltaY = -Gdx.input.getDeltaY() * game.preferences.getSensitivity();
+        float deltaX = -Gdx.input.getDeltaX() * TDGalaxy.preferences.getSensitivity();
+        float deltaY = -Gdx.input.getDeltaY() * TDGalaxy.preferences.getSensitivity();
         //cam.direction.rotate(cam.up, deltaX);
         //tempVector.set(cam.direction).crs(cam.up).nor();
         //cam.direction.rotate(tempVector, deltaY);
         cam.rotateAround(origin, Vector3.Z, deltaX);
         cam.rotateAround(origin, Vector3.X, deltaY);
 
-        tmp.set(origin);
+        /*tmp.set(origin);
         tmp.sub(vrCamera.getPosition());
         vrCamera.translate(tmp);
         vrCamera.rotate(0, 0, deltaX);
@@ -107,7 +107,7 @@ public class CameraHandler implements InputProcessor {
         vrCamera.translate(tmp);
         vrCamera.rotate(deltaY, 0, 0);
         tmp.rotate(Vector3.X, deltaY);
-        vrCamera.translate(-tmp.x, -tmp.y, -tmp.z);
+        vrCamera.translate(-tmp.x, -tmp.y, -tmp.z);*/
         return true;
     }
 

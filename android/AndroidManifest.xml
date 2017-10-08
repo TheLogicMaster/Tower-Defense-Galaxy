@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.logicmaster63.tdgalaxy"
-    android:versionCode="14"
-    android:versionName="0.1" >
-
-    <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="25" />
+    android:versionCode="15"
+    android:versionName="0.1">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -29,13 +27,14 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                       android:resource="@xml/shortcuts" />
         </activity>
         <meta-data android:name="com.google.android.backup.api_key"
                    android:value="AEdPqrEAAAAIJTOC5dGLrowvPptbgCJdk5QxY1xd9jYCeSSJ4g" />
         <meta-data android:name="com.google.android.gms.games.APP_ID"
                    android:value="@string/app_id" />
         <meta-data android:name="com.google.android.gms.version"
-                   android:value="@integer/google_play_services_version"/>
+                   android:value="@integer/google_play_services_version" />
     </application>
-
 </manifest>

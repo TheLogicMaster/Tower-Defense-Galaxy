@@ -12,6 +12,7 @@ import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.interfaces.ValueReturner;
 import com.logicmaster63.tdgalaxy.tools.ArchiveFileHandleResolver;
+import org.lwjgl.Sys;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +31,7 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 	private Map<String, TextButton> textButtons;
 	private ArrayList<JLabel> labels;
 
-	private DesktopLauncher() {
+	private DesktopLauncher(String startingMode) {
 		frame = new JFrame();
 		dialog = new JDialog(frame, "Dialog Example", true);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -39,7 +40,7 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 		config.foregroundFPS = 0;
 		//config.width = 1280;
 		//config.height = 800;
-		new LwjglApplication(new TDGalaxy(this, this, this), config);
+		new LwjglApplication(new TDGalaxy(startingMode, this, this, this), config);
 	}
 
 	@Override
@@ -251,6 +252,9 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 	}
 
 	public static void main (String[] arg) {
-		new DesktopLauncher();
+		String mode = null;
+		if(arg.length > 0)
+			mode = arg[0];
+		new DesktopLauncher(mode);
 	}
 }
