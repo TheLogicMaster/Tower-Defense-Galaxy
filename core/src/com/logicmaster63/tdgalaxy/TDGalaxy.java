@@ -76,12 +76,14 @@ public class TDGalaxy extends Game {
         loadExternalAssets();
         loadTheme("basic");
 
-        GameMode mode = null;
-        try {
-            mode = GameMode.valueOf(startingMode);
-            Gdx.app.log("StartingMode", mode.name());
-        } catch (Exception e) {
-            Gdx.app.error("TDGalaxy", "Invalid starting mode", e);
+        GameMode mode;
+        if(startingMode != null) {
+            try {
+                mode = GameMode.valueOf(startingMode);
+                Gdx.app.log("StartingMode", mode.name());
+            } catch (Exception e) {
+                Gdx.app.error("TDGalaxy", "Invalid starting mode", e);
+            }
         }
 
         mainScreen = new MainScreen(this);
