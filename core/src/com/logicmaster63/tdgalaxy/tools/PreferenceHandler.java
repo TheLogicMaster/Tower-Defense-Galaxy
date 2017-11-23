@@ -103,7 +103,7 @@ public class PreferenceHandler {
     }
 
     public boolean isDebugWindow() {
-        return debugWindow;
+        return true /*debugWindow*/;
     }
 
     public float getMasterVolume() {

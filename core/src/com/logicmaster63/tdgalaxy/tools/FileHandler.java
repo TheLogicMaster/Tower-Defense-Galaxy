@@ -1,11 +1,15 @@
 package com.logicmaster63.tdgalaxy.tools;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.map.Spawn;
 import com.logicmaster63.tdgalaxy.map.track.Curve;
@@ -149,7 +153,6 @@ public class FileHandler {
         //fonts.put("ui16", generator.generateFont(parameter));
         //generator.dispose();
         //fonts.get("ui").getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-
     }
 
     public static List<Spawn> loadSpawns(BufferedReader data) {
@@ -170,5 +173,11 @@ public class FileHandler {
             Gdx.app.error("Error", e.toString());
         }
         return spawns;
+    }
+
+    public static void writeJSON(FileHandle file) {
+        Json json = new Json();
+        System.out.println(json.prettyPrint(true));
+        file.writeString(json.prettyPrint(true), false);
     }
 }

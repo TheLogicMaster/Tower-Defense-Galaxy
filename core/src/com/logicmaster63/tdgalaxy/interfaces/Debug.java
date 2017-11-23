@@ -4,9 +4,15 @@ import java.util.Map;
 
 public interface Debug {
 
-    void create();
+    void createWindow(String id);
 
-    void update(Map<String, Object> values);
+    void disposeWindow(String id);
+
+    void updateValues(String id, Map<String, Object> values);
+
+    void updateValue(String id, String name, Object value);
+
+    void removeValue(String id, String name);
 
     void addButton(String name, Runnable run);
 

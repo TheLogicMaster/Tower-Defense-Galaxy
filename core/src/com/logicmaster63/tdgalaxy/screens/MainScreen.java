@@ -1,6 +1,7 @@
 package com.logicmaster63.tdgalaxy.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -47,7 +48,7 @@ public class MainScreen extends TDScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 if(TDGalaxy.onlineServices != null)
                     TDGalaxy.onlineServices.signOut();
-                game.preferences.changePref("autoSignIn", false);
+                TDGalaxy.preferences.changePref("autoSignIn", false);
             }
         });
         signOutButton.setVisible(false);
@@ -87,7 +88,8 @@ public class MainScreen extends TDScreen {
         editButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new EditorScreen(game));
+                game.setScreen(new LevelSelectScreen(game));
+                //game.setScreen(new EditorScreen(game));
             }
         });
         table.add(editButton);
@@ -132,7 +134,7 @@ public class MainScreen extends TDScreen {
 
         //Reset achievement button
         if(TDGalaxy.preferences.isDebug()) {
-            final TextButton debugButton = new TextButton("Debug Menu", textButtonStyle);
+            final TextButton debugButton = new TextButton("Campaign", textButtonStyle);
             debugButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {

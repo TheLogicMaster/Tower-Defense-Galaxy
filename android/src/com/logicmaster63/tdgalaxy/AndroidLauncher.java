@@ -224,6 +224,11 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
     }
 
     @Override
+    public boolean isProduction() {
+        return false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

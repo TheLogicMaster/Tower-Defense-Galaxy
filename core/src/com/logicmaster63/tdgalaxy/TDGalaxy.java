@@ -2,6 +2,7 @@ package com.logicmaster63.tdgalaxy;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
@@ -11,16 +12,14 @@ import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.screens.MainScreen;
+import com.logicmaster63.tdgalaxy.tools.ControlHandler;
 import com.logicmaster63.tdgalaxy.tools.FileHandler;
 import com.logicmaster63.tdgalaxy.tools.PreferenceHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TDGalaxy extends Game {
 
@@ -41,6 +40,7 @@ public class TDGalaxy extends Game {
 
     private Map<String, BitmapFont> fonts;
     private AssetManager uiAssets, gameAssets;
+    private ControlHandler controlHandler;
 
 	public TDGalaxy(String mode, FileStuff fileStuff, Debug debugger, OnlineServices onlineServices) {
         TDGalaxy.fileStuff = fileStuff;
@@ -70,13 +70,15 @@ public class TDGalaxy extends Game {
         fonts = new HashMap<String, BitmapFont>();
 		FileHandler.loadFonts(fonts);
 
+		FileHandler.writeJSON(Gdx.files.external("Map.json"));
+
         if(preferences.isDebug())
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
         loadExternalAssets();
         loadTheme("basic");
 
-        GameMode mode = null;
+        GameMode mode;
         try {
             mode = GameMode.valueOf(startingMode);
             Gdx.app.log("StartingMode", mode.name());
@@ -87,9 +89,22 @@ public class TDGalaxy extends Game {
         mainScreen = new MainScreen(this);
         setScreen(mainScreen);
 		//setScreen(new GameScreen(this, 0, themes.get(0)));
-	}
+        controlHandler = new ControlHandler();
 
-	public AssetManager getUIAssets() {
+        if(TDGalaxy.preferences.isDebugWindow() && debugger != null)
+            debugger.createWindow("Controllers");
+    }
+
+    @Override
+    public void render() {
+        super.render();
+        if(TDGalaxy.preferences.isDebugWindow() && debugger != null) {
+            debugger.updateValue("Controllers", "Players", controlHandler.getControllers());
+            debugger.updateValue("Controllers", "Controllers", Controllers.getControllers());
+        }
+    }
+
+    public AssetManager getUIAssets() {
 	    return uiAssets;
     }
 
@@ -131,6 +146,8 @@ public class TDGalaxy extends Game {
 
 	@Override
 	public void dispose() {
+        if(debugger != null)
+            debugger.disposeWindow("Controllers");
 	    List<BitmapFont> fontArray = new ArrayList<BitmapFont>(fonts.values());
 	    for(BitmapFont font: fontArray)
 		    font.dispose();
@@ -140,9 +157,14 @@ public class TDGalaxy extends Game {
 
     }
 
-    public void createDebugWindow(Object ... values) {
+    public void removeDebugWindow(String id) {
+        if(debugger != null)
+            debugger.createWindow(id);
+    }
+
+    public void createDebugWindow(String id) {
 	    if(debugger != null)
-            debugger.create();
+            debugger.createWindow(id);
     }
 
     public void addDebugTextButton(String name, com.logicmaster63.tdgalaxy.interfaces.ValueReturner valueReturner) {
@@ -155,6 +177,21 @@ public class TDGalaxy extends Game {
             debugger.addButton(name, runnable);
     }
 
+    public void removeDebugTextButton(String name) {
+        if(debugger != null)
+            debugger.removeTextButton(name);
+    }
+
+    public void removeDebugButton(String name) {
+        if(debugger != null)
+            debugger.removeButton(name);
+    }
+
+    public void updateDebug(String id, Map<String, Object> values) {
+        if(debugger != null)
+            debugger.updateValues(id, values);
+    }
+
     public String getIp() {
         return ip;
     }
@@ -165,18 +202,6 @@ public class TDGalaxy extends Game {
 
     public boolean isMe() {
         return isMe;
-    }
-
-    public void removeDebugTextButton(String name) {
-        debugger.removeTextButton(name);
-    }
-
-    public void removeDebugButton(String name) {
-        debugger.removeButton(name);
-    }
-
-    public void updateDebug(Map<String, Object> values) {
-	    debugger.update(values);
     }
 
     public Map<String, BitmapFont> getFonts() {

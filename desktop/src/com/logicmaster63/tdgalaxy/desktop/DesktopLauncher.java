@@ -2,50 +2,48 @@ package com.logicmaster63.tdgalaxy.desktop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
-import com.logicmaster63.tdgalaxy.constants.Constants;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.interfaces.ValueReturner;
 import com.logicmaster63.tdgalaxy.tools.ArchiveFileHandleResolver;
-import org.lwjgl.Sys;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.zip.ZipFile;
 
 public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 
-	private JFrame frame;
-	private JDialog dialog;
-	private Map<String, Object> values;
-	private Map<String, JButton> jButtons;
-	private Map<String, TextButton> textButtons;
-	private ArrayList<JLabel> labels;
+	private final boolean IS_PRODUCTION = false;
+
+	private Map<String, JDialog> windows;
+	private Map<String, Map<String, Object>> values;
+	private Map<String, List<JLabel>> labels;
 
 	private DesktopLauncher(String startingMode) {
-		frame = new JFrame();
-		dialog = new JDialog(frame, "Dialog Example", true);
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.title = "Tower Defense Galaxy";
-		config.backgroundFPS = 0;
-		config.foregroundFPS = 0;
+		windows = new HashMap<String, JDialog>();
+		values = new HashMap<String, Map<String, Object>>();
+		labels = new HashMap<String, List<JLabel>>();
+
+		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+		config.setTitle("Tower Defense Galaxy");
+		config.setIdleFPS(60);
 		//config.width = 1280;
 		//config.height = 800;
-		new LwjglApplication(new TDGalaxy(startingMode, this, this, this), config);
+		new Lwjgl3Application(new TDGalaxy(startingMode, this, this, this), config);
 	}
 
 	@Override
 	public void addButton(String name, final Runnable run) {
-		if(jButtons == null)
+		/*if(jButtons == null)
 			return;
 		JButton button = new JButton(name);
 		button.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -57,12 +55,12 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 			}
 		});
 		dialog.add(button);
-		jButtons.put(name, button);
+		jButtons.put(name, button);*/
 	}
 
 	@Override
 	public <T> void addTextButton(final String name, final ValueReturner<T> valueReturner) {
-		if(jButtons == null)
+		/*if(jButtons == null)
 			return;
 		final TextField textField = new TextField();
 		JButton button = new JButton(name);
@@ -80,42 +78,94 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 		});
 		dialog.add(textField);
 		dialog.add(button);
-		textButtons.put(name, new TextButton(button, textField));
+		textButtons.put(name, new TextButton(button, textField));*/
 	}
 
 	@Override
 	public void removeTextButton(String name) {
-		dialog.remove(textButtons.get(name).button);
+		/*dialog.remove(textButtons.get(name).button);
 		dialog.remove(textButtons.get(name).field);
-		textButtons.remove(name);
+		textButtons.remove(name);*/
 	}
 
 	@Override
 	public void removeButton(String name) {
-		dialog.remove(jButtons.get(name));
-		jButtons.remove(name);
+		/*dialog.remove(jButtons.get(name));
+		jButtons.remove(name);*/
+	}
+
+	private void updateLabels(String id) {
+		while(labels.get(id).size() < values.get(id).size()) {
+			JLabel jLabel = new JLabel();
+			labels.get(id).add(jLabel);
+			windows.get(id).add(jLabel);
+		}
+		while(labels.get(id).size() > values.get(id).size()) {
+			windows.get(id).remove(labels.get(id).get(labels.get(id).size() - 1));
+			labels.get(id).remove(labels.get(id).size() - 1);
+		}
+		for(int i = 0; i < values.get(id).size(); i++) {
+			//labels.get(id).get(i).setName((String)values.get(id).keySet().toArray()[i]);
+			labels.get(id).get(i).setText(values.get(id).keySet().toArray()[i] + ": " + values.get(id).values().toArray()[i].toString());
+		}
 	}
 
 	@Override
-	public void update(Map<String, Object> upValues) {
-		if(values == null)
-			return;
-		int initSize = labels.size();
-		if(labels.size() > upValues.size())
-			for(int i = 0; i < initSize - upValues.size(); i++) {
-				dialog.remove(labels.get(labels.size()));
-				labels.remove(labels.get(labels.size()));
+	public void createWindow(final String id) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				JDialog jDialog = new JDialog(new JFrame(), id, false);
+				windows.put(id, jDialog);
+				values.put(id, new HashMap<String, Object>());
+				labels.put(id, new ArrayList<JLabel>());
+				jDialog.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosing(WindowEvent e) {
+						disposeWindow(id);
+					}
+				});
+				jDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+				jDialog.setLayout(new FlowLayout());
+				jDialog.setSize(500, 800);
+				jDialog.setVisible(true);
 			}
-		if(labels.size() < upValues.size())
-			for(int i = 0; i < upValues.size() - initSize; i++) {
-				JLabel label = new JLabel("");
-				label.setHorizontalAlignment(SwingConstants.LEFT);
-				label.setVerticalAlignment(SwingConstants.BOTTOM);
-				labels.add(label);
-				dialog.add(label);
-			}
-		for(int i = 0; i < upValues.entrySet().size(); i++)
-			labels.get(i).setText(upValues.keySet().toArray()[i] + ": " + upValues.entrySet().toArray()[i].toString());
+		});
+	}
+
+	@Override
+	public void disposeWindow(String id) {
+		if(windows.containsKey(id)) {
+			windows.get(id).dispose();
+			windows.get(id).getOwner().dispose();
+			labels.remove(id);
+			windows.remove(id);
+			values.remove(id);
+			Gdx.app.log("Window", "Closed " + id);
+		}
+	}
+
+	@Override
+	public void updateValues(String id, Map<String, Object> values) {
+		if(this.values.containsKey(id)) {
+			this.values.get(id).clear();
+			this.values.get(id).putAll(values);
+			updateLabels(id);
+		}
+	}
+
+	@Override
+	public void updateValue(String id, String name, Object value) {
+		if(values.containsKey(id)) {
+			values.get(id).put(name, value);
+			updateLabels(id);
+		}
+	}
+
+	@Override
+	public void removeValue(String id, String name) {
+		if(values.containsKey(id))
+			values.get(id).remove(name);
 	}
 
 	@Override
@@ -131,46 +181,6 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 	@Override
 	public void showVideoAd() {
 
-	}
-
-	@Override
-	public void create() {
-		values = new HashMap<String, Object>();
-		jButtons = new HashMap<String, JButton>();
-		textButtons = new HashMap<String, TextButton>();
-		labels = new ArrayList<JLabel>();
-
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						while(true) {
-							try {
-								Thread.sleep(500);
-							} catch (InterruptedException e) {
-								Gdx.app.error("Run", e.toString());
-							}
-							if(!dialog.isVisible())
-								break;
-						}
-					}
-				}).start();
-				dialog.setLayout( new FlowLayout() );
-				//dialog.add( new JLabel ("Click button to continue."));
-				dialog.setSize(500,800);
-				dialog.setVisible(true);
-				dialog.addWindowListener(new WindowAdapter()
-				{
-					@Override
-					public void windowClosing(WindowEvent e)
-					{
-						e.getWindow().dispose();
-					}
-				});
-			}
-		});
 	}
 
 	@Override
@@ -251,10 +261,16 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 
 	}
 
+	@Override
+	public boolean isProduction() {
+		return IS_PRODUCTION;
+	}
+
 	public static void main (String[] arg) {
 		String mode = null;
 		if(arg.length > 0)
 			mode = arg[0];
 		new DesktopLauncher(mode);
+		//DesktopControllerManager
 	}
 }

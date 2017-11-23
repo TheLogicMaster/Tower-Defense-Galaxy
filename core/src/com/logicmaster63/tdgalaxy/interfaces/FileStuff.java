@@ -11,4 +11,6 @@ public interface FileStuff {
     AssetManager getExternalAssets();
 
     void downloadAssets();
+
+    boolean isProduction();
 }

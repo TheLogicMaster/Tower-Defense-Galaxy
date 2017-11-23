@@ -21,7 +21,7 @@ public class CampaignScreen extends TDScreen implements InputProcessor {
     private final float AUTO_ACCELERATION = 0.4f;
     private final float DECELERATION = 0.8f;
 
-    private Texture background;
+    private Texture background, textBack;
     private float velocity, autoVelocity = STARTING_AUTO_VELOCITY;
     private int scroll, lastScroll;
     private List<CampaignWorld> campaignWorlds;
@@ -51,6 +51,10 @@ public class CampaignScreen extends TDScreen implements InputProcessor {
         campaignWorlds.add(new CampaignWorld(new Texture("theme/Fallback/Icon.png"), "Put Name Here 6","Put description here for fallback6"));
 
         background = new Texture("menus/Background_Campaign.png");
+        textBack = new Texture("menus/text_back_campaign.png");
+
+        addDisposables(background, textBack);
+
         addInputProcessor(this);
     }
 
@@ -97,7 +101,11 @@ public class CampaignScreen extends TDScreen implements InputProcessor {
                 spriteBatch.draw(campaignWorlds.get(i).icon, halfFreeWidth + i * segmentWidth - scroll, viewport.getWorldHeight() / 2f - ICON_SIZE / 2);
         if(selection != -1) {
             layout.setText(game.getFonts().get("moonhouse64"), campaignWorlds.get(selection).name);
+            spriteBatch.draw(textBack, viewport.getWorldWidth() / 2 - (layout.width + 40) / 2, viewport.getWorldHeight() - 72 - layout.height, layout.width + 40, layout.height + 40);
             game.getFonts().get("moonhouse64").draw(spriteBatch, campaignWorlds.get(selection).name, viewport.getWorldWidth() / 2 - layout.width / 2, viewport.getWorldHeight() - 10 - layout.height);
+            layout.setText(game.getFonts().get("moonhouse64"), campaignWorlds.get(selection).desc);
+            spriteBatch.draw(textBack, viewport.getWorldWidth() / 2 - (layout.width + 40) / 2, layout.height + 20, layout.width + 40, layout.height + 40);
+            game.getFonts().get("moonhouse64").draw(spriteBatch, campaignWorlds.get(selection).desc, viewport.getWorldWidth() / 2 - layout.width / 2, layout.height + 83);
         }
         spriteBatch.end();
 
@@ -125,7 +133,6 @@ public class CampaignScreen extends TDScreen implements InputProcessor {
     @Override
     public void dispose() {
         super.dispose();
-        background.dispose();
     }
 
     @Override

@@ -51,7 +51,7 @@ import com.logicmaster63.tdgalaxy.entity.ContactHandler;
 import com.logicmaster63.tdgalaxy.enemy.EnemySpawner;
 import com.logicmaster63.tdgalaxy.tower.basic.Gun;
 import com.logicmaster63.tdgalaxy.tower.basic.Laser;
-import com.logicmaster63.tdgalaxy.ui.CameraHandler;
+import com.logicmaster63.tdgalaxy.tools.CameraHandler;
 import com.logicmaster63.tdgalaxy.ui.PauseWindow;
 import com.logicmaster63.tdgalaxy.ui.PlacementCell;
 import com.logicmaster63.tdgalaxy.ui.PlacementWindow;
@@ -89,7 +89,6 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
     private IntMap<Entity> entities;
     private DebugDrawer debugDrawer;
     private ShapeRenderer shapeRenderer;
-    private VRCameraInputAdapter vrCameraInputAdapter;
     private World world;
     private Music music;
     private Map<String, Sound> sounds;
@@ -121,12 +120,10 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         loading = new Texture("theme/basic/ui/Loading.png");
         entities = new IntMap<Entity>();
         spawns = new ArrayList<Spawn>();
-        camHandler = new CameraHandler(new Vector3(250, 20, 250), game, 1, 10000, this);
+        camHandler = new CameraHandler(new Vector3(250, 20, 250), game, 1, 10000, this, viewport);
 
         addInputProcessor(camHandler);
         addInputProcessor(this);
-
-        vrCameraInputAdapter = new VRCameraInputAdapter(camHandler.getVRCam());
 
         classes = new HashMap<String, Class<?>>();
         models = new HashMap<String, Model>();
@@ -263,8 +260,6 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
 
             collisionWorld.performDiscreteCollisionDetection();
 
-            if (Gdx.graphics.getDeltaTime() > 0)
-                vrCameraInputAdapter.update(Gdx.graphics.getDeltaTime());
             camHandler.update(delta);
         }
 
