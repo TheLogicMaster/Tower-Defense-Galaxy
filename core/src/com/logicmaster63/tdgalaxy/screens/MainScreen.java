@@ -88,7 +88,8 @@ public class MainScreen extends TDScreen {
         editButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new LevelSelectScreen(game));
+                game.setScreen(new MultiplayerScreen(game));
+                //game.setScreen(new LevelSelectScreen(game));
                 //game.setScreen(new EditorScreen(game));
             }
         });

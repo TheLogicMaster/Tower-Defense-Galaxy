@@ -6,6 +6,7 @@ import com.logicmaster63.tdgalaxy.constants.Constants;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.UUID;
 
 public class PreferenceHandler {
 
@@ -21,6 +22,7 @@ public class PreferenceHandler {
     private boolean debug = true;
     private boolean debugWindow = false;
     private boolean vr = false;
+    private String id;
 
     public PreferenceHandler() {
         prefs = Gdx.app.getPreferences("My Preferences");
@@ -38,6 +40,14 @@ public class PreferenceHandler {
         res = (Integer) getPref("res", res);
         money = (Integer) getPref("money", money);
         theme = (String) getPref("theme", theme);
+
+        if(prefs.contains("id")) {
+            id = prefs.getString("id");
+        } else {
+            id = UUID.randomUUID().toString();
+            prefs.putString("id", id);
+            prefs.flush();
+        }
     }
 
     private Object getPref(String name, Object defaultValue) {
@@ -90,6 +100,10 @@ public class PreferenceHandler {
         return res;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public float getSensitivity() {
         return sensitivity;
     }
@@ -103,7 +117,7 @@ public class PreferenceHandler {
     }
 
     public boolean isDebugWindow() {
-        return true /*debugWindow*/;
+        return /*true*/ debugWindow;
     }
 
     public float getMasterVolume() {

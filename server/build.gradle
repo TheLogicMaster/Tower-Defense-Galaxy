@@ -8,8 +8,6 @@ jar {
     exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
 
     manifest {
-        attributes 'Main-Class': 'TDServer'
+        attributes 'Main-Class': 'com.logicmaster63.tdgalaxy.server.TDServer'
     }
-}
-dependencies {
 }

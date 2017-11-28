@@ -6,11 +6,14 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.esotericsoftware.minlog.Log;
 import com.logicmaster63.tdgalaxy.constants.Dialogs;
 import com.logicmaster63.tdgalaxy.constants.GameMode;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
+import com.logicmaster63.tdgalaxy.networking.Networking;
+import com.logicmaster63.tdgalaxy.networking.TDClient;
 import com.logicmaster63.tdgalaxy.screens.MainScreen;
 import com.logicmaster63.tdgalaxy.tools.ControlHandler;
 import com.logicmaster63.tdgalaxy.tools.FileHandler;
@@ -26,14 +29,14 @@ public class TDGalaxy extends Game {
     //Interfaces
     public static FileStuff fileStuff;
     public static OnlineServices onlineServices;
+    private static Debug debugger;
 
     public static Dialogs dialogs;
     public static PreferenceHandler preferences;
 
 	private static List<String> themes = new ArrayList<String>();
     private static String ip = "";
-    private static Debug debugger;
-    private static boolean isMe = false;
+    private static boolean isOnline = false;
     private static MainScreen mainScreen;
 
     private static String startingMode;
@@ -41,6 +44,7 @@ public class TDGalaxy extends Game {
     private Map<String, BitmapFont> fonts;
     private AssetManager uiAssets, gameAssets;
     private ControlHandler controlHandler;
+    private TDClient client;
 
 	public TDGalaxy(String mode, FileStuff fileStuff, Debug debugger, OnlineServices onlineServices) {
         TDGalaxy.fileStuff = fileStuff;
@@ -93,6 +97,9 @@ public class TDGalaxy extends Game {
 		//setScreen(new GameScreen(this, 0, themes.get(0)));
         controlHandler = new ControlHandler();
 
+        //client = new TDClient();
+        //client.connect(5000, "99.36.127.68", Networking.PORT);
+        Log.set(Log.LEVEL_DEBUG);
         if(TDGalaxy.preferences.isDebugWindow() && debugger != null)
             debugger.createWindow("Controllers");
     }
@@ -125,19 +132,22 @@ public class TDGalaxy extends Game {
     }
 
     public void updateNetwork() {
+	    isOnline = false;
             Gdx.net.sendHttpRequest(new HttpRequestBuilder().newRequest().method(Net.HttpMethods.GET).url("http://checkip.amazonaws.com").build(), new Net.HttpResponseListener() {
                 @Override
                 public void handleHttpResponse(Net.HttpResponse httpResponse) {
                     try {
                         ip = new BufferedReader(new InputStreamReader(httpResponse.getResultAsStream())).readLine();
-                        isMe = "99.36.127.68".equals(ip);
+                        isOnline = true;
+                        //client.connect(5000, "99.36.127.68", Networking.PORT);
+                        //client.reconnect();
                     } catch (IOException e) {
                         Gdx.app.error("HTTP", e.toString());
                     }
                 }
                 @Override
                 public void failed(Throwable t) {
-
+                    Gdx.app.log("Update Network", t.toString());
                 }
                 @Override
                 public void cancelled() {
@@ -154,6 +164,10 @@ public class TDGalaxy extends Game {
 	    for(BitmapFont font: fontArray)
 		    font.dispose();
 	}
+
+	public static boolean isOnline() {
+        return isOnline;
+    }
 
 	public void addTheme() {
 
@@ -194,16 +208,12 @@ public class TDGalaxy extends Game {
             debugger.updateValues(id, values);
     }
 
-    public String getIp() {
+    public static String getIp() {
         return ip;
     }
 
     public List<String> getThemes() {
         return themes;
-    }
-
-    public boolean isMe() {
-        return isMe;
     }
 
     public Map<String, BitmapFont> getFonts() {
