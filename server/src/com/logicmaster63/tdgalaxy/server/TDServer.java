@@ -4,18 +4,23 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
-import com.logicmaster63.tdgalaxy.constants.ClientType;
 import com.logicmaster63.tdgalaxy.networking.Networking;
+import com.logicmaster63.tdgalaxy.networking.packets.CreateShare;
 import com.logicmaster63.tdgalaxy.networking.packets.RegisterClient;
 import com.logicmaster63.tdgalaxy.networking.packets.RegisterServer;
+import com.logicmaster63.tdgalaxy.networking.packets.ViewShare;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TDServer {
 
     Server server;
+    List<Session> sessions;
 
     public TDServer() throws IOException {
+        sessions = new ArrayList<Session>();
         server = new Server() {
             @Override
             protected Connection newConnection() {
@@ -24,7 +29,6 @@ public class TDServer {
         };
         Networking.register(server);
         server.addListener(new Listener() {
-
             @Override
             public void received(Connection c, Object o) {
                 TDConnection connection = ((TDConnection) c);
@@ -32,6 +36,14 @@ public class TDServer {
                 if(o instanceof RegisterClient) {
                     connection.id = ((RegisterClient)o).id;
                     server.sendToTCP(c.getID(), new RegisterServer());
+                }
+
+                if(o instanceof CreateShare) {
+
+                }
+
+                if(o instanceof ViewShare ) {
+
                 }
 
                 /*if(o instanceof Network.Request) {

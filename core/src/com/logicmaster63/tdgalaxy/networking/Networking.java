@@ -2,9 +2,7 @@ package com.logicmaster63.tdgalaxy.networking;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
-import com.logicmaster63.tdgalaxy.constants.ClientType;
-import com.logicmaster63.tdgalaxy.networking.packets.RegisterClient;
-import com.logicmaster63.tdgalaxy.networking.packets.RegisterServer;
+import com.logicmaster63.tdgalaxy.networking.packets.*;
 
 public class Networking {
 
@@ -14,6 +12,9 @@ public class Networking {
         Kryo kryo = endPoint.getKryo();
         kryo.register(RegisterClient.class);
         kryo.register(RegisterServer.class);
-        kryo.register(ClientType.class);
+        kryo.register(EntityPacket.class);
+        kryo.register(EntityPacket.EntityRender.class);
+        kryo.register(CreateShare.class);
+        kryo.register(ViewShare.class);
     }
 }

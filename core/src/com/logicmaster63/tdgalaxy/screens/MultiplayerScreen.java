@@ -21,16 +21,6 @@ public class MultiplayerScreen extends TDScreen {
         super.show();
 
         background = new Texture("theme/basic/ui/Window.png");
-
-        final TDClient client = new TDClient();
-        client.connect(5000, "99.36.127.68", Networking.PORT);
-
-        /*Timer.instance().scheduleTask(new Timer.Task() {
-            @Override
-            public void run() {
-                client.sendMessage();
-            }
-        }, 5).run();*/
     }
 
     @Override

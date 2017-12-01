@@ -97,8 +97,8 @@ public class TDGalaxy extends Game {
 		//setScreen(new GameScreen(this, 0, themes.get(0)));
         controlHandler = new ControlHandler();
 
-        //client = new TDClient();
-        //client.connect(5000, "99.36.127.68", Networking.PORT);
+        client = new TDClient();
+        client.connect(5000, "99.36.127.68", Networking.PORT);
         Log.set(Log.LEVEL_DEBUG);
         if(TDGalaxy.preferences.isDebugWindow() && debugger != null)
             debugger.createWindow("Controllers");

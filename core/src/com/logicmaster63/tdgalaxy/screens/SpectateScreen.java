@@ -12,7 +12,6 @@ public class SpectateScreen extends TDScreen {
 
     private Map<Integer, Entity> entities;
 
-
     public SpectateScreen(TDGalaxy game) {
         super(game);
     }

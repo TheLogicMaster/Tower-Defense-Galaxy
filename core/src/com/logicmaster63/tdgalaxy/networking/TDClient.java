@@ -5,7 +5,6 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
-import com.logicmaster63.tdgalaxy.constants.ClientType;
 import com.logicmaster63.tdgalaxy.networking.packets.RegisterClient;
 import com.logicmaster63.tdgalaxy.networking.packets.RegisterServer;
 
