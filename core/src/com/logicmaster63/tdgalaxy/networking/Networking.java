@@ -16,5 +16,6 @@ public class Networking {
         kryo.register(EntityPacket.EntityRender.class);
         kryo.register(CreateShare.class);
         kryo.register(ViewShare.class);
+        kryo.register(ConfirmSession.class);
     }
 }

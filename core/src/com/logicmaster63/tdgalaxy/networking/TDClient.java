@@ -21,11 +21,15 @@ public class TDClient extends Listener {
         client.addListener(this);
     }
 
-    public void connect(int timeout, final String host, final int port) {
+    public boolean isConnected() {
+        return client.isConnected();
+    }
+
+    public void connect(final int timeout, final String host, final int port) {
         new Thread("Connect") {
             public void run () {
                 try {
-                    client.connect(5000, host, port);
+                    client.connect(timeout, host, port);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -41,8 +45,8 @@ public class TDClient extends Listener {
         }
     }
 
-    public void sendMessage() {
-        client.sendTCP(new RegisterClient().set(TDGalaxy.preferences.getId()));
+    public void sendTCP(Object o) {
+        client.sendTCP(o);
     }
 
     @Override
@@ -64,5 +68,9 @@ public class TDClient extends Listener {
     @Override
     public void idle(Connection connection) {
 
+    }
+
+    public void addListener(Listener listener) {
+        client.addListener(listener);
     }
 }

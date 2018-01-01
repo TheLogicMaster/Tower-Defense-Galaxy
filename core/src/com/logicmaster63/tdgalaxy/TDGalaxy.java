@@ -6,6 +6,7 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.brummid.vrcamera.VRCamera;
 import com.esotericsoftware.minlog.Log;
 import com.logicmaster63.tdgalaxy.constants.Dialogs;
 import com.logicmaster63.tdgalaxy.constants.GameMode;
@@ -98,7 +99,7 @@ public class TDGalaxy extends Game {
         controlHandler = new ControlHandler();
 
         client = new TDClient();
-        client.connect(5000, "99.36.127.68", Networking.PORT);
+        client.connect(5000, "99.36.127.68", Networking.PORT); //99.36.127.68
         Log.set(Log.LEVEL_DEBUG);
         if(TDGalaxy.preferences.isDebugWindow() && debugger != null)
             debugger.createWindow("Controllers");
@@ -165,7 +166,11 @@ public class TDGalaxy extends Game {
 		    font.dispose();
 	}
 
-	public static boolean isOnline() {
+    public TDClient getClient() {
+        return client;
+    }
+
+    public static boolean isOnline() {
         return isOnline;
     }
 

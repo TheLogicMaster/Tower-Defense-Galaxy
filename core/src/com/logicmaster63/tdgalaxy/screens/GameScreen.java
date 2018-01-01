@@ -34,8 +34,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.Timer;
 import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCameraInputAdapter;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.constants.Source;
 import com.logicmaster63.tdgalaxy.entity.EntityTemplate;
@@ -44,6 +47,9 @@ import com.logicmaster63.tdgalaxy.map.region.Region;
 import com.logicmaster63.tdgalaxy.map.region.SphereRegion;
 import com.logicmaster63.tdgalaxy.map.world.PlanetWorld;
 import com.logicmaster63.tdgalaxy.map.world.World;
+import com.logicmaster63.tdgalaxy.networking.packets.ConfirmSession;
+import com.logicmaster63.tdgalaxy.networking.packets.CreateShare;
+import com.logicmaster63.tdgalaxy.networking.packets.EntityPacket;
 import com.logicmaster63.tdgalaxy.projectiles.Projectile;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 import com.logicmaster63.tdgalaxy.tools.*;
@@ -96,6 +102,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
     private ParticleSystem particleSystem;
     private PauseWindow pauseWindow;
     private Button button;
+    private String session = "";
 
     public GameScreen(TDGalaxy game, int map, String theme) {
         super(game);
@@ -197,6 +204,22 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
         if (planetName == null)
             planetName = "planet";
         addDisposables(spriteBatch, modelBatch, background, collisionWorld, broadphase, collisionConfig, dispatcher, debugDrawer, shapeRenderer, assets);
+
+        game.getClient().sendTCP(new CreateShare());
+        game.getClient().addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object o) {
+                if(o instanceof ConfirmSession)
+                    session = ((ConfirmSession) o).session;
+            }
+        });
+        Timer.instance().scheduleTask(new Timer.Task() {
+            @Override
+            public void run() {
+                if(game.getClient().isConnected())
+                    game.getClient().sendTCP(new EntityPacket(null, session));
+            }
+        }, 1f);
     }
 
     @Override
