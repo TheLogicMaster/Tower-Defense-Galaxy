@@ -9,39 +9,37 @@ import com.brummid.vrcamera.RendererForVR;
 import com.brummid.vrcamera.VRCamera;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.constants.CameraType;
+import com.logicmaster63.tdgalaxy.interfaces.CameraRenderer;
 
 public class CameraHandler implements InputProcessor {
 
     private PerspectiveCamera cam;
     private Vector3 tmp, pivotPoint;
     private float xRot, yRot, zRot;
-    private RendererForVR rendererForVR;
+    private CameraRenderer cameraRenderer;
     private TDGalaxy game;
     private CameraType controlType;
 
-    public CameraHandler(Vector3 pos, TDGalaxy game, float near, float far, RendererForVR rendererForVR, Viewport viewport) {
-        this(new PerspectiveCamera(67, viewport.getWorldWidth(), viewport.getWorldHeight()), null /* new VRCamera(67, near, far, 0.5f, viewport.getWorldWidth(), viewport.getWorldHeight(), rendererForVR) */, pos, game, new Vector3(0, 0, 0), near, far, rendererForVR);
+    public CameraHandler(Vector3 pos, TDGalaxy game, float near, float far, CameraRenderer cameraRenderer, Viewport viewport) {
+        this(new PerspectiveCamera(67, viewport.getWorldWidth(), viewport.getWorldHeight()), pos, game, new Vector3(0, 0, 0), near, far, cameraRenderer);
     }
 
-    public CameraHandler(Vector3 pos, TDGalaxy game, int width, int height, float near, float far, RendererForVR rendererForVR) {
-        this(new PerspectiveCamera(67, width, height), new VRCamera(67, near, far, 0.5f, (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight(), rendererForVR), pos, game, new Vector3(0, 0, 0), near, far, rendererForVR);
+    public CameraHandler(Vector3 pos, TDGalaxy game, int width, int height, float near, float far, CameraRenderer cameraRenderer) {
+        this(new PerspectiveCamera(67, width, height), pos, game, new Vector3(0, 0, 0), near, far, cameraRenderer);
     }
 
-    public CameraHandler(PerspectiveCamera cam, VRCamera vrCamera, Vector3 pos, TDGalaxy game, Vector3 looking, float near, float far, RendererForVR rendererForVR) {
+    public CameraHandler(PerspectiveCamera cam, Vector3 pos, TDGalaxy game, Vector3 looking, float near, float far, CameraRenderer cameraRenderer) {
         cam.position.set(pos);
         cam.lookAt(looking);
         cam.near = near;
         cam.far = far;
         this.game = game;
         //cam.update();
-        this.rendererForVR = rendererForVR;
+        this.cameraRenderer = cameraRenderer;
         this.cam = cam;
-        if(vrCamera != null) {
-            vrCamera.setToTranslation(pos);
-            vrCamera.lookAt(looking);
-        }
         tmp = new Vector3(0, 0,0 );
         pivotPoint = new Vector3(0, 0, 0);
+
     }
 
     public PerspectiveCamera getCam() {
@@ -49,10 +47,10 @@ public class CameraHandler implements InputProcessor {
     }
 
     public void render(Batch batch) {
-        if(TDGalaxy.preferences.isVr())
-            ;//vrCamera.render(batch);
-        else {
-            rendererForVR.renderForVR(cam);
+        if(TDGalaxy.preferences.isVr()) {
+
+        } else {
+            cameraRenderer.renderForCamera(cam);
         }
     }
 

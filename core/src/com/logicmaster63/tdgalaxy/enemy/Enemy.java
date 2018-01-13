@@ -33,10 +33,10 @@ public abstract class Enemy extends AttackingEntity {
         if(moveIndex + 1 < path.size()) {
             transform.getTranslation(tempVector2);
             tempVector.set(path.get(moveIndex + 1));
-            tempVector.sub(tempVector2).setLength((float) speeed / 10f);
+            tempVector.sub(tempVector2).setLength((float) speeed * 10f * delta);
             transform.translate(tempVector);
             //pos.add(tempVector);
-            if(tempVector2.dst(path.get(moveIndex + 1)) < speeed / 10f) {
+            if(tempVector2.dst(path.get(moveIndex + 1)) < speeed * 10f * delta) {
                 transform.setToTranslation(path.get(moveIndex + 1));
                 //pos.set(path.get(moveIndex + 1));
                 moveIndex++;

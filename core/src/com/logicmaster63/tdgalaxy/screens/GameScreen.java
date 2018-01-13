@@ -42,6 +42,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.constants.Source;
 import com.logicmaster63.tdgalaxy.entity.EntityTemplate;
+import com.logicmaster63.tdgalaxy.interfaces.CameraRenderer;
 import com.logicmaster63.tdgalaxy.map.Spawn;
 import com.logicmaster63.tdgalaxy.map.region.Region;
 import com.logicmaster63.tdgalaxy.map.region.SphereRegion;
@@ -67,7 +68,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 
-public class GameScreen extends TDScreen implements RendererForVR, InputProcessor {
+public class GameScreen extends TDScreen implements CameraRenderer, InputProcessor {
 
     private Texture background, loading;
     private int map, planetRadius;
@@ -205,7 +206,7 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
             planetName = "planet";
         addDisposables(spriteBatch, modelBatch, background, collisionWorld, broadphase, collisionConfig, dispatcher, debugDrawer, shapeRenderer, assets);
 
-        game.getClient().sendTCP(new CreateShare());
+        /*game.getClient().sendTCP(new CreateShare());
         game.getClient().addListener(new Listener() {
             @Override
             public void received(Connection connection, Object o) {
@@ -219,11 +220,11 @@ public class GameScreen extends TDScreen implements RendererForVR, InputProcesso
                 if(game.getClient().isConnected())
                     game.getClient().sendTCP(new EntityPacket(null, session));
             }
-        }, 1f);
+        }, 1f);*/
     }
 
     @Override
-    public void renderForVR(PerspectiveCamera perspectiveCamera) {
+    public void renderForCamera(PerspectiveCamera perspectiveCamera) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 

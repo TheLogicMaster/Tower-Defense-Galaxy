@@ -87,9 +87,9 @@ public class Gun extends ProjectileTower{
         */
         //for(Node node: legs)
             //node.rotation.setEulerAngles(45, 0, 0);
-        nodes.get("GunBase").rotation.mul(new Quaternion(Vector3.Y, 1));
-        nodes.get("Gun").rotation.mul(new Quaternion(Vector3.Y, 1));
-        nodes.get("BarrelGuard").rotation.mul(new Quaternion(Vector3.Y, 1));
+        nodes.get("GunBase").rotation.mul(new Quaternion(Vector3.Y, delta * 20));
+        nodes.get("Gun").rotation.mul(new Quaternion(Vector3.Y, delta * 20));
+        nodes.get("BarrelGuard").rotation.mul(new Quaternion(Vector3.Y, delta * 20));
 
         leg += legInc;
         if(leg <= 0 || leg >= 75)

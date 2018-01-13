@@ -13,6 +13,7 @@ import com.logicmaster63.tdgalaxy.constants.GameMode;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
+import com.logicmaster63.tdgalaxy.interfaces.VR;
 import com.logicmaster63.tdgalaxy.networking.Networking;
 import com.logicmaster63.tdgalaxy.networking.TDClient;
 import com.logicmaster63.tdgalaxy.screens.MainScreen;
@@ -20,10 +21,12 @@ import com.logicmaster63.tdgalaxy.tools.ControlHandler;
 import com.logicmaster63.tdgalaxy.tools.FileHandler;
 import com.logicmaster63.tdgalaxy.tools.PreferenceHandler;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.List;
 
 public class TDGalaxy extends Game {
 
@@ -31,6 +34,7 @@ public class TDGalaxy extends Game {
     public static FileStuff fileStuff;
     public static OnlineServices onlineServices;
     private static Debug debugger;
+    public static VR vr;
 
     public static Dialogs dialogs;
     public static PreferenceHandler preferences;
@@ -47,7 +51,7 @@ public class TDGalaxy extends Game {
     private ControlHandler controlHandler;
     private TDClient client;
 
-	public TDGalaxy(String mode, FileStuff fileStuff, Debug debugger, OnlineServices onlineServices) {
+	public TDGalaxy(String mode, FileStuff fileStuff, Debug debugger, OnlineServices onlineServices, VR vr) {
         TDGalaxy.fileStuff = fileStuff;
         TDGalaxy.debugger = debugger;
         TDGalaxy.onlineServices = onlineServices;
@@ -99,10 +103,12 @@ public class TDGalaxy extends Game {
         controlHandler = new ControlHandler();
 
         client = new TDClient();
-        client.connect(5000, "99.36.127.68", Networking.PORT); //99.36.127.68
+        //client.connect(5000, "99.36.127.68", Networking.PORT); //99.36.127.68
         Log.set(Log.LEVEL_DEBUG);
         if(TDGalaxy.preferences.isDebugWindow() && debugger != null)
             debugger.createWindow("Controllers");
+        if(vr != null)
+            vr.initialize();
     }
 
     @Override

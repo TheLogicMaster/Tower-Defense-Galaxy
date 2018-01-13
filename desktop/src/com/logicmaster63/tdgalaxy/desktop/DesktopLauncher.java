@@ -4,29 +4,32 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.vr.VRContext;
 import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
-import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
-import com.logicmaster63.tdgalaxy.interfaces.Debug;
-import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
-import com.logicmaster63.tdgalaxy.interfaces.ValueReturner;
+import com.logicmaster63.tdgalaxy.interfaces.*;
 import com.logicmaster63.tdgalaxy.tools.ArchiveFileHandleResolver;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
+public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 
 	private final boolean IS_PRODUCTION = false;
 
 	private Map<String, JDialog> windows;
 	private Map<String, Map<String, Object>> values;
 	private Map<String, List<JLabel>> labels;
+	private VRContext context;
 
 	private DesktopLauncher(String startingMode) {
 		windows = new HashMap<String, JDialog>();
@@ -35,10 +38,71 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices {
 
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Tower Defense Galaxy");
-		config.setIdleFPS(60);
+		//config.setIdleFPS(60);
+		//config.useVsync(false);
 		//config.width = 1280;
 		//config.height = 800;
-		new Lwjgl3Application(new TDGalaxy(startingMode, this, this, this), config);
+		new Lwjgl3Application(new TDGalaxy(startingMode, this, this, this, this), config);
+	}
+
+	@Override
+	public void initialize() {
+		try {
+			context = new VRContext();
+
+			context.getEyeData(VRContext.Eye.Left).camera.far = 100f;
+			context.getEyeData(VRContext.Eye.Right).camera.far = 100f;
+
+			context.addListener(new VRContext.VRDeviceListener() {
+				public void connected (VRContext.VRDevice device) {
+					Gdx.app.log("VR", device + " connected");
+					if (device.getType() == VRContext.VRDeviceType.Controller && device.getModelInstance() != null)
+						;//modelInstances.add(device.getModelInstance());
+				}
+
+				public void disconnected (VRContext.VRDevice device) {
+					Gdx.app.log("VR", device + " disconnected");
+					if (device.getType() == VRContext.VRDeviceType.Controller && device.getModelInstance() != null)
+						;//modelInstances.removeValue(device.getModelInstance(), true);
+				}
+
+				public void buttonPressed (VRContext.VRDevice device, int button) {
+					Gdx.app.log("VR", device + " button pressed: " + button);
+
+					if (device == context.getDeviceByType(VRContext.VRDeviceType.Controller)) {
+						if (button == VRContext.VRControllerButtons.SteamVR_Trigger)
+							;//isTeleporting = true;
+					}
+				}
+
+				public void buttonReleased (VRContext.VRDevice device, int button) {
+					Gdx.app.log("VR", device + " button released: " + button);
+
+					if (device == context.getDeviceByType(VRContext.VRDeviceType.Controller)) {
+						if (button == VRContext.VRControllerButtons.SteamVR_Trigger) {
+
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
+			Gdx.app.error("VR", e.toString());
+		}
+	}
+
+	@Override
+	public PerspectiveCamera getLeftCamera() {
+		return null;
+	}
+
+	@Override
+	public PerspectiveCamera getRightCamera() {
+		return null;
+	}
+
+	@Override
+	public void close() {
+
 	}
 
 	@Override
