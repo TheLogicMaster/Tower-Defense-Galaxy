@@ -2,28 +2,35 @@ package com.logicmaster63.tdgalaxy.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
+import com.logicmaster63.tdgalaxy.constants.Eye;
+import com.logicmaster63.tdgalaxy.interfaces.CameraRenderer;
 import com.logicmaster63.tdgalaxy.ui.MessageWindow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class TDScreen implements Screen {
+public abstract class TDScreen implements Screen, CameraRenderer {
 
     protected TDGalaxy game;
     protected SpriteBatch spriteBatch;
-    protected OrthographicCamera orthographicCamera;
+    protected Camera camera;
     protected Viewport viewport;
     protected Stage stage;
     protected List<Disposable> disposables = new ArrayList<Disposable>();
     protected AssetManager uiAssets;
+    protected Matrix4 matrix4;
+
 
     private InputMultiplexer multiplexer;
 
@@ -43,13 +50,13 @@ public abstract class TDScreen implements Screen {
 
     @Override
     public void show () {
-        orthographicCamera = new OrthographicCamera(2560, 1440);
         //orthographicCamera = new OrthographicCamera(3840, 2160);
+        matrix4 = new Matrix4();
         spriteBatch = new SpriteBatch();
-        orthographicCamera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
-        viewport = new FitViewport(2560, 1440, orthographicCamera);
+        viewport = new FitViewport(2560, 1440, new OrthographicCamera());
         viewport.apply();
         stage = new Stage(viewport);
+        camera = createCamera();
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
@@ -72,6 +79,10 @@ public abstract class TDScreen implements Screen {
 
     }
 
+    protected void update(float delta) {
+
+    }
+
     @Override
     public void dispose () {
         System.out.println("Dispose");
@@ -83,12 +94,43 @@ public abstract class TDScreen implements Screen {
     @Override
     public void render(float delta) {
         stage.act(Gdx.graphics.getDeltaTime());
-        orthographicCamera.update();
-        spriteBatch.setProjectionMatrix(orthographicCamera.combined);
+        update(delta);
+        camera.update();
+
+        if(TDGalaxy.preferences.isVr() && game.getVr().isInitialized()) {
+            game.getVr().update();
+            game.getVr().startRender();
+            Camera vrCamera = game.getVr().beginCamera(Eye.LEFT);
+            renderForCamera(vrCamera);
+            renderUI(vrCamera);
+            game.getVr().endCamera();
+            vrCamera = game.getVr().beginCamera(Eye.RIGHT);
+            renderForCamera(vrCamera);
+            renderUI(vrCamera);
+            game.getVr().endCamera();
+            game.getVr().endRender();
+        } else {
+            renderForCamera(camera);
+            renderUI(camera);
+        }
+    }
+
+    private void renderUI(Camera uiCamera) {
+        matrix4.set(uiCamera.combined);
+        matrix4.setToOrtho2D(0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        spriteBatch.setProjectionMatrix(matrix4);
         spriteBatch.begin();
         //TDWorld.getFonts().get("ui32").draw(spriteBatch, orthographicCamera.unproject(tmp.set(Gdx.input.getX(), Gdx.input.getY(), 0)).toString(), 100, 100);
         spriteBatch.end();
         stage.draw();
+    }
+
+    protected Camera createCamera() {
+        Camera camera = new OrthographicCamera(2560, 1440);
+        camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
+        camera.far = 10000;
+        camera.near = 0;
+        return camera;
     }
 
     protected void addDisposables(Disposable... d) {

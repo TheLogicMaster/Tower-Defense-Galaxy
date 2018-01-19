@@ -2,6 +2,7 @@ package com.logicmaster63.tdgalaxy.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,14 +21,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.constants.Constants;
+import com.logicmaster63.tdgalaxy.interfaces.CameraRenderer;
 
-public class LevelSelectScreen extends TDScreen {
+public class LevelSelectScreen extends TDScreen implements CameraRenderer {
 
     public LevelSelectScreen(TDGalaxy game) {
         super(game);
     }
 
-    private PerspectiveCamera camera;
     private AssetManager assets;
     private boolean isLoading = true;
     private ModelInstance scene;
@@ -37,7 +38,6 @@ public class LevelSelectScreen extends TDScreen {
     @Override
     public void show() {
         super.show();
-        camera = new PerspectiveCamera(67, viewport.getWorldWidth(), viewport.getWorldHeight());
         camera.near = 1;
         camera.far = 10000;
         camera.position.set(0, 500, 0);
@@ -50,6 +50,16 @@ public class LevelSelectScreen extends TDScreen {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
         //environment.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -1f, -1f));
         addDisposables(modelBatch, assets);
+    }
+
+    @Override
+    protected Camera createCamera() {
+        return new PerspectiveCamera();
+    }
+
+    @Override
+    public void renderForCamera(Camera camera) {
+
     }
 
     @Override

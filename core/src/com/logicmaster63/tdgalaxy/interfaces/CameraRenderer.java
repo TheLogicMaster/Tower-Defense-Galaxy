@@ -1,8 +1,8 @@
 package com.logicmaster63.tdgalaxy.interfaces;
 
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Camera;
 
 public interface CameraRenderer {
 
-    void renderForCamera(PerspectiveCamera camera);
+    void renderForCamera(Camera camera);
 }

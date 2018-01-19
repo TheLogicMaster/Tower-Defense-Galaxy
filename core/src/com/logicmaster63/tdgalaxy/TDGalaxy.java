@@ -56,6 +56,7 @@ public class TDGalaxy extends Game {
         TDGalaxy.debugger = debugger;
         TDGalaxy.onlineServices = onlineServices;
         TDGalaxy.startingMode = mode;
+        TDGalaxy.vr = vr;
     }
 
     @Override
@@ -96,6 +97,8 @@ public class TDGalaxy extends Game {
                 Gdx.app.error("TDGalaxy", "Invalid starting mode", e);
             }
         }
+        if(preferences.isVr())
+            Gdx.graphics.setVSync(false);
 
         mainScreen = new MainScreen(this);
         setScreen(mainScreen);
@@ -107,8 +110,15 @@ public class TDGalaxy extends Game {
         Log.set(Log.LEVEL_DEBUG);
         if(TDGalaxy.preferences.isDebugWindow() && debugger != null)
             debugger.createWindow("Controllers");
-        if(vr != null)
+        if(vr != null && preferences.isVr()) {
             vr.initialize();
+            new Thread() {
+                @Override
+                public void run() {
+
+                }
+            }.start();
+        }
     }
 
     @Override
@@ -229,5 +239,9 @@ public class TDGalaxy extends Game {
 
     public Map<String, BitmapFont> getFonts() {
         return fonts;
+    }
+
+    public VR getVr() {
+	    return vr;
     }
 }

@@ -4,11 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.vr.VRContext;
 import com.google.common.reflect.ClassPath;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
+import com.logicmaster63.tdgalaxy.constants.Eye;
 import com.logicmaster63.tdgalaxy.interfaces.*;
 import com.logicmaster63.tdgalaxy.tools.ArchiveFileHandleResolver;
 
@@ -46,12 +49,18 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 	}
 
 	@Override
+	public boolean isInitialized() {
+		return context != null;
+	}
+
+	@Override
 	public void initialize() {
 		try {
 			context = new VRContext();
 
-			context.getEyeData(VRContext.Eye.Left).camera.far = 100f;
-			context.getEyeData(VRContext.Eye.Right).camera.far = 100f;
+			context.getEyeData(VRContext.Eye.Left).camera.far = 10000;
+			context.getEyeData(VRContext.Eye.Right).camera.far = 10000;
+			context.getTrackerSpaceOriginToWorldSpaceTranslationOffset().set(new Vector3(250, 20, 250));
 
 			context.addListener(new VRContext.VRDeviceListener() {
 				public void connected (VRContext.VRDevice device) {
@@ -91,18 +100,35 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 	}
 
 	@Override
-	public PerspectiveCamera getLeftCamera() {
-		return null;
+	public void update() {
+		context.pollEvents();
 	}
 
 	@Override
-	public PerspectiveCamera getRightCamera() {
-		return null;
+	public void startRender() {
+		context.begin();
+	}
+
+	@Override
+	public void endRender() {
+		context.renderToCompanionWindow(VRContext.Eye.Left);
+		context.end();
+	}
+
+	@Override
+	public Camera beginCamera(Eye eye) {
+		context.beginEye(eye.equals(Eye.LEFT)? VRContext.Eye.Left: VRContext.Eye.Right);
+		return context.getEyeData(eye.equals(Eye.LEFT)? VRContext.Eye.Left: VRContext.Eye.Right).camera;
+	}
+
+	@Override
+	public void endCamera() {
+		context.endEye();
 	}
 
 	@Override
 	public void close() {
-
+		context.dispose();
 	}
 
 	@Override

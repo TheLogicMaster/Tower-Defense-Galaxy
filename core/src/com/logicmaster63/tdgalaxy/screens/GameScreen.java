@@ -40,6 +40,7 @@ import com.brummid.vrcamera.VRCameraInputAdapter;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
+import com.logicmaster63.tdgalaxy.constants.CameraType;
 import com.logicmaster63.tdgalaxy.constants.Source;
 import com.logicmaster63.tdgalaxy.entity.EntityTemplate;
 import com.logicmaster63.tdgalaxy.interfaces.CameraRenderer;
@@ -68,7 +69,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 
-public class GameScreen extends TDScreen implements CameraRenderer, InputProcessor {
+public class GameScreen extends TDScreen implements InputProcessor {
 
     private Texture background, loading;
     private int map, planetRadius;
@@ -128,7 +129,7 @@ public class GameScreen extends TDScreen implements CameraRenderer, InputProcess
         loading = new Texture("theme/basic/ui/Loading.png");
         entities = new IntMap<Entity>();
         spawns = new ArrayList<Spawn>();
-        camHandler = new CameraHandler(new Vector3(250, 20, 250), game, 1, 10000, this, viewport);
+        camHandler = new CameraHandler(camera, game, CameraType.ORBIT);
 
         addInputProcessor(camHandler);
         addInputProcessor(this);
@@ -171,7 +172,7 @@ public class GameScreen extends TDScreen implements CameraRenderer, InputProcess
 
         particleSystem = ParticleSystem.get();
         PointSpriteParticleBatch pointSpriteBatch = new PointSpriteParticleBatch();
-        pointSpriteBatch.setCamera(camHandler.getCam());
+        pointSpriteBatch.setCamera(camera);
         particleSystem.add(pointSpriteBatch);
         Pools.get(ParticleEffect.class);
 
@@ -224,24 +225,21 @@ public class GameScreen extends TDScreen implements CameraRenderer, InputProcess
     }
 
     @Override
-    public void renderForCamera(PerspectiveCamera perspectiveCamera) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-        modelBatch.begin(perspectiveCamera);
-        shapeRenderer.setProjectionMatrix(perspectiveCamera.combined);
-        for (IntMap.Entry<Entity> entry : entities.entries())
-            entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer, environment);
-        modelBatch.render(planet, environment);
-        modelBatch.end();
+    protected Camera createCamera() {
+        Camera camera = new PerspectiveCamera(67, viewport.getWorldWidth(), viewport.getWorldHeight());
+        camera.position.set(250, 20, 250);
+        camera.lookAt(0, 0, 0);
+        camera.near = 0.1f;
+        camera.far = 10000;
+        return camera;
     }
 
     @Override
-    public void render(float delta) {
+    public void renderForCamera(Camera renderCamera) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        orthographicCamera.update();
-        spriteBatch.setProjectionMatrix(orthographicCamera.combined);
+        spriteBatch.setProjectionMatrix(renderCamera.combined);
         if (isLoading) {
             if (assets.update() && (externalAssets == null || externalAssets.update()))
                 doneLoading();
@@ -264,7 +262,35 @@ public class GameScreen extends TDScreen implements CameraRenderer, InputProcess
             }
         }
 
-        if (!paused) {
+        modelBatch.begin(renderCamera);
+        shapeRenderer.setProjectionMatrix(renderCamera.combined);
+        for (IntMap.Entry<Entity> entry : entities.entries())
+            entry.value.render(Gdx.graphics.getDeltaTime(), modelBatch, shapeRenderer, environment);
+        modelBatch.render(planet, environment);
+        modelBatch.end();
+
+        if (game.preferences.isDebug()) {
+            debugDrawer.begin(renderCamera);
+            collisionWorld.debugDrawWorld();
+            debugDrawer.end();
+        }
+
+        matrix4.set(renderCamera.combined);
+        matrix4.setToOrtho2D(0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        spriteBatch.setProjectionMatrix(matrix4);        spriteBatch.begin();
+        //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + entities.size(), 0, 20);
+        //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
+        game.getFonts().get("moonhouse64").draw(spriteBatch, "$" + money.$, 0, viewport.getWorldHeight() - 30);
+        game.getFonts().get("moonhouse64").draw(spriteBatch, Gdx.graphics.getFramesPerSecond() + " FPS", 0, viewport.getWorldHeight() - 80);
+        game.getFonts().get("moonhouse64").draw(spriteBatch, entities.size + " Entities", 0, viewport.getWorldHeight() - 130);
+
+        spriteBatch.end();
+
+    }
+
+    @Override
+    protected void update(float delta) {
+        if (!paused && !isLoading) {
             /*for (IntMap.Entry<Entity> entry : entities.entries()) {
                 entry.value.tick(delta);
                 if (entry.value.isDead) {
@@ -286,28 +312,6 @@ public class GameScreen extends TDScreen implements CameraRenderer, InputProcess
 
             camHandler.update(delta);
         }
-
-        spriteBatch.begin();
-        //spriteBatch.draw(background, 0, 0, 200, 60);
-        spriteBatch.end();
-        camHandler.render(spriteBatch);
-
-        if (game.preferences.isDebug()) {
-            debugDrawer.begin(camHandler.getCam());
-            collisionWorld.debugDrawWorld();
-            debugDrawer.end();
-        }
-
-        spriteBatch.begin();
-        //TDWorld.getFonts().get("moonhouse32").draw(spriteBatch, "Size:" + entities.size(), 0, 20);
-        //TDWorld.getFonts().get("moonhouse64").draw(spriteBatch, "Num:" + collisionWorld.getNumCollisionObjects(), 0, 40);
-        game.getFonts().get("moonhouse64").draw(spriteBatch, "$" + money.$, 0, viewport.getWorldHeight() - 30);
-        game.getFonts().get("moonhouse64").draw(spriteBatch, Gdx.graphics.getFramesPerSecond() + " FPS", 0, viewport.getWorldHeight() - 80);
-        game.getFonts().get("moonhouse64").draw(spriteBatch, entities.size + " Entities", 0, viewport.getWorldHeight() - 130);
-
-        spriteBatch.end();
-
-        super.render(delta);
     }
 
     @Override
@@ -372,7 +376,7 @@ public class GameScreen extends TDScreen implements CameraRenderer, InputProcess
         } catch (IllegalAccessException e) {
             Gdx.app.error("Create placement window", e.toString());
         }
-        stage.addActor(new PlacementWindow(0, 0, 400, 400, 2, 2, placementCells, collisionWorld, camHandler.getCam(), modelBatch, environment, world, money));
+        stage.addActor(new PlacementWindow(0, 0, 400, 400, 2, 2, placementCells, collisionWorld, camera, modelBatch, environment, world, money));
 
         button = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/menuButton.png"))), new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/menuButtonOver.png"))));
         button.setBounds(viewport.getWorldWidth() - 300, viewport.getWorldHeight() - 300, 200, 200);
@@ -489,7 +493,7 @@ public class GameScreen extends TDScreen implements CameraRenderer, InputProcess
     }
 
     public Camera getCamera() {
-        return camHandler.getCam();
+        return camera;
     }
 
     public List<Projectile> getProjectiles() {

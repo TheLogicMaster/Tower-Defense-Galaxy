@@ -1,14 +1,23 @@
 package com.logicmaster63.tdgalaxy.interfaces;
 
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Camera;
+import com.logicmaster63.tdgalaxy.constants.Eye;
 
 public interface VR {
 
     void initialize();
 
-    PerspectiveCamera getLeftCamera();
+    boolean isInitialized();
 
-    PerspectiveCamera getRightCamera();
+    void update();
+
+    void startRender();
+
+    void endRender();
+
+    Camera beginCamera(Eye eye);
+
+    void endCamera();
 
     void close();
 }
