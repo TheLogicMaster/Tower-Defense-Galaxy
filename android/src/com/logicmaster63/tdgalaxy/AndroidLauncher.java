@@ -17,6 +17,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -29,9 +32,11 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.testing.json.MockJsonFactory;
 import com.google.api.services.gamesManagement.GamesManagement;
 import com.logicmaster63.tdgalaxy.constants.Constants;
+import com.logicmaster63.tdgalaxy.constants.Eye;
 import com.logicmaster63.tdgalaxy.constants.GameMode;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
+import com.logicmaster63.tdgalaxy.interfaces.VR;
 import com.logicmaster63.tdgalaxy.tools.ArchiveFileHandleResolver;
 import dalvik.system.DexFile;
 
@@ -40,7 +45,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.zip.ZipFile;
 
-public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, OnlineServices, FileStuff, RewardedVideoAdListener {
+public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, OnlineServices, FileStuff, RewardedVideoAdListener, VR {
 
     private static final int REQUEST_ACHIEVEMENTS = 5001;
 
@@ -49,6 +54,51 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
     private AdView banner;
     private RewardedVideoAd rewardVideo;
     private boolean loadingAd = false;
+    private boolean isVrLoaded = false;
+    private FrameBuffer leftFrame, rightFrame;
+    private VRCamera vrCamera;
+
+    @Override
+    public void initialize() {
+        isVrLoaded = true;
+        vrCamera = new VRCamera();
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return isVrLoaded;
+    }
+
+    @Override
+    public void update() {
+        vrCamera.update();
+    }
+
+    @Override
+    public void startRender() {
+
+    }
+
+    @Override
+    public void endRender() {
+
+    }
+
+    @Override
+    public Camera beginCamera(Eye eye) {
+        (eye.equals(Eye.LEFT)? leftFrame: rightFrame).begin();
+        return vrCamera.getEye(eye);
+    }
+
+    @Override
+    public void endCamera(Eye eye) {
+        (eye.equals(Eye.LEFT)? leftFrame: rightFrame).end();
+    }
+
+    @Override
+    public void close() {
+        isVrLoaded = false;
+    }
 
     @Override
     public void signOut() {
@@ -249,7 +299,7 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
         config.useImmersiveMode = false;
         config.useGyroscope = true;
         //initialize(new TDGalaxy(this, null, this), config);
-        View view = initializeForView(new TDGalaxy(mode,this, null, this, null), config);
+        View view = initializeForView(new TDGalaxy(mode,this, null, this, this), config);
         RelativeLayout layout = new RelativeLayout(this);
         MobileAds.initialize(this, Constants.ADSENSE_ID);
 

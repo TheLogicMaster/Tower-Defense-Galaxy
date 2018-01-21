@@ -122,7 +122,7 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 	}
 
 	@Override
-	public void endCamera() {
+	public void endCamera(Eye eye) {
 		context.endEye();
 	}
 

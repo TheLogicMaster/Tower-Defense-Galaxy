@@ -17,7 +17,7 @@ public interface VR {
 
     Camera beginCamera(Eye eye);
 
-    void endCamera();
+    void endCamera(Eye eye);
 
     void close();
 }

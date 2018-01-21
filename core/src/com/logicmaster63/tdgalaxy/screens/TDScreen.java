@@ -103,11 +103,11 @@ public abstract class TDScreen implements Screen, CameraRenderer {
             Camera vrCamera = game.getVr().beginCamera(Eye.LEFT);
             renderForCamera(vrCamera);
             renderUI(vrCamera);
-            game.getVr().endCamera();
+            game.getVr().endCamera(Eye.LEFT);
             vrCamera = game.getVr().beginCamera(Eye.RIGHT);
             renderForCamera(vrCamera);
             renderUI(vrCamera);
-            game.getVr().endCamera();
+            game.getVr().endCamera(Eye.RIGHT);
             game.getVr().endRender();
         } else {
             renderForCamera(camera);
