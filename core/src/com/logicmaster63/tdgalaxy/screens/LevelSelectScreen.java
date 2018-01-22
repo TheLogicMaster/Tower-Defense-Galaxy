@@ -38,10 +38,6 @@ public class LevelSelectScreen extends TDScreen implements CameraRenderer {
     @Override
     public void show() {
         super.show();
-        camera.near = 1;
-        camera.far = 10000;
-        camera.position.set(0, 500, 0);
-        camera.lookAt(0, 0, 0);
         assets = new AssetManager();
         assets.load("theme/basic/campaign/scene.g3db", Model.class);
         modelBatch = new ModelBatch();
@@ -54,18 +50,23 @@ public class LevelSelectScreen extends TDScreen implements CameraRenderer {
 
     @Override
     protected Camera createCamera() {
-        return new PerspectiveCamera();
+        Camera camera = new PerspectiveCamera(67, viewport.getWorldWidth(), viewport.getWorldHeight());
+        camera.position.set(0, 500, 0);
+        camera.lookAt(0, 0, 0);
+        camera.near = 0.1f;
+        camera.far = 10000;
+        return camera;
     }
 
     @Override
     public void renderForCamera(Camera camera) {
-
+        modelBatch.begin(camera);
+        modelBatch.render(scene, environment);
+        modelBatch.end();
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
         if(isLoading) {
             if (!assets.update())
                 return;
@@ -74,11 +75,6 @@ public class LevelSelectScreen extends TDScreen implements CameraRenderer {
                 scene = new ModelInstance(assets.get("theme/basic/campaign/scene.g3db", Model.class));
             }
         }
-
-        camera.update();
-        modelBatch.begin(camera);
-        modelBatch.render(scene, environment);
-        modelBatch.end();
         super.render(delta);
     }
 
