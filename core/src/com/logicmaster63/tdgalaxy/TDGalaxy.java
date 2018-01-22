@@ -111,7 +111,7 @@ public class TDGalaxy extends Game {
         if(TDGalaxy.preferences.isDebugWindow() && debugger != null)
             debugger.createWindow("Controllers");
         if(vr != null && preferences.isVr()) {
-            vr.initialize();
+            vr.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),2560, 1440);
             new Thread() {
                 @Override
                 public void run() {
@@ -177,6 +177,8 @@ public class TDGalaxy extends Game {
 	public void dispose() {
         if(debugger != null)
             debugger.disposeWindow("Controllers");
+        if(vr != null && preferences.isVr())
+            vr.close();
 	    List<BitmapFont> fontArray = new ArrayList<BitmapFont>(fonts.values());
 	    for(BitmapFont font: fontArray)
 		    font.dispose();

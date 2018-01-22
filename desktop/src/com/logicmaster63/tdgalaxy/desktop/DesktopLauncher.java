@@ -54,7 +54,7 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 	}
 
 	@Override
-	public void initialize() {
+	public void initialize(int width, int height, int viewportWidth, int viewportHeight) {
 		try {
 			context = new VRContext();
 
@@ -100,7 +100,7 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 	}
 
 	@Override
-	public void update() {
+	public void update(float delta) {
 		context.pollEvents();
 	}
 

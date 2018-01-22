@@ -3,7 +3,6 @@ package com.logicmaster63.tdgalaxy;
 import android.app.backup.BackupAgentHelper;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -18,7 +17,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -28,12 +27,8 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.games.Games;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.testing.json.MockJsonFactory;
-import com.google.api.services.gamesManagement.GamesManagement;
 import com.logicmaster63.tdgalaxy.constants.Constants;
 import com.logicmaster63.tdgalaxy.constants.Eye;
-import com.logicmaster63.tdgalaxy.constants.GameMode;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.interfaces.VR;
@@ -55,13 +50,14 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
     private RewardedVideoAd rewardVideo;
     private boolean loadingAd = false;
     private boolean isVrLoaded = false;
-    private FrameBuffer leftFrame, rightFrame;
     private VRCamera vrCamera;
+    private TempVRInputAdaptor inputAdaptor;
 
     @Override
-    public void initialize() {
+    public void initialize(int width, int height, int viewportWidth, int viewportHeight) {
         isVrLoaded = true;
-        vrCamera = new VRCamera();
+        vrCamera = new VRCamera(width, height, viewportWidth, viewportHeight);
+        inputAdaptor = new TempVRInputAdaptor(vrCamera);
     }
 
     @Override
@@ -70,8 +66,9 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
     }
 
     @Override
-    public void update() {
+    public void update(float delta) {
         vrCamera.update();
+        inputAdaptor.update(delta);
     }
 
     @Override
@@ -81,18 +78,17 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
 
     @Override
     public void endRender() {
-
+        vrCamera.render();
     }
 
     @Override
     public Camera beginCamera(Eye eye) {
-        (eye.equals(Eye.LEFT)? leftFrame: rightFrame).begin();
-        return vrCamera.getEye(eye);
+        return vrCamera.beginCamera(eye);
     }
 
     @Override
     public void endCamera(Eye eye) {
-        (eye.equals(Eye.LEFT)? leftFrame: rightFrame).end();
+        vrCamera.endCamera(eye);
     }
 
     @Override
@@ -128,7 +124,7 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
         //codeFlow.loadCredential()
         //GoogleCredential credential = new GoogleCredential().setAccessToken();
 
-        GamesManagement client = new GamesManagement.Builder(new NetHttpTransport(), new MockJsonFactory(), null).setApplicationName("TDGalaxy").build();
+        /*GamesManagement client = new GamesManagement.Builder(new NetHttpTransport(), new MockJsonFactory(), null).setApplicationName("TDGalaxy").build();
 
         Gdx.app.error("Google Play Services", client.toString());
 
@@ -136,7 +132,7 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
             Gdx.app.error("Google Play Services", client.achievements().resetAll().execute().toString());
         } catch (IOException e) {
             Gdx.app.error("Google Play Services", e.toString());
-        }
+        }*/
     }
 
     @Override

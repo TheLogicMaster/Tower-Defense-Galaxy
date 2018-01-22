@@ -48,10 +48,6 @@ public class CampaignScreen extends TDScreen implements InputProcessor, CameraRe
         layout = new GlyphLayout();
         tempVector = new Vector3();
 
-        halfFreeWidth = (int)((viewport.getWorldWidth() - ICON_SIZE) / 2);
-        segmentWidth = ICON_SIZE + halfFreeWidth;
-        length = segmentWidth * (campaignWorlds.size() - 1);
-
         campaignWorlds = new ArrayList<CampaignWorld>();
         campaignWorlds.add(new CampaignWorld(new Texture("theme/basic/Icon.png"), "World 0's Name", "Put description here for basic"));
         campaignWorlds.add(new CampaignWorld(new Texture("theme/Fallback/Icon.png"), "Put Name Here 1","Put description here for fallback1"));
@@ -60,6 +56,10 @@ public class CampaignScreen extends TDScreen implements InputProcessor, CameraRe
         campaignWorlds.add(new CampaignWorld(new Texture("theme/Fallback/Icon.png"), "Put Name Here 4","Put description here for fallback4"));
         campaignWorlds.add(new CampaignWorld(new Texture("theme/Fallback/Icon.png"), "Put Name Here 5","Put description here for fallback5"));
         campaignWorlds.add(new CampaignWorld(new Texture("theme/Fallback/Icon.png"), "Put Name Here 6","Put description here for fallback6"));
+
+        halfFreeWidth = (int)((viewport.getWorldWidth() - ICON_SIZE) / 2);
+        segmentWidth = ICON_SIZE + halfFreeWidth;
+        length = segmentWidth * (campaignWorlds.size() - 1);
 
         background = new Texture("menus/Background_Campaign.png");
         textBack = new Texture("menus/text_back_campaign.png");

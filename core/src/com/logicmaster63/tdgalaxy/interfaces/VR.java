@@ -5,11 +5,11 @@ import com.logicmaster63.tdgalaxy.constants.Eye;
 
 public interface VR {
 
-    void initialize();
+    void initialize(int width, int height, int viewportWidth, int viewportHeight);
 
     boolean isInitialized();
 
-    void update();
+    void update(float delta);
 
     void startRender();
 

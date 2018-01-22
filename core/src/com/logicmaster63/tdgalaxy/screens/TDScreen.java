@@ -98,7 +98,7 @@ public abstract class TDScreen implements Screen, CameraRenderer {
         camera.update();
 
         if(TDGalaxy.preferences.isVr() && game.getVr().isInitialized()) {
-            game.getVr().update();
+            game.getVr().update(delta);
             game.getVr().startRender();
             Camera vrCamera = game.getVr().beginCamera(Eye.LEFT);
             renderForCamera(vrCamera);

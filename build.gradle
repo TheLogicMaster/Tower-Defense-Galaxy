@@ -92,7 +92,7 @@ project(":android") {
         //compile project(":BaseGameUtils")
         compile fileTree(dir: 'libs', include: '*.jar')
         compile "de.tomgrill.gdxdialogs:gdx-dialogs-android:1.2.1"
-        compile 'com.google.apis:google-api-services-gamesManagement:v1management-rev224-1.22.0'
+        //compile 'com.google.apis:google-api-services-gamesManagement:v1management-rev224-1.22.0'
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile 'com.android.support:multidex:1.0.1'
         compile 'com.google.android.gms:play-services-drive:11.0.4'

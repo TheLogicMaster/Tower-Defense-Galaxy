@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
@@ -23,7 +20,7 @@ public class SettingsScreen extends TDScreen implements CameraRenderer {
     private Slider masterSlider, effectsSlider, musicSlider;
     private Label masterLabel, effectsLabel, musicLabel;
     private Texture background;
-    private Button backButton;
+    private Button backButton, vrOn, vrOff;
     private TDScreen lastScreen;
 
     public SettingsScreen(TDGalaxy game, TDScreen lastScreen) {
@@ -44,6 +41,30 @@ public class SettingsScreen extends TDScreen implements CameraRenderer {
         final Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = game.getFonts().get("moonhouse64");
         labelStyle.fontColor = Color.BLACK;
+
+        //Vr toggle button
+        vrOff = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/vrOff.png"))));
+        vrOff.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                TDGalaxy.preferences.changePref("vr", true);
+                if(TDGalaxy.vr != null)
+                    TDGalaxy.vr.initialize(viewport.getScreenWidth(), viewport.getScreenHeight(), (int)viewport.getWorldWidth(), (int)viewport.getWorldWidth());
+            }
+        });
+        vrOn = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/vrOn.png"))));
+        vrOn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                TDGalaxy.preferences.changePref("vr", false);
+                if(TDGalaxy.vr != null)
+                    TDGalaxy.vr.close();
+            }
+        });
+        vrOn.setVisible(false);
+        Stack signInStack = new Stack(vrOff, vrOn);
+        signInStack.setBounds(100, viewport.getWorldHeight() - 250, 600, 150);
+        stage.addActor(signInStack);
 
         //Update label and save percentages
         ChangeListener sliderListener = new ChangeListener() {
@@ -110,6 +131,8 @@ public class SettingsScreen extends TDScreen implements CameraRenderer {
 
     @Override
     public void render(float delta) {
+        vrOn.setVisible(TDGalaxy.preferences.isVr());
+        vrOff.setVisible(!TDGalaxy.preferences.isVr());
         super.render(delta);
     }
 }
