@@ -97,6 +97,7 @@ public class TDGalaxy extends Game {
                 Gdx.app.error("TDGalaxy", "Invalid starting mode", e);
             }
         }
+
         if(preferences.isVr())
             Gdx.graphics.setVSync(false);
 
