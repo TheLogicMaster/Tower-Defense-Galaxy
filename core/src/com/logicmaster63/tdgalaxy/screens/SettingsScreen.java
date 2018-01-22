@@ -63,7 +63,7 @@ public class SettingsScreen extends TDScreen implements CameraRenderer {
         });
         vrOn.setVisible(false);
         Stack signInStack = new Stack(vrOff, vrOn);
-        signInStack.setBounds(100, viewport.getWorldHeight() - 250, 600, 150);
+        signInStack.setPosition(viewport.getWorldWidth() - vrOff.getWidth() - 100, viewport.getWorldHeight() - vrOff.getHeight() - 100);
         stage.addActor(signInStack);
 
         //Update label and save percentages

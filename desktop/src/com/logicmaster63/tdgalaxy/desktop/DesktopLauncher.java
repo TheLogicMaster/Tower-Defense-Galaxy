@@ -128,7 +128,8 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 
 	@Override
 	public void close() {
-		context.dispose();
+		if(isInitialized())
+			context.dispose();
 	}
 
 	@Override
