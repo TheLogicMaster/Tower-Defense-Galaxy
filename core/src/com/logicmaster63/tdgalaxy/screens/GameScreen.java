@@ -69,7 +69,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 
-public class GameScreen extends TDScreen implements InputProcessor {
+public class GameScreen extends T3DScreen implements InputProcessor {
 
     private Texture background, loading;
     private int map, planetRadius;
@@ -222,16 +222,6 @@ public class GameScreen extends TDScreen implements InputProcessor {
                     game.getClient().sendTCP(new EntityPacket(null, session));
             }
         }, 1f);*/
-    }
-
-    @Override
-    protected Camera createCamera() {
-        Camera camera = new PerspectiveCamera(67, viewport.getWorldWidth(), viewport.getWorldHeight());
-        camera.position.set(250, 20, 250);
-        camera.lookAt(0, 0, 0);
-        camera.near = 0.1f;
-        camera.far = 10000;
-        return camera;
     }
 
     @Override

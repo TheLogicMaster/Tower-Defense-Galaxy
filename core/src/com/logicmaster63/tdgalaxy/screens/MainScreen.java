@@ -18,11 +18,16 @@ public class MainScreen extends TDScreen implements CameraRenderer {
 
     private Button signInButton, signOutButton;
     private Texture background;
-    private MainScreen screen;
+
+    private SettingsScreen settingsScreen;
+    private CampaignScreen campaignScreen;
+    private GameScreen gameScreen;
 
     public MainScreen(TDGalaxy game) {
         super(game);
-        screen = this;
+        settingsScreen = new SettingsScreen(game);
+        campaignScreen = new CampaignScreen(game);
+        gameScreen = new GameScreen(game, 0, "basic");
     }
 
     @Override
@@ -63,7 +68,7 @@ public class MainScreen extends TDScreen implements CameraRenderer {
         settingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new SettingsScreen(game, screen));
+                game.setScreen(settingsScreen);
             }
         });
         settingsButton.setPosition(viewport.getWorldWidth() - settingsButton.getWidth() - 100, viewport.getWorldHeight() - settingsButton.getHeight() - 100);
@@ -78,7 +83,7 @@ public class MainScreen extends TDScreen implements CameraRenderer {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if(game.getGameAssets() != null)
-                    game.setScreen(new GameScreen(game, 0, "basic"));
+                    game.setScreen(gameScreen);
                 //else
                     //game.loadExternalAssets();
             }
@@ -91,8 +96,8 @@ public class MainScreen extends TDScreen implements CameraRenderer {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //game.setScreen(new SpectateScreen(game));
-                game.setScreen(new LevelSelectScreen(game));
-                //game.setScreen(new EditorScreen(game));
+                //game.setScreen(new LevelSelectScreen(game, 0));
+                game.setScreen(new EditorScreen(game));
             }
         });
         table.add(editButton);
@@ -123,7 +128,7 @@ public class MainScreen extends TDScreen implements CameraRenderer {
 
         table.row();
 
-        //Reset achievement button
+        //Show video add button
         TextButton rewardVideo = new TextButton("Free Money", textButtonStyle);
         rewardVideo.addListener(new ChangeListener() {
             @Override
@@ -135,13 +140,13 @@ public class MainScreen extends TDScreen implements CameraRenderer {
         });
         table.add(rewardVideo);
 
-        //Reset achievement button
+        //Campaign button
         if(TDGalaxy.preferences.isDebug()) {
             final TextButton debugButton = new TextButton("Campaign", textButtonStyle);
             debugButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    game.setScreen(new CampaignScreen(game));
+                    game.setScreen(campaignScreen);
                 }
             });
             table.add(debugButton);

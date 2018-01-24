@@ -20,12 +20,10 @@ public class SettingsScreen extends TDScreen implements CameraRenderer {
     private Slider masterSlider, effectsSlider, musicSlider;
     private Label masterLabel, effectsLabel, musicLabel;
     private Texture background;
-    private Button backButton, vrOn, vrOff;
-    private TDScreen lastScreen;
+    private Button vrOn, vrOff;
 
-    public SettingsScreen(TDGalaxy game, TDScreen lastScreen) {
+    public SettingsScreen(TDGalaxy game) {
         super(game);
-        this.lastScreen = lastScreen;
     }
 
     @Override
@@ -107,12 +105,12 @@ public class SettingsScreen extends TDScreen implements CameraRenderer {
         stage.addActor(musicLabel);
 
         //Back button
-        backButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/BackButton.png"))));
+        Button backButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/BackButton.png"))));
         backButton.setPosition(100, viewport.getWorldHeight() - 250);
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(lastScreen);
+                game.setScreen(new MainScreen(game));
             }
         });
         stage.addActor(backButton);
