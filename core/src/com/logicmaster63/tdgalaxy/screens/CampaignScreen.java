@@ -22,10 +22,10 @@ import java.util.List;
 public class CampaignScreen extends TDScreen implements InputProcessor, CameraRenderer {
 
     private final int MAX_VELOCITY = 200;
-    private final int MAX_AUTO_VELOCITY = 200;
+    private final int MAX_AUTO_VELOCITY = 400;
     private final int STARTING_AUTO_VELOCITY = 6;
     private final int ICON_SIZE = 1000;
-    private final float AUTO_ACCELERATION = 0.4f;
+    private final float AUTO_ACCELERATION = 1f;
     private final float DECELERATION = 0.8f;
 
     private Texture background, textBack;
