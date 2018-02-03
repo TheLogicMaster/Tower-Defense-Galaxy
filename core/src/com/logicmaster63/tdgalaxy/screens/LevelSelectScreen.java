@@ -112,7 +112,8 @@ public class LevelSelectScreen extends T3DScreen implements CameraRenderer, Inpu
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
+
+        return true;
     }
 
     @Override
