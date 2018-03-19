@@ -109,15 +109,15 @@ public class PreferenceHandler {
     }
 
     public boolean isDebug() {
-        return debug;
+        return true; //debug;
+    }
+
+    public boolean isDebugWindow() {
+        return true /*debugWindow*/;
     }
 
     public boolean isVr() {
         return vr;
-    }
-
-    public boolean isDebugWindow() {
-        return /*true*/ debugWindow;
     }
 
     public float getMasterVolume() {

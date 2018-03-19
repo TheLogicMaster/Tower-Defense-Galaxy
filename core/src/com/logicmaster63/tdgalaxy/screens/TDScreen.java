@@ -32,7 +32,6 @@ public abstract class TDScreen implements Screen, CameraRenderer {
     protected AssetManager uiAssets;
     protected Matrix4 matrix4;
 
-
     private InputMultiplexer multiplexer;
 
     public TDScreen (TDGalaxy game) {
@@ -97,26 +96,21 @@ public abstract class TDScreen implements Screen, CameraRenderer {
         stage.act(Gdx.graphics.getDeltaTime());
         update(delta);
         camera.update();
-
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         if(TDGalaxy.preferences.isVr() && game.getVr().isInitialized()) {
             game.getVr().update(delta);
             game.getVr().startRender();
             Camera vrCamera = game.getVr().beginCamera(Eye.LEFT);
-            Gdx.gl.glClearColor(0, 0, 0, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
             renderForCamera(vrCamera);
             renderUI(vrCamera);
             game.getVr().endCamera(Eye.LEFT);
             vrCamera = game.getVr().beginCamera(Eye.RIGHT);
-            Gdx.gl.glClearColor(0, 0, 0, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
             renderForCamera(vrCamera);
             renderUI(vrCamera);
             game.getVr().endCamera(Eye.RIGHT);
             game.getVr().endRender();
         } else {
-            Gdx.gl.glClearColor(0, 0, 0, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
             renderForCamera(camera);
             renderUI(camera);
         }

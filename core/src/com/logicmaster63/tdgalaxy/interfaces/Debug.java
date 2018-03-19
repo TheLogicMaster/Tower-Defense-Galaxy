@@ -14,7 +14,7 @@ public interface Debug {
 
     void removeValue(String id, String name);
 
-    void addButton(String name, Runnable run);
+    void addButton(String id, String name, Runnable run);
 
     <T> void addTextButton(String name, ValueReturner<T> valueReturner);
 

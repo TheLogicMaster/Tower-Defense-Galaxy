@@ -6,7 +6,6 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.brummid.vrcamera.VRCamera;
 import com.esotericsoftware.minlog.Log;
 import com.logicmaster63.tdgalaxy.constants.Dialogs;
 import com.logicmaster63.tdgalaxy.constants.GameMode;
@@ -14,14 +13,12 @@ import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
 import com.logicmaster63.tdgalaxy.interfaces.VR;
-import com.logicmaster63.tdgalaxy.networking.Networking;
 import com.logicmaster63.tdgalaxy.networking.TDClient;
 import com.logicmaster63.tdgalaxy.screens.MainScreen;
-import com.logicmaster63.tdgalaxy.tools.ControlHandler;
+import com.logicmaster63.tdgalaxy.controls.ControlHandler;
 import com.logicmaster63.tdgalaxy.tools.FileHandler;
 import com.logicmaster63.tdgalaxy.tools.PreferenceHandler;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,7 +38,7 @@ public class TDGalaxy extends Game {
 
 	private static List<String> themes = new ArrayList<String>();
     private static String ip = "";
-    private static boolean isOnline = false;
+    private static boolean isDebug, isOnline = false;
     private static MainScreen mainScreen;
 
     private static String startingMode;
@@ -51,12 +48,13 @@ public class TDGalaxy extends Game {
     private ControlHandler controlHandler;
     private TDClient client;
 
-	public TDGalaxy(String mode, FileStuff fileStuff, Debug debugger, OnlineServices onlineServices, VR vr) {
+	public TDGalaxy(String mode, FileStuff fileStuff, Debug debugger, OnlineServices onlineServices, VR vr, boolean isDebug) {
         TDGalaxy.fileStuff = fileStuff;
         TDGalaxy.debugger = debugger;
         TDGalaxy.onlineServices = onlineServices;
         TDGalaxy.startingMode = mode;
         TDGalaxy.vr = vr;
+
     }
 
     @Override
@@ -105,12 +103,26 @@ public class TDGalaxy extends Game {
         setScreen(mainScreen);
 		//setScreen(new GameScreen(this, 0, themes.get(0)));
         controlHandler = new ControlHandler();
+        controlHandler.setNeededControllers(2);
 
         client = new TDClient();
         //client.connect(5000, "99.36.127.68", Networking.PORT); //99.36.127.68
         Log.set(Log.LEVEL_DEBUG);
-        if(TDGalaxy.preferences.isDebugWindow() && debugger != null)
+        if(TDGalaxy.preferences.isDebugWindow() && debugger != null) {
             debugger.createWindow("Controllers");
+            debugger.addButton("Controllers", "Requure 1", new Runnable() {
+                @Override
+                public void run() {
+                    controlHandler.setNeededControllers(1);
+                }
+            });
+            debugger.addButton("Controllers", "Requure 4", new Runnable() {
+                @Override
+                public void run() {
+                    controlHandler.setNeededControllers(4);
+                }
+            });
+        }
         if(vr != null && preferences.isVr()) {
             vr.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),2560, 1440);
             new Thread() {
@@ -126,8 +138,11 @@ public class TDGalaxy extends Game {
     public void render() {
         super.render();
         if(TDGalaxy.preferences.isDebugWindow() && debugger != null) {
-            debugger.updateValue("Controllers", "Players", controlHandler.getControllers());
+            debugger.updateValue("Controllers", "Players", controlHandler.getPlayers());
+            debugger.updateValue("Controllers", "TDControllers", controlHandler.getControllers());
             debugger.updateValue("Controllers", "Controllers", Controllers.getControllers());
+            debugger.updateValue("Controllers", "Paused", controlHandler.isPaused());
+            debugger.updateValue("Controllers", "Needed Controllers", controlHandler.getNeededControllers());
         }
     }
 
@@ -212,9 +227,9 @@ public class TDGalaxy extends Game {
             debugger.addTextButton(name, valueReturner);
     }
 
-    public void addDebugButton(String name, Runnable runnable) {
+    public void addDebugButton(String id, String name, Runnable runnable) {
         if(debugger != null)
-            debugger.addButton(name, runnable);
+            debugger.addButton(id, name, runnable);
     }
 
     public void removeDebugTextButton(String name) {
@@ -230,6 +245,10 @@ public class TDGalaxy extends Game {
     public void updateDebug(String id, Map<String, Object> values) {
         if(debugger != null)
             debugger.updateValues(id, values);
+    }
+
+    public boolean isDebug() {
+	    return isDebug;
     }
 
     public static String getIp() {

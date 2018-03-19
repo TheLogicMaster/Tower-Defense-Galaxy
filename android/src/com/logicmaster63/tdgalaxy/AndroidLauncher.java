@@ -295,7 +295,7 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
         config.useImmersiveMode = false;
         config.useGyroscope = true;
         //initialize(new TDGalaxy(this, null, this), config);
-        View view = initializeForView(new TDGalaxy(mode,this, null, this, this), config);
+        View view = initializeForView(new TDGalaxy(mode,this, null, this, this, false), config);
         RelativeLayout layout = new RelativeLayout(this);
         MobileAds.initialize(this, Constants.ADSENSE_ID);
 

@@ -32,12 +32,14 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 	private Map<String, JDialog> windows;
 	private Map<String, Map<String, Object>> values;
 	private Map<String, List<JLabel>> labels;
+	private Map<String, List<JButton>> buttons;
 	private VRContext context;
 
-	private DesktopLauncher(String startingMode) {
+	private DesktopLauncher(String startingMode, boolean isDebug) {
 		windows = new HashMap<String, JDialog>();
 		values = new HashMap<String, Map<String, Object>>();
 		labels = new HashMap<String, List<JLabel>>();
+		buttons = new HashMap<String, List<JButton>>();
 
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Tower Defense Galaxy");
@@ -45,7 +47,7 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 		//config.useVsync(false);
 		//config.width = 1280;
 		//config.height = 800;
-		new Lwjgl3Application(new TDGalaxy(startingMode, this, this, this, this), config);
+		new Lwjgl3Application(new TDGalaxy(startingMode, this, this, this, this, isDebug), config);
 	}
 
 	@Override
@@ -133,20 +135,24 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 	}
 
 	@Override
-	public void addButton(String name, final Runnable run) {
-		/*if(jButtons == null)
-			return;
-		JButton button = new JButton(name);
-		button.setHorizontalAlignment(SwingConstants.RIGHT);
-		button.setVerticalAlignment(SwingConstants.TOP);
-		button.addActionListener(new ActionListener() {
+	public void addButton(final String id, final String name, final Runnable run) {
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				run.run();
+			public void run() {
+				JButton button = new JButton(name);
+				button.setHorizontalAlignment(SwingConstants.RIGHT);
+				button.setVerticalAlignment(SwingConstants.TOP);
+				button.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						run.run();
+					}
+				});
+				System.out.println(windows.values());
+				windows.get(id).add(button);
+				buttons.get(id).add(button);
 			}
 		});
-		dialog.add(button);
-		jButtons.put(name, button);*/
 	}
 
 	@Override
@@ -188,6 +194,7 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 	private void updateLabels(String id) {
 		while(labels.get(id).size() < values.get(id).size()) {
 			JLabel jLabel = new JLabel();
+			jLabel.setFont(new Font("Courier", Font.BOLD,50));
 			labels.get(id).add(jLabel);
 			windows.get(id).add(jLabel);
 		}
@@ -210,6 +217,7 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 				windows.put(id, jDialog);
 				values.put(id, new HashMap<String, Object>());
 				labels.put(id, new ArrayList<JLabel>());
+				buttons.put(id, new ArrayList<JButton>());
 				jDialog.addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosing(WindowEvent e) {
@@ -357,11 +365,17 @@ public class DesktopLauncher implements FileStuff, Debug, OnlineServices, VR {
 		return IS_PRODUCTION;
 	}
 
-	public static void main (String[] arg) {
+	public static void main (String[] args) {
 		String mode = null;
-		if(arg.length > 0)
-			mode = arg[0];
-		new DesktopLauncher(mode);
+		boolean isDebug = false;
+		List<String> argList = Arrays.asList(args);
+		if(argList.contains("debug")) {
+			isDebug = true;
+			argList.remove("debug");
+		}
+		if(argList.size() > 0)
+			mode = argList.get(0);
+		new DesktopLauncher(mode, isDebug);
 		//DesktopControllerManager
 	}
 }

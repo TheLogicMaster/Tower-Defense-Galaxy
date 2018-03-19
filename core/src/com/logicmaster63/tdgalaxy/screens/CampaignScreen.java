@@ -6,7 +6,12 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.logicmaster63.tdgalaxy.TDGalaxy;
 import com.logicmaster63.tdgalaxy.interfaces.CameraRenderer;
 import com.logicmaster63.tdgalaxy.map.world.CampaignWorld;
@@ -17,15 +22,15 @@ import java.util.List;
 public class CampaignScreen extends TDScreen implements InputProcessor, CameraRenderer {
 
     private final int MAX_VELOCITY = 200;
-    private final int MAX_AUTO_VELOCITY = 40;
+    private final int MAX_AUTO_VELOCITY = 400;
     private final int STARTING_AUTO_VELOCITY = 6;
     private final int ICON_SIZE = 1000;
-    private final float AUTO_ACCELERATION = 0.4f;
+    private final float AUTO_ACCELERATION = 1f;
     private final float DECELERATION = 0.8f;
 
     private Texture background, textBack;
     private float velocity, autoVelocity = STARTING_AUTO_VELOCITY;
-    private int scroll, lastScroll;
+    private int scroll, lastScroll, staticPointerFrames; //Frames since last pointer drag
     private List<CampaignWorld> campaignWorlds;
     private boolean autoMove = false;
     private GlyphLayout layout;
@@ -41,6 +46,12 @@ public class CampaignScreen extends TDScreen implements InputProcessor, CameraRe
         super(game);
     }
 
+    public CampaignScreen(TDGalaxy game, int worldIndex) {
+        super(game);
+        moveToWorld = worldIndex;
+        autoMove = true;
+    }
+
     @Override
     public void show() {
         super.show();
@@ -48,6 +59,18 @@ public class CampaignScreen extends TDScreen implements InputProcessor, CameraRe
         layout = new GlyphLayout();
         tempVector = new Vector3();
 
+        //Back button
+        ImageButton backButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/BackButton.png"))));
+        backButton.setPosition(100, viewport.getWorldHeight() - 250);
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new MainScreen(game));
+            }
+        });
+        stage.addActor(backButton);
+
+        // TODO: 1/23/2018
         campaignWorlds = new ArrayList<CampaignWorld>();
         campaignWorlds.add(new CampaignWorld(new Texture("theme/basic/Icon.png"), "World 0's Name", "Put description here for basic"));
         campaignWorlds.add(new CampaignWorld(new Texture("theme/Fallback/Icon.png"), "Put Name Here 1","Put description here for fallback1"));
@@ -88,16 +111,19 @@ public class CampaignScreen extends TDScreen implements InputProcessor, CameraRe
     }
 
     @Override
-    public void render(float delta) {
+    protected void update(float delta) {
+        staticPointerFrames++;
+
+        if(Gdx.input.isTouched() && staticPointerFrames > 2) //Frames without dragging until velocity is reset
+            velocity = 0;
         if (Math.abs(velocity) > MAX_VELOCITY)
             velocity = velocity < 0 ? -MAX_VELOCITY : MAX_VELOCITY;
         if (Math.abs(velocity) < DECELERATION)
             velocity = 0;
         if (velocity != 0)
             velocity += velocity < 0 ? DECELERATION : -DECELERATION;
-        if(!Gdx.input.isTouched()) {
+        if(!Gdx.input.isTouched())
             scroll += velocity;
-        }
         if (scroll > length || scroll < 0) {
             scroll = Math.max(0, Math.min(scroll, length));
             velocity = 0;
@@ -116,8 +142,6 @@ public class CampaignScreen extends TDScreen implements InputProcessor, CameraRe
         }
 
         selection = getWorldFromX(scroll + ICON_SIZE / 2 + halfFreeWidth);
-
-        super.render(delta);
     }
 
     //Return world number or -1 if not contained
@@ -161,7 +185,7 @@ public class CampaignScreen extends TDScreen implements InputProcessor, CameraRe
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         tempVector.set(screenX, screenY, 0);
-        camera.unproject(tempVector);
+        viewport.unproject(tempVector);
         if(pointer == 0) {
             touchedWorld = getTouchedWorld((int) tempVector.x, (int) tempVector.y);
             lastScroll = scroll;
@@ -172,10 +196,11 @@ public class CampaignScreen extends TDScreen implements InputProcessor, CameraRe
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         tempVector.set(screenX, screenY, 0);
-        camera.unproject(tempVector);
+        viewport.unproject(tempVector);
         if(pointer == 0 && Math.abs(scroll - lastScroll) < 100 && touchedWorld != -1 && touchedWorld == getTouchedWorld((int)tempVector.x, (int)tempVector.y)) {
             if(Math.abs(scroll - (touchedWorld * (int)((viewport.getWorldWidth() - ICON_SIZE) / 2 + ICON_SIZE))) < 200) {
                 Gdx.app.error("CampaignStarting", campaignWorlds.get(touchedWorld).name);
+                game.setScreen(new LevelSelectScreen(game, touchedWorld));
             } else {
                 autoMove = true;
                 moveToWorld = touchedWorld;
@@ -190,6 +215,7 @@ public class CampaignScreen extends TDScreen implements InputProcessor, CameraRe
         velocity -= change / 10f;
         scroll -= change;
         autoMove = false;
+        staticPointerFrames = 0;
         return true;
     }
 
