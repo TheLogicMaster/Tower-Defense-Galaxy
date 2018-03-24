@@ -2,7 +2,7 @@ package com.logicmaster63.tdgalaxy.ui;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.logicmaster63.tdgalaxy.entity.EntityTemplate;
+import com.logicmaster63.tdgalaxy.tools.EntityTemplate;
 
 public class PlacementCell {
 

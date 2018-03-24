@@ -1,5 +1,7 @@
 package com.logicmaster63.tdgalaxy.controls;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.PovDirection;
@@ -19,7 +21,23 @@ public class TDKeyboard implements Controller {
 
     @Override
     public PovDirection getPov(int povCode) {
-        return null;
+        if(Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D))
+            return PovDirection.northEast;
+        if(Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.A))
+            return PovDirection.northWest;
+        if(Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D))
+            return PovDirection.southEast;
+        if(Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.A))
+            return PovDirection.southWest;
+        if(Gdx.input.isKeyPressed(Input.Keys.W))
+            return PovDirection.north;
+        if(Gdx.input.isKeyPressed(Input.Keys.A))
+            return PovDirection.west;
+        if(Gdx.input.isKeyPressed(Input.Keys.S))
+            return PovDirection.south;
+        if(Gdx.input.isKeyPressed(Input.Keys.D))
+            return PovDirection.east;
+        return PovDirection.center;
     }
 
     @Override
@@ -34,7 +52,7 @@ public class TDKeyboard implements Controller {
 
     @Override
     public Vector3 getAccelerometer(int accelerometerCode) {
-        return null;
+        return Vector3.Zero;
     }
 
     @Override

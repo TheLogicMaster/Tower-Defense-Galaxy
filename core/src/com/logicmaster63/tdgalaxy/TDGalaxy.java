@@ -2,6 +2,7 @@ package com.logicmaster63.tdgalaxy;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.net.HttpRequestBuilder;
@@ -18,6 +19,7 @@ import com.logicmaster63.tdgalaxy.screens.MainScreen;
 import com.logicmaster63.tdgalaxy.controls.ControlHandler;
 import com.logicmaster63.tdgalaxy.tools.FileHandler;
 import com.logicmaster63.tdgalaxy.tools.PreferenceHandler;
+import com.logicmaster63.tdgalaxy.tools.SoundHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,6 +28,10 @@ import java.util.*;
 import java.util.List;
 
 public class TDGalaxy extends Game {
+
+    public static void main(String[] args) {
+        SoundHandler.get().loadAudios(new HashMap<String, Sound>());
+    }
 
     //Interfaces
     public static FileStuff fileStuff;

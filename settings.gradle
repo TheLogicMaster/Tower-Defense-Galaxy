@@ -1,1 +1,1 @@
-include 'desktop', 'android', 'core', 'server', 'api'
+include 'desktop', 'android', 'core', 'server', 'api', 'basic-theme'

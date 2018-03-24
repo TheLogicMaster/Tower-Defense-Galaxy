@@ -72,7 +72,7 @@ public class ControlHandler implements ControllerListener {
 
     public void reset() {
         listeners.clear();
-        paused = false;
+        setNeededControllers(1);
     }
 
     public int getPlayerCount() {
@@ -130,8 +130,7 @@ public class ControlHandler implements ControllerListener {
                 break;
     }
 
-    @Override
-    public boolean buttonDown(Controller controller, int buttonCode) {
+    private void onControllerInput(Controller controller) {
         if (paused) {
             boolean contains = false;
             for (Controller player : players)
@@ -148,7 +147,12 @@ public class ControlHandler implements ControllerListener {
             if (getPlayerCount() >= neededControllers)
                 unPause();
         }
-        return true;
+    }
+
+    @Override
+    public boolean buttonDown(Controller controller, int buttonCode) {
+        onControllerInput(controller);
+        return false;
     }
 
     @Override
@@ -158,11 +162,13 @@ public class ControlHandler implements ControllerListener {
 
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
+        onControllerInput(controller);
         return false;
     }
 
     @Override
     public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+        onControllerInput(controller);
         return false;
     }
 
