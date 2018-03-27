@@ -19,6 +19,6 @@ public class Security {
                 return;
             builder.delete(27, builder.length());
         }
-        throw new RuntimeException(Thread.currentThread().getStackTrace()[3].getClassName() + " is not authorized to access \"" + Thread.currentThread().getStackTrace()[2].getMethodName() + "\"");
+        throw new SecurityException(Thread.currentThread().getStackTrace()[3].getClassName() + " is not authorized to access \"" + Thread.currentThread().getStackTrace()[2].getMethodName() + "\"");
     }
 }
