@@ -248,9 +248,14 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
             @Override
             public void run() {
                 banner.loadAd(new AdRequest.Builder().build());
-                banner.setVisibility(show ? 0 : 4);
+                banner.setVisibility(show ? View.INVISIBLE : View.INVISIBLE);
             }
         });
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+
     }
 
     @Override
