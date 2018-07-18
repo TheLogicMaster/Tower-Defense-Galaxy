@@ -8,21 +8,22 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.entity.Attackerer;
+import com.logicmaster63.tdgalaxy.entity.AttackingEntity;
 import com.logicmaster63.tdgalaxy.tools.Effects;
 import com.logicmaster63.tdgalaxy.tools.Types;
-import com.logicmaster63.tdgalaxy.entity.AttackingEntity;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 
 import java.util.*;
 
-public abstract class Enemy extends AttackingEntity {
+public abstract class Enemy extends Entity {
 
     private List<Vector3> path;
     private double speeed, dist = 0;
     private int moveIndex = 0;
 
-    public Enemy(Matrix4 transform, double speeed, int hp, int health, int range, float coolDown, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, String attackAnimation, Vector3 attackOffset, List<Vector3> path, Map<String, Sound> sounds) {
-        super(transform, hp, health, range, types, effects, coolDown, instance, shape, world, entities, attackAnimation, attackOffset, sounds);
+    public Enemy(Matrix4 transform, double speeed, int hp, int health, EnumSet<Types> types, EnumSet<Effects> effects, ModelInstance instance, btCollisionShape shape, btCollisionWorld world, IntMap<Entity> entities, List<Vector3> path, Map<String, Sound> sounds) {
+        super(transform, hp, health, types, effects, instance, shape, world, entities, sounds);
         this.path = path;
         this.speeed = speeed;
     }
@@ -44,28 +45,6 @@ public abstract class Enemy extends AttackingEntity {
         } else {
             //Reached end
         }
-    }
-
-    @Override
-    public void attack(ArrayList<Entity> target) {
-        super.attack(target);
-        if(attackAnimation != null)
-            animation.animate(attackAnimation, 1, new AnimationController.AnimationListener() {
-                @Override
-                public void onEnd(AnimationController.AnimationDesc animationDesc) {
-                //animation.animate("Spider_Armature|walk_ani_vor", 0);
-                }
-
-                @Override
-                public void onLoop(AnimationController.AnimationDesc animationDesc) {
-
-                }
-            }, 0);
-    }
-
-    @Override
-    public boolean canAttack() {
-        return super.canAttack();
     }
 
     public ModelInstance getModelInstance() {

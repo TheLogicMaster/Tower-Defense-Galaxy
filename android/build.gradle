@@ -34,12 +34,12 @@ dependencies {
     compile 'com.google.android.gms:play-services-plus:15.0.1'
     compile 'com.google.android.gms:play-services-ads:15.0.1'
     //compile 'com.google.android.gms:play-services:11.0.0'
-
+    compile 'com.github.bolein.better-apk-expansion:downloader_library:5.0.3'
 }
 
 android {
     buildToolsVersion "27.0.3"
-    compileSdkVersion 27
+    compileSdkVersion 28
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -59,7 +59,7 @@ android {
         multiDexEnabled true
         applicationId "com.logicmaster63.tdgalaxy"
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 15
         versionName "0.1"
     }

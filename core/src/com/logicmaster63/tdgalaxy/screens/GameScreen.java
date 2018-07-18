@@ -346,14 +346,14 @@ public class GameScreen extends T3DScreen implements InputProcessor {
         }
 
         PlacementCell[][] placementCells = new PlacementCell[2][2];
-        try {
+        /*try {
             placementCells[0][0] = new PlacementCell(background, models.get("Gun"), new EntityTemplate(Gun.class.getConstructors()[1], models, collisionWorld, entities, sounds), (Integer) classes.get("Gun").getField("PRICE").get(null));
             placementCells[1][0] = new PlacementCell(background, models.get("Laser"), new EntityTemplate(Laser.class.getConstructors()[1], models, collisionWorld, entities, sounds), (Integer) classes.get("Laser").getField("PRICE").get(null));
         } catch (NoSuchFieldException e) {
             Gdx.app.error("Create placement window", e.toString());
         } catch (IllegalAccessException e) {
             Gdx.app.error("Create placement window", e.toString());
-        }
+        }*/
         stage.addActor(new PlacementWindow(0, 0, 400, 400, 2, 2, placementCells, collisionWorld, camera, modelBatch, environment, world, money));
 
         button = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/menuButton.png"))), new TextureRegionDrawable(new TextureRegion(new Texture("theme/basic/ui/menuButtonOver.png"))));

@@ -18,11 +18,12 @@ import com.logicmaster63.tdgalaxy.tools.Source;
 import com.logicmaster63.tdgalaxy.tools.Types;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 import com.logicmaster63.tdgalaxy.tools.Asset;
+import com.logicmaster63.tdgalaxy.tower.AttackingTower;
 import com.logicmaster63.tdgalaxy.tower.Tower;
 
 import java.util.*;
 
-public class Laser extends Tower {
+public class Laser extends AttackingTower {
 
     public static final int PRICE = 40;
     public static final int HP = 20;

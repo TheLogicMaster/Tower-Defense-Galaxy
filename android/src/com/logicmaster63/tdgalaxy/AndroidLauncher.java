@@ -1,17 +1,21 @@
 package com.logicmaster63.tdgalaxy;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.backup.BackupAgentHelper;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
+import android.os.*;
 
-import android.os.Environment;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -27,6 +31,7 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.games.Games;
+import com.google.android.vending.expansion.downloader.impl.DownloaderService;
 import com.logicmaster63.tdgalaxy.constants.Constants;
 import com.logicmaster63.tdgalaxy.constants.Eye;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
@@ -43,6 +48,8 @@ import java.util.zip.ZipFile;
 public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener, OnlineServices, FileStuff, RewardedVideoAdListener, VR {
 
     private static final int REQUEST_ACHIEVEMENTS = 5001;
+    private static final byte[] SALT = new byte[] { 1, 43, -12, -1, 54, 98, -60, -12, 43, 2, -8, -4, 9, 5, 106, -107, 33, 45, 1, 83
+    };
 
     private GameHelper gameHelper;
     private BackupAgentHelper helper;
@@ -52,6 +59,7 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
     private boolean isVrLoaded = false;
     private VRCamera vrCamera;
     private TempVRInputAdaptor inputAdaptor;
+    private PackIsolation packIsolation;
 
     @Override
     public void initialize(int width, int height, int viewportWidth, int viewportHeight) {
@@ -283,6 +291,31 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(getAPKExpansionFiles(this, Constants.EXPANSION_FILE_VERSION, 0).length == 0) {
+            // Build an Intent to start this activity from the Notification
+            Intent notifierIntent = new Intent(this, getClass());
+            notifierIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                    notifierIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            // Start the download service (if required)
+            // Don't forget to create the channel in advance!
+
+            try {
+                int startResult = DownloaderService.startDownloadServiceIfRequired(this, "downloader-channel",
+                        pendingIntent, SALT, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmMNhIt6qyI0cJzoWHRGIGMzUJ/rDZlJnvtZeou1LnR7o+KOWS6Sd2NWVI56yxdmXyhz/+WsS9tRIyepYimeAGXasiwQJhmV62I4JO9JSS9rYslcPKX610yf2u61qFy+MtW9NHrhp0vMXaRTcOCKmSx4JilA/4eTzD6liYz+7G/feIKlw3V4NHm2qKUE/ih+u8Jpk9VaD1VqAMJrV4M012qKfDcVCOpKdOLBreqwu1NWZqmqABaeUuhsStKE5Eq0pqpzL1mY4b43+NNQ3PmAboQdQQhjJM5vvhBp0bnMV+QPylxtHvoYV+s8qCbCt+HwW2b4UGzRRvMurB2FtTVKS+QIDAQAB");
+
+                if (startResult != DownloaderService.NO_DOWNLOAD_REQUIRED) {
+                    //Move this elsewhere and show progress bar or so
+
+                    //https://github.com/bolein/better-apk-expansion
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
         String mode = null;
         if(getIntent().getExtras() != null)
             mode = getIntent().getExtras().getString("mode");
@@ -303,6 +336,26 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
         View view = initializeForView(new TDGalaxy(mode,this, null, this, this, false), config);
         RelativeLayout layout = new RelativeLayout(this);
         MobileAds.initialize(this, Constants.ADSENSE_ID);
+
+        Intent intent = new Intent(this, PackIsolationService.class);
+        getBaseContext().startService(intent);
+        getBaseContext().bindService(intent, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                packIsolation = PackIsolation.Stub.asInterface(iBinder);
+                try {
+                    Toast.makeText(getApplicationContext(), Integer.toString(packIsolation.test()), Toast.LENGTH_LONG).show();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                packIsolation = null;
+            }
+        }, 0);
+
 
         banner = new AdView(this);
         banner.setAdSize(AdSize.SMART_BANNER);

@@ -3,7 +3,7 @@ package com.logicmaster63.tdgalaxy.tools;
 public class Security {
 
     public static void main(String[] args) {
-        SoundHandler.get().loadAudios(null);
+        SoundHandler_SecurityExample.get().loadAudios(null);
     }
 
     private static final String[] APPROVED_CLASSES = new String[] {"TDGalaxy", "tools.FileHandler"};

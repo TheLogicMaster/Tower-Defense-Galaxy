@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.bullet.Bullet;
 import com.esotericsoftware.minlog.Log;
 import com.logicmaster63.tdgalaxy.constants.Dialogs;
 import com.logicmaster63.tdgalaxy.constants.GameMode;
+import com.logicmaster63.tdgalaxy.entity.EntityProperties;
 import com.logicmaster63.tdgalaxy.interfaces.Debug;
 import com.logicmaster63.tdgalaxy.interfaces.FileStuff;
 import com.logicmaster63.tdgalaxy.interfaces.OnlineServices;
@@ -19,7 +20,7 @@ import com.logicmaster63.tdgalaxy.screens.MainScreen;
 import com.logicmaster63.tdgalaxy.controls.ControlHandler;
 import com.logicmaster63.tdgalaxy.tools.FileHandler;
 import com.logicmaster63.tdgalaxy.tools.PreferenceHandler;
-import com.logicmaster63.tdgalaxy.tools.SoundHandler;
+import com.logicmaster63.tdgalaxy.tools.SoundHandler_SecurityExample;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +31,7 @@ import java.util.List;
 public class TDGalaxy extends Game {
 
     public static void main(String[] args) {
-        SoundHandler.get().loadAudios(new HashMap<String, Sound>());
+        SoundHandler_SecurityExample.get().loadAudios(new HashMap<String, Sound>());
     }
 
     //Interfaces
@@ -60,7 +61,6 @@ public class TDGalaxy extends Game {
         TDGalaxy.onlineServices = onlineServices;
         TDGalaxy.startingMode = mode;
         TDGalaxy.vr = vr;
-
     }
 
     @Override
@@ -138,6 +138,8 @@ public class TDGalaxy extends Game {
                 }
             }.start();
         }
+
+        new EntityProperties("properties/basic/Basic.json");
     }
 
     @Override

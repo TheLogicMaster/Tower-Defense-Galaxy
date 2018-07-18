@@ -1,7 +1,7 @@
 import org.gradle.internal.os.OperatingSystem
 
 buildscript {
-    
+
 
     repositories {
         mavenLocal()
@@ -17,7 +17,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.0'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.3'
-        
+
 
     }
 }
@@ -42,12 +42,13 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://jitpack.io" }
         google()
         jcenter()
     }
 }
 
-switch ( OperatingSystem.current() ) {
+switch (OperatingSystem.current()) {
     case OperatingSystem.WINDOWS:
         project.ext.lwjglNatives = "natives-windows"
         break
@@ -70,6 +71,7 @@ project(":api") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile group: 'com.typesafe', name: 'config', version: '1.2.1'
         //testImplementation("org.junit.jupiter:junit-jupiter-api:5.0.0")
         //testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0")
     }
@@ -77,7 +79,6 @@ project(":api") {
 
 project(":desktop") {
     apply plugin: "java"
-
 
     dependencies {
         compile project(":core")
@@ -116,7 +117,7 @@ project(":ios") {
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
         compile "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"
-        
+
     }
 }
 
@@ -132,7 +133,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        
+
     }
 }
 

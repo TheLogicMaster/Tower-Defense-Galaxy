@@ -178,6 +178,6 @@ public class FileHandler {
     public static void writeJSON(FileHandle file) {
         Json json = new Json();
         System.out.println(json.prettyPrint(true));
-        file.writeString(json.prettyPrint(true), false);
+        //file.writeString(json.prettyPrint(true), false);
     }
 }

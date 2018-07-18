@@ -4,6 +4,7 @@
           android:versionCode="15"
           android:versionName="0.1">
 
+    <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -30,6 +31,10 @@
             <meta-data android:name="android.app.shortcuts"
                        android:resource="@xml/shortcuts" />
         </activity>
+        <service
+                android:name="com.logicmaster63.tdgalaxy.PackIsolationService"
+                android:exported="false"/>
+
         <meta-data android:name="com.google.android.backup.api_key"
                    android:value="AEdPqrEAAAAIJTOC5dGLrowvPptbgCJdk5QxY1xd9jYCeSSJ4g" />
         <meta-data android:name="com.google.android.gms.games.APP_ID"

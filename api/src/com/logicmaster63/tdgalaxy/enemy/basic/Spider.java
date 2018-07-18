@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.enemy.AttackingEnemy;
 import com.logicmaster63.tdgalaxy.tools.Effects;
 import com.logicmaster63.tdgalaxy.tools.Source;
 import com.logicmaster63.tdgalaxy.tools.Types;
@@ -18,7 +19,7 @@ import com.logicmaster63.tdgalaxy.tools.Asset;
 
 import java.util.*;
 
-public class Spider extends Enemy {
+public class Spider extends AttackingEnemy {
 
     public static final EnumSet<Types> TYPES = EnumSet.of(Types.SHARP);
     public static final int HP = 20;

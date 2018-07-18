@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.enemy.AttackingEnemy;
 import com.logicmaster63.tdgalaxy.tools.Effects;
 import com.logicmaster63.tdgalaxy.tools.Source;
 import com.logicmaster63.tdgalaxy.tools.Types;
@@ -20,7 +21,7 @@ import com.logicmaster63.tdgalaxy.tools.Asset;
 
 import java.util.*;
 
-public class Basic extends Enemy{
+public class Basic extends AttackingEnemy {
 
     public static final EnumSet<Types> TYPES = EnumSet.of(Types.SHARP);
     public static final int HP = 20;

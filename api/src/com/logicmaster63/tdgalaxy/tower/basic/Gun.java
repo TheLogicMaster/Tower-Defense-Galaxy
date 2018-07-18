@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.utils.IntMap;
+import com.logicmaster63.tdgalaxy.config.EntityPropertyFile;
 import com.logicmaster63.tdgalaxy.tools.*;
 import com.logicmaster63.tdgalaxy.entity.Entity;
 import com.logicmaster63.tdgalaxy.projectiles.Bullet;
@@ -22,7 +23,8 @@ import com.logicmaster63.tdgalaxy.tower.ProjectileTower;
 
 import java.util.*;
 
-public class Gun extends ProjectileTower{
+@EntityPropertyFile()
+public class Gun extends ProjectileTower {
 
     public static final int HP = 20;
     public static final int PRICE = 20;

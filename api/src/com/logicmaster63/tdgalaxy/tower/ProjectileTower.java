@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Map;
 
-public class ProjectileTower extends Tower{
+public class ProjectileTower extends AttackingTower {
 
     private EntityTemplate<? extends Projectile> projectileEntityTemplate;
 
